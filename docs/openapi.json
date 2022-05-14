@@ -1,0 +1,1761 @@
+{
+    "openapi": "3.0.0",
+    "paths": {
+        "/user": {
+            "put": {
+                "operationId": "UserinfoController_update",
+                "summary": "更新当前用户信息",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateUserInfoInputDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "更新成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateUserInfoOutputDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "用户"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/users/{id}": {
+            "get": {
+                "operationId": "UserinfoController_getInfo",
+                "summary": "获取用户信息",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": false,
+                        "in": "path",
+                        "description": "用户ID,若不传递则返回当前用户",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetUserInfoResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "用户"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/user/points/rankings": {
+            "get": {
+                "operationId": "PointsController_getRankings",
+                "summary": "获取积分降序排行榜",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,限制数量",
+                        "schema": {
+                            "minimum": 1,
+                            "maximum": 30,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "start",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,开始位置",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetRankingResponseDto"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "用户"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/user/points/transactions": {
+            "get": {
+                "operationId": "PointsController_getTransactions",
+                "summary": "获取当前用户积分记录",
+                "description": "获取积分记录,需要注册用户权限",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,限制数量",
+                        "schema": {
+                            "minimum": 1,
+                            "maximum": 30,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "start",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,开始位置",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetTransactionResponseDto"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "用户"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/user/achievements": {
+            "get": {
+                "operationId": "AchievementController_getAchievements",
+                "summary": "获取当前用户成就列表",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetAchievementsResponseDto"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "用户"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/files/local": {
+            "post": {
+                "operationId": "LocalController_uploadFile",
+                "summary": "上传文件到本地",
+                "description": "上传文件到本地,一般情况前端无需显式调用",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UploadLocalBodyDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "上传成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UploadLocalResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "409": {
+                        "description": "文件重复上传",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HttpExceptionOutputDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "文件管理"
+                ]
+            }
+        },
+        "/files": {
+            "post": {
+                "operationId": "FileController_createUploadParams",
+                "summary": "上传文件",
+                "description": "获取可用于上次一个文件的上传文件地址和参数",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateUploadParamsBodyDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateUploadParamsResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "文件管理"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/files/qiniu/callback": {
+            "post": {
+                "operationId": "QiniuController_callback",
+                "summary": "七牛上传成功回调",
+                "description": "七牛上传成功回调,只能由七牛服务器调用",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "required": true,
+                        "in": "header",
+                        "description": "七牛服务器认证信息",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/QiniuCallbackBodyDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "回调调用成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/QiniuCallbackResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "文件管理"
+                ]
+            }
+        },
+        "/settings": {
+            "post": {
+                "operationId": "SettingController_fetchSetting",
+                "summary": "获取配置",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "description": "配置键",
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "description": "配置值",
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "description": "有配置项不存在"
+                    }
+                },
+                "tags": [
+                    "配置"
+                ]
+            }
+        },
+        "/articles": {
+            "get": {
+                "operationId": "ArticleController_getArticleList",
+                "summary": "获取文章列表",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/GetArticlesQueryDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetArticlesResponseDto"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "公告和文章"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/articles/{id}": {
+            "get": {
+                "operationId": "ArticleController_getArticle",
+                "summary": "获取文章信息",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "文章ID",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetArticleResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "公告和文章"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/cats": {
+            "get": {
+                "operationId": "CatController_getCatsList",
+                "summary": "获取猫咪列表",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,限制数量",
+                        "schema": {
+                            "minimum": 1,
+                            "maximum": 30,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "start",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,开始位置",
+                        "schema": {
+                            "minimum": 0,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功,返回简略的猫咪列表",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetCatsResponseDto"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "猫咪"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/cats/{id}": {
+            "get": {
+                "operationId": "CatController_getCatInfo",
+                "summary": "获取猫咪详细信息",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "猫咪ID",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetCatInfoResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "猫咪"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/cats/search": {
+            "get": {
+                "operationId": "CatController_searchCat",
+                "summary": "搜索猫咪",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "required": true,
+                        "in": "query",
+                        "description": "关键词",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,限制数量",
+                        "schema": {
+                            "minimum": 1,
+                            "maximum": 30,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "start",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,开始位置",
+                        "schema": {
+                            "minimum": 0,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "搜索成功,返回简略的猫咪列表",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "number"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "猫咪"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/cats/recommendation": {
+            "get": {
+                "operationId": "RecommendationController_getUserRecommendations",
+                "summary": "获取用户推荐列表",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,限制数量",
+                        "schema": {
+                            "minimum": 1,
+                            "maximum": 30,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "start",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,开始位置",
+                        "schema": {
+                            "minimum": 0,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功,返回简略的猫咪列表",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetUserRecommendationsResponseDto"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "404": {
+                        "description": "当前用户和系统默认的推荐列表都不存在"
+                    }
+                },
+                "tags": [
+                    "猫咪"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/cats/photos": {
+            "post": {
+                "operationId": "PhotoController_uploadPhoto",
+                "summary": "发布猫咪随手拍",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UploadPhotoBodyDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "发布成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UploadPhotoResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    },
+                    "409": {
+                        "description": "该照片已经发布过"
+                    }
+                },
+                "tags": [
+                    "猫咪"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/auth/login/by_mini_program_code": {
+            "post": {
+                "operationId": "LoginController_byMiniProgramCode",
+                "summary": "微信小程序登陆",
+                "description": "通过微信小程序Code登陆并换领认证TOKEN",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginByMiniProgramCodeBodyDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "登陆成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LoginByMiniProgramCodeResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "登陆"
+                ]
+            }
+        },
+        "/logs": {
+            "post": {
+                "operationId": "UserLogController_writeLogs",
+                "summary": "批量写入操作日记",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/WriteLogInputDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "写入成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WriteLogOutputDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "日记"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        }
+    },
+    "info": {
+        "title": "Kitty后端APi服务",
+        "description": {
+            "$ref": "./index.md"
+        },
+        "version": "1.0",
+        "contact": {},
+        "x-logo": {
+            "url": "./logo.png",
+            "backgroundColor": "#FFFFFF"
+        }
+    },
+    "tags": [],
+    "servers": [],
+    "components": {
+        "securitySchemes": {
+            "bearer": {
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "name": "统一认证",
+                "type": "http"
+            }
+        },
+        "schemas": {
+            "UpdateUserInfoInputDto": {
+                "type": "object",
+                "properties": {
+                    "nickName": {
+                        "type": "string",
+                        "description": "用户昵称"
+                    },
+                    "avatarFileToken": {
+                        "type": "string",
+                        "description": "用户头像文件Token"
+                    }
+                },
+                "required": [
+                    "nickName",
+                    "avatarFileToken"
+                ]
+            },
+            "UpdateUserInfoOutputDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "GetUserInfoResponseDto": {
+                "type": "object",
+                "properties": {
+                    "role": {
+                        "type": "string",
+                        "description": "用户角色,只有查询当前用户时会返回,其他时候返回null,0表示禁用账户,1表示未注册用户,2表示已注册用户,3表示管理员",
+                        "enum": [
+                            "0",
+                            "1",
+                            "2",
+                            "3"
+                        ]
+                    },
+                    "nickName": {
+                        "type": "string",
+                        "description": "用户昵称"
+                    },
+                    "avatarFileName": {
+                        "type": "string",
+                        "description": "头像文件名"
+                    },
+                    "id": {
+                        "type": "number",
+                        "description": "用户ID",
+                        "minimum": 1
+                    },
+                    "points": {
+                        "type": "number",
+                        "description": "用户当前积分,只有查询当前用户时会返回,其他时候返回null"
+                    }
+                },
+                "required": [
+                    "nickName",
+                    "avatarFileName",
+                    "id"
+                ]
+            },
+            "GetRankingResponseDto": {
+                "type": "object",
+                "properties": {
+                    "avatarFileName": {
+                        "type": "string",
+                        "description": "头像文件名"
+                    },
+                    "points": {
+                        "type": "number",
+                        "description": "用户当前积分"
+                    },
+                    "id": {
+                        "type": "number",
+                        "description": "用户ID",
+                        "minimum": 1
+                    },
+                    "nickName": {
+                        "type": "string",
+                        "description": "用户昵称"
+                    }
+                },
+                "required": [
+                    "avatarFileName",
+                    "points",
+                    "id",
+                    "nickName"
+                ]
+            },
+            "GetTransactionResponseDto": {
+                "type": "object",
+                "properties": {
+                    "reason": {
+                        "type": "string",
+                        "description": "积分变化原因,0表示管理员加减积分,1表示完成成就,2表示使用猫咪雷达功能,3表示随手拍,4表示猫咪状态反馈/BUG反馈",
+                        "enum": [
+                            "0",
+                            "1",
+                            "2",
+                            "3",
+                            "4"
+                        ]
+                    },
+                    "points": {
+                        "type": "number",
+                        "description": "变化的积分数,正数为增加,负数为减少"
+                    },
+                    "id": {
+                        "type": "number",
+                        "description": "记录ID",
+                        "minimum": 1
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "变化记录描述"
+                    },
+                    "createdDate": {
+                        "format": "date-time",
+                        "type": "string",
+                        "description": "记录产生日期"
+                    }
+                },
+                "required": [
+                    "reason",
+                    "points",
+                    "id",
+                    "description",
+                    "createdDate"
+                ]
+            },
+            "GetAchievementsResponseDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "成就ID",
+                        "minimum": 1
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "成就描述"
+                    },
+                    "percent": {
+                        "type": "number",
+                        "description": "成就完成进度",
+                        "minimum": 0,
+                        "maximum": 100
+                    },
+                    "updatedDate": {
+                        "format": "date-time",
+                        "type": "string",
+                        "description": "成就进度上一次更新的时间,如果该成就已完成则将定格在完成时间"
+                    }
+                },
+                "required": [
+                    "id",
+                    "description",
+                    "percent",
+                    "updatedDate"
+                ]
+            },
+            "UploadLocalBodyDto": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "description": "文件上传Token,需要通过文件上传接口获得"
+                    },
+                    "file": {
+                        "type": "string",
+                        "format": "binary",
+                        "description": "文件"
+                    }
+                },
+                "required": [
+                    "token",
+                    "file"
+                ]
+            },
+            "UploadLocalResponseDto": {
+                "type": "object",
+                "properties": {
+                    "fileToken": {
+                        "type": "string",
+                        "description": "文件Token,用于标记一个已经存储在服务器上的文件,可以用于需要上传文件的接口,注意不同于文件上传Token"
+                    }
+                },
+                "required": [
+                    "fileToken"
+                ]
+            },
+            "CreateUploadParamsBodyDto": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "description": "文件类型,0表示未压缩图片,1表示压缩图片",
+                        "enum": [
+                            "0",
+                            "1"
+                        ]
+                    },
+                    "extName": {
+                        "type": "string",
+                        "description": "文件扩展名,需要匹配文件类型"
+                    }
+                },
+                "required": [
+                    "type",
+                    "extName"
+                ]
+            },
+            "CreateUploadParamsResponseDto": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string",
+                        "description": "上传文件的目标地址"
+                    },
+                    "params": {
+                        "type": "object",
+                        "description": "需要给上传文件的目标地址传递的参数"
+                    }
+                },
+                "required": [
+                    "url",
+                    "params"
+                ]
+            },
+            "QiniuCallbackBodyDto": {
+                "type": "object",
+                "properties": {
+                    "fileName": {
+                        "type": "string",
+                        "description": "上传的文件名"
+                    },
+                    "fileType": {
+                        "type": "string",
+                        "description": "上传的文件类型"
+                    }
+                },
+                "required": [
+                    "fileName",
+                    "fileType"
+                ]
+            },
+            "QiniuCallbackResponseDto": {
+                "type": "object",
+                "properties": {
+                    "fileToken": {
+                        "type": "string",
+                        "description": "文件Tokenn,用于标记一个已经存储在服务器上的文件,可以用于需要上传文件的接口"
+                    }
+                },
+                "required": [
+                    "fileToken"
+                ]
+            },
+            "GetArticlesQueryDto": {
+                "type": "object",
+                "properties": {
+                    "limit": {
+                        "type": "number",
+                        "description": "分页参数,限制数量",
+                        "minimum": 1,
+                        "maximum": 30
+                    },
+                    "start": {
+                        "type": "number",
+                        "description": "分页参数,开始位置",
+                        "minimum": 1
+                    }
+                },
+                "required": [
+                    "limit",
+                    "start"
+                ]
+            },
+            "GetArticlesResponseDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "文章ID",
+                        "minimum": 1
+                    },
+                    "coverFileName": {
+                        "type": "string",
+                        "description": "文章封面文件名"
+                    },
+                    "summary": {
+                        "type": "string",
+                        "description": "文章概述"
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "文章标题"
+                    }
+                },
+                "required": [
+                    "id",
+                    "coverFileName",
+                    "summary",
+                    "title"
+                ]
+            },
+            "GetArticleResponseDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "文章ID",
+                        "minimum": 1
+                    },
+                    "coverFileName": {
+                        "type": "string",
+                        "description": "文章封面文件名"
+                    },
+                    "summary": {
+                        "type": "string",
+                        "description": "文章概述"
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "文章标题"
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "文章内容"
+                    },
+                    "createdDate": {
+                        "format": "date-time",
+                        "type": "string",
+                        "description": "文章创建时间"
+                    }
+                },
+                "required": [
+                    "id",
+                    "coverFileName",
+                    "summary",
+                    "title",
+                    "content",
+                    "createdDate"
+                ]
+            },
+            "GetCatsResponseDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "猫咪ID",
+                        "minimum": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "猫咪名称"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "猫咪描述"
+                    },
+                    "coverFileName": {
+                        "type": "string",
+                        "description": "猫咪封面文件名"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "coverFileName"
+                ]
+            },
+            "CatInfoDto": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "description": "猫咪状态",
+                        "enum": [
+                            "0",
+                            "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5"
+                        ]
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "猫咪名称"
+                    },
+                    "species": {
+                        "type": "string",
+                        "description": "猫咪物种"
+                    },
+                    "isNeuter": {
+                        "type": "boolean",
+                        "description": "猫咪是否已经绝育"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "猫咪描述"
+                    },
+                    "haunt": {
+                        "type": "string",
+                        "description": "猫咪出没地点"
+                    }
+                },
+                "required": [
+                    "status",
+                    "name",
+                    "species",
+                    "isNeuter",
+                    "description",
+                    "haunt"
+                ]
+            },
+            "PhotoDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "图片ID",
+                        "minimum": 1
+                    },
+                    "rawFileName": {
+                        "type": "string",
+                        "description": "原图图片文件名"
+                    },
+                    "fileName": {
+                        "type": "string",
+                        "description": "展示图片文件名",
+                        "nullable": true
+                    },
+                    "createdDate": {
+                        "format": "date-time",
+                        "type": "string",
+                        "description": "图片发布时间"
+                    }
+                },
+                "required": [
+                    "id",
+                    "rawFileName",
+                    "fileName",
+                    "createdDate"
+                ]
+            },
+            "GetCatInfoResponseDto": {
+                "type": "object",
+                "properties": {
+                    "info": {
+                        "description": "猫咪信息",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/CatInfoDto"
+                            }
+                        ]
+                    },
+                    "selectedPhotos": {
+                        "description": "精选图片集",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PhotoDto"
+                        }
+                    },
+                    "vectors": {
+                        "type": "object",
+                        "description": "向量类型,0是温顺,1是胆小,2是活泼,3是暴躁,4是粘人,5是独立",
+                        "additionalProperties": {
+                            "type": "number",
+                            "description": "向量百分比"
+                        }
+                    },
+                    "coverPhoto": {
+                        "description": "封面图片",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/PhotoDto"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "info",
+                    "selectedPhotos",
+                    "vectors",
+                    "coverPhoto"
+                ]
+            },
+            "GetUserRecommendationsResponseDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "猫咪ID",
+                        "minimum": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "猫咪名称"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "猫咪描述"
+                    },
+                    "coverFileName": {
+                        "type": "string",
+                        "description": "猫咪封面文件名"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "coverFileName"
+                ]
+            },
+            "UploadPhotoBodyDto": {
+                "type": "object",
+                "properties": {
+                    "catID": {
+                        "type": "number",
+                        "description": "猫咪ID,若为undefined则不绑定至特定猫咪"
+                    },
+                    "fileToken": {
+                        "type": "string",
+                        "description": "文件Token,成功上传文件后获得"
+                    },
+                    "comment": {
+                        "type": "string",
+                        "description": "照片评论"
+                    },
+                    "compassAngle": {
+                        "type": "number",
+                        "description": "指南针角度"
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "description": "拍照时的纬度"
+                    },
+                    "longitude": {
+                        "type": "number",
+                        "description": "拍照时的经度"
+                    },
+                    "positionAccuration": {
+                        "type": "number",
+                        "description": "拍照时的位置的精确度,米为单位"
+                    }
+                },
+                "required": [
+                    "fileToken"
+                ]
+            },
+            "UploadPhotoResponseDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "LoginByMiniProgramCodeBodyDto": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "description": "微信小程序Code"
+                    }
+                },
+                "required": [
+                    "code"
+                ]
+            },
+            "LoginByMiniProgramCodeResponseDto": {
+                "type": "object",
+                "properties": {
+                    "role": {
+                        "type": "string",
+                        "description": "用户角色,0表示禁用账户,1表示未注册用户,2表示已注册用户,3表示管理员",
+                        "enum": [
+                            "0",
+                            "1",
+                            "2",
+                            "3"
+                        ]
+                    },
+                    "nickName": {
+                        "type": "string",
+                        "description": "用户昵称"
+                    },
+                    "avatarFileName": {
+                        "type": "string",
+                        "description": "头像文件名"
+                    },
+                    "id": {
+                        "type": "number",
+                        "description": "用户ID",
+                        "minimum": 1
+                    },
+                    "points": {
+                        "type": "number",
+                        "description": "用户当前积分"
+                    },
+                    "token": {
+                        "type": "string",
+                        "description": "认证TOKEN"
+                    }
+                },
+                "required": [
+                    "role",
+                    "nickName",
+                    "avatarFileName",
+                    "id",
+                    "points",
+                    "token"
+                ]
+            },
+            "LogViewCatInputDto": {
+                "type": "object",
+                "properties": {
+                    "catID": {
+                        "type": "number",
+                        "description": "猫咪ID"
+                    },
+                    "dwellTime": {
+                        "type": "number",
+                        "description": "停留时间"
+                    }
+                },
+                "required": [
+                    "catID",
+                    "dwellTime"
+                ]
+            },
+            "LogUploadPhotoInputDto": {
+                "type": "object",
+                "properties": {
+                    "photoID": {
+                        "type": "number",
+                        "description": "用户照片ID"
+                    }
+                },
+                "required": [
+                    "photoID"
+                ]
+            },
+            "LogLoginInputDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "LogRaderInputDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "LogViewArticleInputDto": {
+                "type": "object",
+                "properties": {
+                    "articleID": {
+                        "type": "number",
+                        "description": "文章ID"
+                    },
+                    "dwellTime": {
+                        "type": "number",
+                        "description": "停留时间"
+                    }
+                },
+                "required": [
+                    "articleID",
+                    "dwellTime"
+                ]
+            },
+            "WriteLogInputDto": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "description": "用户日记类型,0表示查看猫咪信息,1表示发布评论,2表示上传猫咪照片,3表示用户登陆,4表示使用猫咪雷达功能,5表示阅读文章",
+                        "enum": [
+                            "0",
+                            "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5"
+                        ]
+                    },
+                    "message0": {
+                        "description": "日记信息,类型为查看猫咪信息时必填",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/LogViewCatInputDto"
+                            }
+                        ]
+                    },
+                    "message2": {
+                        "description": "日记信息,类型为上传猫咪照片时必填",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/LogUploadPhotoInputDto"
+                            }
+                        ]
+                    },
+                    "message3": {
+                        "description": "日记信息,类型为用户登陆时必填",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/LogLoginInputDto"
+                            }
+                        ]
+                    },
+                    "message4": {
+                        "description": "日记信息,类型为使用猫咪雷达功能时必填",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/LogRaderInputDto"
+                            }
+                        ]
+                    },
+                    "message5": {
+                        "description": "日记信息,类型为阅读文章时必填",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/LogViewArticleInputDto"
+                            }
+                        ]
+                    },
+                    "date": {
+                        "format": "date-time",
+                        "type": "string",
+                        "description": "日记发生的时间"
+                    }
+                },
+                "required": [
+                    "type",
+                    "date"
+                ]
+            },
+            "WriteLogOutputDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "HttpExceptionOutputDto": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "number",
+                        "description": "HTTP状态码"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "description": "错误信息"
+                    }
+                },
+                "required": [
+                    "status",
+                    "msg"
+                ]
+            }
+        },
+        "responses": {
+            "400": {
+                "description": "参数错误",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/HttpExceptionOutputDto"
+                        }
+                    }
+                }
+            },
+            "401": {
+                "description": "Authorization字段无效",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/HttpExceptionOutputDto"
+                        }
+                    }
+                }
+            },
+            "403": {
+                "description": "无权限",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/HttpExceptionOutputDto"
+                        }
+                    }
+                }
+            },
+            "422": {
+                "description": "业务错误",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/api-exception"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

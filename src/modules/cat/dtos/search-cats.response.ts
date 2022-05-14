@@ -1,0 +1,1 @@
+export const SearchCatsOutputDto = Number;
