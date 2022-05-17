@@ -25,13 +25,13 @@ export class QiniuService
     ) {}
 
     /**
-     * 获取上传接口参数
+     * 创建上传一个文件所需的接口参数
      * @param userID 用户ID
      * @param fileType 文件类型
      * @param extName 扩展名
      * @returns 接口参数,直接返回给客户端
      */
-    async getUploadParams(userID: number, fileType: FileType, extName: string) {
+    async createUploadParams(userID: number, fileType: FileType, extName: string) {
         const uploadPolicy: rs.PutPolicyOptions & { forceSaveKey: boolean } = {
             scope: this.configService.get<string>('files.providers.qiniu.scope'),
             expires: parseInt(this.configService.get<string>('files.providers.qiniu.upload.token_expired_time', '1200')),

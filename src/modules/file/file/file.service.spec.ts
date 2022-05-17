@@ -62,25 +62,25 @@ describe('FileService', () => {
 
     test('createUploadParams() - Other Providers', async () => {
         const uploadProvier = {
-            getUploadParams: jest.fn().mockReturnValue({"aaa": "bbb"})
+            createUploadParams: jest.fn().mockReturnValue({"aaa": "bbb"})
         };
         dependencies["ConfigService"].get = jest.fn().mockReturnValueOnce('qiniu');
         (service as any).providers["qiniu"] = uploadProvier;
         const data1 = await service.createUploadParams(2222, FileType.COMPRESSED_IMAGE, ".jpg");
         expect(dependencies["ConfigService"].get).toBeCalledWith('files.upload.provider');
-        expect(uploadProvier.getUploadParams).toBeCalledWith(2222, FileType.COMPRESSED_IMAGE, ".jpg");
+        expect(uploadProvier.createUploadParams).toBeCalledWith(2222, FileType.COMPRESSED_IMAGE, ".jpg");
         expect(data1).toEqual({"aaa": "bbb"});
     });
 
     test('createUploadParams() - Fallback Provider to local', async () => {
         const uploadProvier = {
-            getUploadParams: jest.fn().mockReturnValue({"aaa": "bbb"})
+            createUploadParams: jest.fn().mockReturnValue({"aaa": "bbb"})
         };
         dependencies["ConfigService"].get = jest.fn().mockReturnValueOnce('qiniu');
         (service as any).providers["local"] = uploadProvier;
         const data1 = await service.createUploadParams(2222, FileType.COMPRESSED_IMAGE, ".jpg");
         expect(dependencies["ConfigService"].get).toBeCalledWith('files.upload.provider');
-        expect(uploadProvier.getUploadParams).toBeCalledWith(2222, FileType.COMPRESSED_IMAGE, ".jpg");
+        expect(uploadProvier.createUploadParams).toBeCalledWith(2222, FileType.COMPRESSED_IMAGE, ".jpg");
         expect(data1).toEqual({"aaa": "bbb"});
     });
 

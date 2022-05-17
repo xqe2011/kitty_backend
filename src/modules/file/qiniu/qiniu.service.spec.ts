@@ -44,7 +44,7 @@ describe('QiniuService', () => {
         expect(dependencies["ConfigService"].get).toBeCalledTimes(2);
     });
 
-    test('getUploadParams()', async () => {
+    test('createUploadParams()', async () => {
         const configKey = {
             'files.providers.qiniu.scope': "abc",
             'files.providers.qiniu.upload.token_expired_time': "1200",
@@ -58,7 +58,7 @@ describe('QiniuService', () => {
         };
         rs.PutPolicy = jest.fn().mockImplementation(() => putPolicy);
         (service as any).sdkMac = Object;
-        const data1 = await service.getUploadParams(2222, FileType.UNCOMPRESSED_IMAGE, "jpg");
+        const data1 = await service.createUploadParams(2222, FileType.UNCOMPRESSED_IMAGE, "jpg");
         expect(rs.PutPolicy).toBeCalledWith({
             scope: "abc",
             expires: 1200,

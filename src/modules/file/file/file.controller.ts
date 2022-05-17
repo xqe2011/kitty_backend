@@ -29,10 +29,6 @@ export class FileController {
         @Req() request,
         @Body() body: CreateUploadParamsBodyDto,
     ) {
-        return await this.fileService.createUploadParams(
-            request.user.id,
-            body.type,
-            body.extName,
-        );
+        return await this.fileService.createUploadParams(request.user.id, body.type, body.extName);
     }
 }

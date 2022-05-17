@@ -46,7 +46,7 @@ export class FileService implements OnApplicationBootstrap {
         if (!(providerName in this.providers)) {
             providerName = 'local';
         }
-        return await this.providers[providerName].getUploadParams(userID, fileType, extName);
+        return await this.providers[providerName].createUploadParams(userID, fileType, extName);
     }
 
     /**

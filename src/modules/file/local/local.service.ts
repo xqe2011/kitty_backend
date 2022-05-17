@@ -62,7 +62,7 @@ export class LocalService
      * @param extName 扩展名
      * @returns 接口参数,直接返回给客户端
      */
-    async getUploadParams(userID: number, fileType: FileType, extName: string) {
+    async createUploadParams(userID: number, fileType: FileType, extName: string) {
         const fileName = randomBytes(20).toString('hex') + '.' + extName;
         if (!this.fileTypeAllowExt[fileType].includes(extName)) {
             throw new BadRequestException('This file type is not matched to the extension name!');

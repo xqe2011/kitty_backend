@@ -77,11 +77,11 @@ describe('LocalService', () => {
         expect(data1).toEqual(false);
     });
 
-    test('getUploadParams() - Match Extensions', async () => {
+    test('createUploadParams() - Match Extensions', async () => {
         dependencies["FileService"].getTokenSign = jest.fn().mockReturnValueOnce("snl2ury/2jJE3WvaUEEahEqUTQGCG/VthfDU1l3GdrA=");
         dependencies["ConfigService"].get = jest.fn().mockReturnValueOnce("http://test.api")
         dependencies["ToolService"].getNowTimestamp = jest.fn().mockReturnValueOnce('1652246384');
-        const data1 = await service.getUploadParams(2222, FileType.UNCOMPRESSED_IMAGE, "jpg");
+        const data1 = await service.createUploadParams(2222, FileType.UNCOMPRESSED_IMAGE, "jpg");
         expect(dependencies["FileService"].getTokenSign).toBeCalledTimes(1);
         expect(dependencies["ToolService"].getNowTimestamp).toBeCalledTimes(1);
         expect(dependencies["ConfigService"].get).toBeCalledTimes(1);
@@ -93,12 +93,12 @@ describe('LocalService', () => {
         });
     });
 
-    test('getUploadParams() - Unmached Extensions', async () => {
+    test('createUploadParams() - Unmached Extensions', async () => {
         dependencies["FileService"].getTokenSign = jest.fn().mockReturnValueOnce("snl2ury/2jJE3WvaUEEahEqUTQGCG/VthfDU1l3GdrA=");
         dependencies["ConfigService"].get = jest.fn().mockReturnValueOnce("http://test.api");
         dependencies["ToolService"].getNowTimestamp = jest.fn().mockReturnValueOnce('1652246384');
         try {
-            await service.getUploadParams(2222, FileType.UNCOMPRESSED_IMAGE, "php");
+            await service.createUploadParams(2222, FileType.UNCOMPRESSED_IMAGE, "php");
         } catch(e) {
             expect(e).toBeInstanceOf(BadRequestException);
         }
