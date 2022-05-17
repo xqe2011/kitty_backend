@@ -419,7 +419,7 @@
                             "schema": {
                                 "type": "array",
                                 "items": {
-                                    "type": "string"
+                                    "$ref": "#/components/schemas/FetchSettingBodyDto"
                                 }
                             }
                         }
@@ -1215,6 +1215,23 @@
                 },
                 "required": [
                     "fileToken"
+                ]
+            },
+            "FetchSettingBodyDto": {
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "type": "string",
+                        "description": "配置的Key"
+                    },
+                    "nullable": {
+                        "type": "boolean",
+                        "description": "配置是否允许返回Null值"
+                    }
+                },
+                "required": [
+                    "key",
+                    "nullable"
                 ]
             },
             "GetArticlesQueryDto": {

@@ -1,5 +1,5 @@
 import { Body, Controller, ParseArrayPipe, Post } from '@nestjs/common';
-import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags, } from '@nestjs/swagger';
+import { ApiBody, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags, } from '@nestjs/swagger';
 import { FetchSettingBodyDto } from '../dtos/fetch-setting.body';
 import { SettingService } from './setting.service';
 
@@ -9,7 +9,11 @@ export class SettingController {
     constructor(private settingService: SettingService) {}
 
     @Post('/')
-    @ApiOperation({ summary: '获取配置' })
+    @ApiOperation({summary: '获取配置' })
+    @ApiBody({
+        type: FetchSettingBodyDto,
+        isArray: true
+    })
     @ApiOkResponse({
         description: '获取成功',
         schema: {
