@@ -20,7 +20,7 @@ export class FileService implements OnApplicationBootstrap {
 
     async onApplicationBootstrap() {
         if ((await this.settingService.getSetting('files.url')) == '') {
-            await this.settingService.createSetting('files.url', '', false);
+            await this.settingService.createSetting('files.url', '', true);
         }
         await this.settingService.updateSetting('files.url', this.configService.get<string>('files.url'));
     }

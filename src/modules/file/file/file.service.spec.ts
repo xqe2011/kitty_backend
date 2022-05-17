@@ -42,7 +42,7 @@ describe('FileService', () => {
         expect(service).toBeDefined();
     });
 
-    test('onApplicationBootstrap()', async () => {
+    test('onApplicationBootstrap() - "files.url" Exists', async () => {
         dependencies["SettingService"].getSetting = jest.fn().mockResolvedValueOnce("http://abcd.com/");
         dependencies["SettingService"].createSetting = jest.fn();
         dependencies["SettingService"].updateSetting = jest.fn();
@@ -50,6 +50,18 @@ describe('FileService', () => {
         await service.onApplicationBootstrap();
         expect(dependencies["SettingService"].getSetting).toBeCalledWith('files.url');
         expect(dependencies["SettingService"].createSetting).toBeCalledTimes(0);
+        expect(dependencies["ConfigService"].get).toBeCalledWith('files.url');
+        expect(dependencies["SettingService"].updateSetting).toBeCalledWith('files.url', "http://abc.com/");
+    });
+
+    test('onApplicationBootstrap() - "files.url" Not Exists', async () => {
+        dependencies["SettingService"].getSetting = jest.fn().mockResolvedValueOnce('');
+        dependencies["SettingService"].createSetting = jest.fn();
+        dependencies["SettingService"].updateSetting = jest.fn();
+        dependencies["ConfigService"].get = jest.fn().mockReturnValueOnce("http://abc.com/");
+        await service.onApplicationBootstrap();
+        expect(dependencies["SettingService"].getSetting).toBeCalledWith('files.url');
+        expect(dependencies["SettingService"].createSetting).toBeCalledWith('files.url', '', true);
         expect(dependencies["ConfigService"].get).toBeCalledWith('files.url');
         expect(dependencies["SettingService"].updateSetting).toBeCalledWith('files.url', "http://abc.com/");
     });
