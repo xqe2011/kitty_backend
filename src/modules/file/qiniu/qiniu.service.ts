@@ -48,7 +48,7 @@ export class QiniuService
         return {
             url: this.configService.get<string>('files.providers.qiniu.upload.url'),
             params: {
-                upload_token: new rs.PutPolicy(uploadPolicy).uploadToken(this.sdkMac)
+                token: new rs.PutPolicy(uploadPolicy).uploadToken(this.sdkMac)
             },
         };
     }
