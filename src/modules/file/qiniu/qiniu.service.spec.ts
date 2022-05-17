@@ -77,7 +77,7 @@ describe('QiniuService', () => {
         expect(data1).toEqual( {
             url: 'http://qiniu.com',
             params: {
-                upload_token: "ababcdcd",
+                token: "ababcdcd",
             },
         });
     });
