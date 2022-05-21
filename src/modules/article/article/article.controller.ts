@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Role } from 'src/modules/user/enums/role.enum';
 import { Roles } from 'src/modules/auth/roles/roles.decorator';
@@ -25,8 +25,8 @@ export class ArticleController {
         type: GetArticlesResponseDto,
         isArray: true,
     })
-    async getArticleList(@Body() body: GetArticlesQueryDto) {
-        return this.articleService.getArticlesList(body.limit, body.start);
+    async getArticleList(@Query() query: GetArticlesQueryDto) {
+        return this.articleService.getArticlesList(query.limit, query.start);
     }
 
     @Get('/:id')
