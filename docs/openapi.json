@@ -463,17 +463,29 @@
             "get": {
                 "operationId": "ArticleController_getArticleList",
                 "summary": "获取文章列表",
-                "parameters": [],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/GetArticlesQueryDto"
-                            }
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,限制数量",
+                        "schema": {
+                            "minimum": 1,
+                            "maximum": 30,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "start",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,开始位置",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "number"
                         }
                     }
-                },
+                ],
                 "responses": {
                     "200": {
                         "description": "获取成功",
@@ -1232,26 +1244,6 @@
                 "required": [
                     "key",
                     "nullable"
-                ]
-            },
-            "GetArticlesQueryDto": {
-                "type": "object",
-                "properties": {
-                    "limit": {
-                        "type": "number",
-                        "description": "分页参数,限制数量",
-                        "minimum": 1,
-                        "maximum": 30
-                    },
-                    "start": {
-                        "type": "number",
-                        "description": "分页参数,开始位置",
-                        "minimum": 1
-                    }
-                },
-                "required": [
-                    "limit",
-                    "start"
                 ]
             },
             "GetArticlesResponseDto": {
