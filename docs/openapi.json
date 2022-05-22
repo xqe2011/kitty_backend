@@ -675,7 +675,7 @@
                 ]
             }
         },
-        "/cats/search": {
+        "/search/cats": {
             "get": {
                 "operationId": "CatController_searchCat",
                 "summary": "搜索猫咪",
