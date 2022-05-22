@@ -60,6 +60,8 @@ export class CatService {
      * @returns 猫咪信息
      */
     async getCatsListByIDs(ids: number[], limit: number, start: number) {
+        /* 检查ids是否合法 */
+        if (ids === null || (typeof(ids) != "object" && typeof(ids) != "undefined") || (typeof(ids) == "object" && ids.length == 0)) return [];
         const queryBuildinger = this.catRepository.createQueryBuilder('cats');
         queryBuildinger.innerJoin('cats.photos', 'photo');
         queryBuildinger.andWhere("photo.type = :type", { type: CatPhotoType.COVER });

@@ -53,7 +53,21 @@ describe('CatService', () => {
         expect(data1).toEqual([5824, 5825]);
     });
 
-    test('getCatsList() - No specify ids', async () => {
+    test('getCatsListByIDs() - Empty Array', async () => {
+        dependencies["CatRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => {{}});
+        const data1 = await service.getCatsListByIDs([], 33, 44);
+        expect(dependencies["CatRepository"].createQueryBuilder).toBeCalledTimes(0);
+        expect(data1).toEqual([]);
+    });
+
+    test('getCatsListByIDs() - Null', async () => {
+        dependencies["CatRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => {{}});
+        const data1 = await service.getCatsListByIDs(null, 33, 44);
+        expect(dependencies["CatRepository"].createQueryBuilder).toBeCalledTimes(0);
+        expect(data1).toEqual([]);
+    });
+
+    test('getCatsListByIDs() - No specify ids', async () => {
         const createQueryBuilder = {
             innerJoin: jest.fn(),
             andWhere: jest.fn(),
@@ -83,7 +97,7 @@ describe('CatService', () => {
         expect(data1).toEqual([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg"}]);
     });
 
-    test('getCatsList() - Specify ids', async () => {
+    test('getCatsListByIDs() - Specify ids', async () => {
         const createQueryBuilder = {
             innerJoin: jest.fn(),
             andWhere: jest.fn(),
