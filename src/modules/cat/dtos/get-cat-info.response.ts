@@ -37,6 +37,12 @@ class PhotoDto {
 
     @ApiProperty({ description: '图片发布时间' })
     createdDate: Date;
+
+    @ApiProperty({ description: '照片评论' })
+    comment: string;
+
+    @ApiProperty({ description: '照片发布者ID' })
+    userID: number;
 }
 
 export class GetCatInfoResponseDto {

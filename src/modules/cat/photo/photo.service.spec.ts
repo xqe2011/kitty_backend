@@ -129,17 +129,22 @@ describe('PhotoService', () => {
     });
 
     test('getPhotosByCatIDAndType()', async () => {
-        dependencies["CatPhotoRepository"].find = jest.fn().mockResolvedValueOnce({"aaa": "bbb"});
+        const createQueryBuilder = {
+            andWhere: jest.fn(),
+            select: jest.fn(),
+            getRawMany: jest.fn().mockReturnValue([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg"}])
+        };
+        dependencies["CatPhotoRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => createQueryBuilder);
         const data1 = await service.getPhotosByCatIDAndType(2222, CatPhotoType.OTHERS);
-        expect(dependencies["CatPhotoRepository"].find).toBeCalledWith({
-            where: {
-                cat: {
-                    id: 2222,
-                },
-                type: CatPhotoType.OTHERS,
+        expect(dependencies["CatPhotoRepository"].createQueryBuilder).toBeCalledWith('photo');
+        expect(createQueryBuilder.andWhere).toBeCalledWith({
+            cat: {
+                id: 2222
             },
-            select: ['id', 'rawFileName', 'fileName', 'comment', 'createdDate'],
+            type: CatPhotoType.OTHERS
         });
-        expect(data1).toEqual({"aaa": "bbb"});
+        expect(createQueryBuilder.select).toBeCalledWith(['id', 'rawFileName', 'fileName', 'comment', 'createdDate', 'userId as userID']);
+        expect(createQueryBuilder.getRawMany).toBeCalledWith();
+        expect(data1).toEqual([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg"}]);
     });
 });

@@ -858,6 +858,53 @@
                 ]
             }
         },
+        "/cats/{id}/photos/other": {
+            "get": {
+                "operationId": "PhotoController_getOtherPhotos",
+                "summary": "获取用户发布的猫咪照片",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "猫咪ID",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetOtherPhotosResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "猫咪"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
         "/auth/login/by_mini_program_code": {
             "post": {
                 "operationId": "LoginController_byMiniProgramCode",
@@ -1407,13 +1454,23 @@
                         "format": "date-time",
                         "type": "string",
                         "description": "图片发布时间"
+                    },
+                    "comment": {
+                        "type": "string",
+                        "description": "照片评论"
+                    },
+                    "userID": {
+                        "type": "number",
+                        "description": "照片发布者ID"
                     }
                 },
                 "required": [
                     "id",
                     "rawFileName",
                     "fileName",
-                    "createdDate"
+                    "createdDate",
+                    "comment",
+                    "userID"
                 ]
             },
             "GetCatInfoResponseDto": {
@@ -1525,6 +1582,46 @@
             "UploadPhotoResponseDto": {
                 "type": "object",
                 "properties": {}
+            },
+            "GetOtherPhotosResponseDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "图片ID",
+                        "minimum": 1
+                    },
+                    "rawFileName": {
+                        "type": "string",
+                        "description": "原图图片文件名"
+                    },
+                    "fileName": {
+                        "type": "string",
+                        "description": "展示图片文件名",
+                        "nullable": true
+                    },
+                    "createdDate": {
+                        "format": "date-time",
+                        "type": "string",
+                        "description": "图片发布时间"
+                    },
+                    "comment": {
+                        "type": "string",
+                        "description": "照片评论"
+                    },
+                    "userID": {
+                        "type": "number",
+                        "description": "照片发布者ID"
+                    }
+                },
+                "required": [
+                    "id",
+                    "rawFileName",
+                    "fileName",
+                    "createdDate",
+                    "comment",
+                    "userID"
+                ]
             },
             "LoginByMiniProgramCodeBodyDto": {
                 "type": "object",

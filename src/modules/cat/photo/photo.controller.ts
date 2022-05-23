@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Get, Body, Controller, Post, Req, UseGuards, Param } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from 'src/modules/auth/roles/roles.decorator';
 import { RolesGuard } from 'src/modules/auth/roles/roles.guard';
@@ -6,16 +6,19 @@ import { Role } from 'src/modules/user/enums/role.enum';
 import { PhotoService } from './photo.service';
 import { UploadPhotoBodyDto } from '../dtos/upload-photo.body';
 import { ApiBearerAuth, ApiConflictResponse, ApiOkResponse, ApiOperation, ApiTags, } from '@nestjs/swagger';
+import { GetOtherPhotosResponseDto } from '../dtos/get-other-photos.response';
+import { GetOtherPhotosParamDto } from '../dtos/get-other-photos.param';
 import { UploadPhotoResponseDto } from '../dtos/upload-photo.response';
+import { CatPhotoType } from '../enums/cat-photo-type.enum';
 
-@Controller('cats/photos')
+@Controller('/cats')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiBearerAuth()
 @ApiTags('猫咪')
 export class PhotoController {
     constructor(private photoService: PhotoService) {}
 
-    @Post('/')
+    @Post('/photos')
     @Roles(Role.Admin, Role.RegisteredUser)
     @ApiOperation({ summary: '发布猫咪随手拍' })
     @ApiOkResponse({
@@ -35,5 +38,16 @@ export class PhotoController {
             body.positionAccuration,
         );
         return {};
+    }
+
+    @Get('/:id/photos/other')
+    @Roles(Role.Admin, Role.RegisteredUser)
+    @ApiOperation({ summary: '获取用户发布的猫咪照片' })
+    @ApiOkResponse({
+        description: '获取成功',
+        type: GetOtherPhotosResponseDto,
+    })
+    async getOtherPhotos(@Param() param: GetOtherPhotosParamDto) {
+        return await this.photoService.getPhotosByCatIDAndType(param.id, CatPhotoType.OTHERS);
     }
 }
