@@ -4,7 +4,7 @@ import { CatVectorType } from '../enums/cat-vector-type.enum';
 
 class CatInfoDto {
     @ApiProperty({
-        description: '猫咪状态',
+        description: '猫咪状态,0表示失踪,1表示正常,2表示生病,3表示住院,4表示被领养,5表示死亡',
         enum: CatStatusType,
     })
     status: CatStatusType;

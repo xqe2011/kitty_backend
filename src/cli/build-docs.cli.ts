@@ -1,12 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { useContainer } from 'class-validator';
 import { AppModule } from '../app.module';
-import {
-    SwaggerModule,
-    DocumentBuilder,
-    OpenAPIObject,
-    getSchemaPath,
-} from '@nestjs/swagger';
+import { SwaggerModule, DocumentBuilder, OpenAPIObject, getSchemaPath } from '@nestjs/swagger';
 import { mkdir, pathExists, remove, writeFile } from 'fs-extra';
 import { Logger } from '@nestjs/common';
 import { HttpExceptionOutputDto } from 'src/docs/dtos/http-exception.output';
@@ -84,7 +79,7 @@ async function bootstrap() {
     logger.log('Start building documentation...');
     const config = new DocumentBuilder()
         .setTitle('Kitty后端APi服务')
-        .setVersion('1.0')
+        .setVersion('1.1')
         .addBearerAuth({ name: '统一认证', type: 'http' })
         .build();
     const document = SwaggerModule.createDocument(app, config, {
