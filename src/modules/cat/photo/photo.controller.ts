@@ -46,6 +46,7 @@ export class PhotoController {
     @ApiOkResponse({
         description: '获取成功',
         type: GetOtherPhotosResponseDto,
+        isArray: true
     })
     async getOtherPhotos(@Param() param: GetOtherPhotosParamDto) {
         return await this.photoService.getPhotosByCatIDAndType(param.id, CatPhotoType.OTHERS);

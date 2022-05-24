@@ -79,7 +79,7 @@ async function bootstrap() {
     logger.log('Start building documentation...');
     const config = new DocumentBuilder()
         .setTitle('Kitty后端APi服务')
-        .setVersion('1.1')
+        .setVersion('1.11')
         .addBearerAuth({ name: '统一认证', type: 'http' })
         .build();
     const document = SwaggerModule.createDocument(app, config, {

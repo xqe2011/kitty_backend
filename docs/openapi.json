@@ -880,7 +880,10 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/GetOtherPhotosResponseDto"
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetOtherPhotosResponseDto"
+                                    }
                                 }
                             }
                         }
@@ -1002,7 +1005,7 @@
         "description": {
             "$ref": "./index.md"
         },
-        "version": "1.1",
+        "version": "1.11",
         "contact": {},
         "x-logo": {
             "url": "./logo.png",
