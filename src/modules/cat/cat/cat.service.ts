@@ -99,8 +99,8 @@ export class CatService {
         return {
             info: await this.getCatInfoByID(id),
             vectors: await this.vectorService.getVetors(id),
-            selectedPhotos: await this.photoService.getPhotosByCatIDAndType(id, CatPhotoType.SELECTED),
-            coverPhoto: (await this.photoService.getPhotosByCatIDAndType(id, CatPhotoType.COVER))[0],
+            selectedPhotos: await this.photoService.getPhotosByCatIDAndType(id, CatPhotoType.SELECTED, 30, 0),
+            coverPhoto: (await this.photoService.getPhotosByCatIDAndType(id, CatPhotoType.COVER, 1, 0))[0],
         };
     }
 

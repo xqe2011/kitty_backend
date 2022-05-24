@@ -1,4 +1,4 @@
-import { Get, Body, Controller, Post, Req, UseGuards, Param } from '@nestjs/common';
+import { Get, Body, Controller, Post, Req, UseGuards, Param, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from 'src/modules/auth/roles/roles.decorator';
 import { RolesGuard } from 'src/modules/auth/roles/roles.guard';
@@ -10,6 +10,7 @@ import { GetOtherPhotosResponseDto } from '../dtos/get-other-photos.response';
 import { GetOtherPhotosParamDto } from '../dtos/get-other-photos.param';
 import { UploadPhotoResponseDto } from '../dtos/upload-photo.response';
 import { CatPhotoType } from '../enums/cat-photo-type.enum';
+import { GetOtherPhotosQueryDto } from '../dtos/get-other-photos.query';
 
 @Controller('/cats')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -48,7 +49,7 @@ export class PhotoController {
         type: GetOtherPhotosResponseDto,
         isArray: true
     })
-    async getOtherPhotos(@Param() param: GetOtherPhotosParamDto) {
-        return await this.photoService.getPhotosByCatIDAndType(param.id, CatPhotoType.OTHERS);
+    async getOtherPhotos(@Param() param: GetOtherPhotosParamDto, @Query() query: GetOtherPhotosQueryDto) {
+        return await this.photoService.getPhotosByCatIDAndType(param.id, CatPhotoType.OTHERS, query.limit, query.start);
     }
 }

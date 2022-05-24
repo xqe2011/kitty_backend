@@ -872,6 +872,27 @@
                             "minimum": 1,
                             "type": "number"
                         }
+                    },
+                    {
+                        "name": "limit",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,限制数量",
+                        "schema": {
+                            "minimum": 1,
+                            "maximum": 30,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "start",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,开始位置",
+                        "schema": {
+                            "minimum": 0,
+                            "type": "number"
+                        }
                     }
                 ],
                 "responses": {
@@ -1005,7 +1026,7 @@
         "description": {
             "$ref": "./index.md"
         },
-        "version": "1.11",
+        "version": "1.12",
         "contact": {},
         "x-logo": {
             "url": "./logo.png",

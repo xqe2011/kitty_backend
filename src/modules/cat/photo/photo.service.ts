@@ -72,7 +72,7 @@ export class PhotoService {
      * @param type 照片类型
      * @returns 猫咪照片集
      */
-    async getPhotosByCatIDAndType(catID: number, type: CatPhotoType) {
+    async getPhotosByCatIDAndType(catID: number, type: CatPhotoType, limit: number, start: number) {
         const queryBuilder = this.catPhotoRepository.createQueryBuilder('photo');
         queryBuilder.andWhere({
             cat: {
@@ -80,6 +80,8 @@ export class PhotoService {
             },
             type: type
         });
+        queryBuilder.skip(start);
+        queryBuilder.take(limit);
         queryBuilder.select(['id', 'rawFileName', 'fileName', 'comment', 'createdDate', 'userId as userID']);
         const data = await queryBuilder.getRawMany();
         return data as (Pick<CatPhoto, 'id' | 'createdDate' | 'comment' | 'fileName' | 'rawFileName'> | { userID: number })[];
