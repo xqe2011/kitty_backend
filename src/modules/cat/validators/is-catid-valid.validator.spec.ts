@@ -49,6 +49,13 @@ describe('IsCatIDValidValidator', () => {
         expect(data1).toBe(false);
     });
 
+    test('validate() - CatID is NaN.', async () => {
+        dependencies["CatService"].isCatExists = jest.fn().mockResolvedValueOnce(false);
+        const data1 = await validator.validate(NaN);
+        expect(dependencies["CatService"].isCatExists).toBeCalledTimes(0);
+        expect(data1).toBe(false);
+    });
+
     test('defaultMessage()', async () => {
         expect(await validator.defaultMessage({} as any)).toBe('CatID is not valid or not exists!');
     });

@@ -49,6 +49,13 @@ describe('IsUserIDValidValidator', () => {
         expect(data1).toBe(false);
     });
 
+    test('validate() - UserID is NaN.', async () => {
+        dependencies["UsersService"].isUserExists = jest.fn().mockResolvedValueOnce(false);
+        const data1 = await validator.validate(NaN);
+        expect(dependencies["UsersService"].isUserExists).toBeCalledTimes(0);
+        expect(data1).toBe(false);
+    });
+
     test('defaultMessage()', async () => {
         expect(await validator.defaultMessage({} as any)).toBe('UserID is not valid or not exists!');
     });

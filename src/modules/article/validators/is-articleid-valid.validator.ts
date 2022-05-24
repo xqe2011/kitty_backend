@@ -8,7 +8,7 @@ export class IsArticleIDValidValidator implements ValidatorConstraintInterface {
     constructor(private articlesService: ArticleService) {}
 
     async validate(articleID: any) {
-        if (typeof articleID != 'number' || articleID < 0) return false;
+        if (typeof articleID != 'number' || articleID < 0 || isNaN(articleID)) return false;
         return await this.articlesService.isArticleExists(articleID);
     }
 

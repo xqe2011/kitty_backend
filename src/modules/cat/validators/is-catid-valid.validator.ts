@@ -8,7 +8,7 @@ export class IsCatIDValidValidator implements ValidatorConstraintInterface {
     constructor(private catService: CatService) {}
 
     async validate(catID: any) {
-        if (typeof catID != 'number' || catID < 0) return false;
+        if (typeof catID != 'number' || catID < 0 || isNaN(catID)) return false;
         return await this.catService.isCatExists(catID);
     }
 

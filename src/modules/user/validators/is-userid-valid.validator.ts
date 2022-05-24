@@ -8,7 +8,7 @@ export class IsUserIDValidValidator implements ValidatorConstraintInterface {
     constructor(private usersService: UsersService) {}
 
     async validate(userID: any) {
-        if (typeof userID != 'number' || userID < 0) return false;
+        if (typeof userID != 'number' || userID < 0 || isNaN(userID)) return false;
         return await this.usersService.isUserExists(userID);
     }
 
