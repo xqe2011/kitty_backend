@@ -17,7 +17,7 @@ export class PhotoService {
      * 创建用户照片
      * @param userID 用户ID
      * @param catID 猫咪ID
-     * @param fileToken 文件TOKEN,若为null则不上传照片
+     * @param fileToken 文件TOKEN,若为undefined则不上传照片
      * @param comment 照片评论
      * @param compassAngle 指南针角度
      * @param latitude 纬度

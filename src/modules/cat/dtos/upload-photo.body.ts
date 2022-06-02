@@ -19,7 +19,7 @@ export class UploadPhotoBodyDto {
     ])
     @IsOptional()
     @ApiProperty({
-        description: '文件Token,成功上传文件后获得,若为null则不上传照片',
+        description: '文件Token,成功上传文件后获得,若为undefined则不上传照片',
         required: false
     })
     fileToken: string;
