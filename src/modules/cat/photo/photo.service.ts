@@ -1,20 +1,28 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FileService } from 'src/modules/file/file/file.service';
+import { SettingService } from 'src/modules/setting/setting/setting.service';
 import { Repository } from 'typeorm';
 import { CatPhoto } from '../entities/cat-photo.entity';
 import { CatPhotoType } from '../enums/cat-photo-type.enum';
 
 @Injectable()
-export class PhotoService {
+export class PhotoService implements OnApplicationBootstrap{
     constructor(
         @InjectRepository(CatPhoto)
         private catPhotoRepository: Repository<CatPhoto>,
         private fileService: FileService,
+        private settingService: SettingService
     ) {}
 
+    async onApplicationBootstrap() {
+        if (await this.settingService.getSetting("cats.photo.censor") == "") {
+            this.settingService.createSetting("cats.photo.censor", true, true);
+        }
+    }
+
     /**
-     * 创建用户照片
+     * 创建用户照片,会自动根据是否启用审核填充对应的类型
      * @param userID 用户ID
      * @param catID 猫咪ID
      * @param fileToken 文件TOKEN,若为undefined则不上传照片
@@ -37,7 +45,9 @@ export class PhotoService {
         ) {
             throw new ConflictException('File Name exists!');
         }
+        const enableCensor = await this.settingService.getSetting("cats.photo.censor");
         await this.catPhotoRepository.insert({
+            type: enableCensor ? CatPhotoType.PEDNING : CatPhotoType.OTHERS,
             user: {
                 id: userID,
             },
@@ -46,6 +56,7 @@ export class PhotoService {
             },
             comment: comment,
             rawFileName: rawFileName,
+            fileName: enableCensor ? undefined : rawFileName,
             compassAngle: compassAngle,
             positionAccuration: positionAccuration,
             position: longitude && latitude ? `POINT(${longitude} ${latitude})` : undefined,
