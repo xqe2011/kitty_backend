@@ -12,6 +12,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ToolModule } from './modules/tool/tool.module';
 import { UserLogModule } from './modules/user-log/user-log.module';
 import { WechatModule } from './modules/wechat/wechat.module';
+import { FeedbackModule } from './modules/feedback/feedback.module';
 
 @Global()
 @Module({
@@ -40,6 +41,7 @@ import { WechatModule } from './modules/wechat/wechat.module';
         ToolModule,
         UserLogModule,
         WechatModule,
+        FeedbackModule
     ],
     controllers: [],
     providers: [

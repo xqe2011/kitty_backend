@@ -1019,6 +1019,52 @@
                     }
                 ]
             }
+        },
+        "/feedbacks": {
+            "post": {
+                "operationId": "FeedbackController_uploadPhoto",
+                "summary": "发布反馈",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateFeedbackBodyDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "发布成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateFeedbackResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "反馈"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
         }
     },
     "info": {
@@ -1824,6 +1870,44 @@
                 ]
             },
             "WriteLogOutputDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "CreateFeedbackBodyDto": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "description": "反馈类型,0表示猫咪问题,1表示小程序问题,2表示组织建议",
+                        "enum": [
+                            "0",
+                            "1",
+                            "2"
+                        ]
+                    },
+                    "catID": {
+                        "type": "number",
+                        "description": "猫咪ID,若为undefined则不绑定至特定猫咪,仅适用于猫咪问题类型"
+                    },
+                    "fileTokens": {
+                        "description": "文件Token,成功上传文件后获得",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "反馈内容"
+                    }
+                },
+                "required": [
+                    "type",
+                    "fileTokens",
+                    "content"
+                ]
+            },
+            "CreateFeedbackResponseDto": {
                 "type": "object",
                 "properties": {}
             },
