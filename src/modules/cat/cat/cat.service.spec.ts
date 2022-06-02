@@ -75,7 +75,7 @@ describe('CatService', () => {
             orderBy: jest.fn(),
             limit: jest.fn(),
             offset: jest.fn(),
-            getRawMany: jest.fn().mockReturnValue([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg"}])
+            getRawMany: jest.fn().mockReturnValue([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg", haunt: "8楼"}])
         };
         dependencies["CatRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => createQueryBuilder);
         const data1 = await service.getCatsListByIDs(undefined, 33, 44);
@@ -88,13 +88,14 @@ describe('CatService', () => {
             'cats.id as id',
             'cats.name as name',
             'cats.description as description',
+            'cats.haunt as haunt',
             'photo.fileName as coverFileName',
         ]);
         expect(createQueryBuilder.orderBy).toBeCalledWith('cats.id');
         expect(createQueryBuilder.limit).toBeCalledWith(33);
         expect(createQueryBuilder.offset).toBeCalledWith(44);
         expect(createQueryBuilder.getRawMany).toBeCalledWith();
-        expect(data1).toEqual([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg"}]);
+        expect(data1).toEqual([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg", haunt: "8楼"}]);
     });
 
     test('getCatsListByIDs() - Specify ids', async () => {
@@ -105,7 +106,7 @@ describe('CatService', () => {
             andWhereInIds: jest.fn(),
             orderBy: jest.fn(),
             setParameter: jest.fn(),
-            getRawMany: jest.fn().mockResolvedValueOnce([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg"}])
+            getRawMany: jest.fn().mockResolvedValueOnce([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg", haunt: "8楼"}])
         };
         dependencies["CatRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => createQueryBuilder);
         const data1 = await service.getCatsListByIDs([1, 2, 3, 4, 5, 6, 7, 8, 9], 5, 4);
@@ -119,13 +120,14 @@ describe('CatService', () => {
             'cats.id as id',
             'cats.name as name',
             'cats.description as description',
+            'cats.haunt as haunt',
             'photo.fileName as coverFileName',
         ]);
         expect(createQueryBuilder.andWhereInIds).toBeCalledWith(selectIDs);
         expect(createQueryBuilder.orderBy).toBeCalledWith('FIELD(cats.id, :ids)');
         expect(createQueryBuilder.setParameter).toBeCalledWith('ids', selectIDs);
         expect(createQueryBuilder.getRawMany).toBeCalledWith();
-        expect(data1).toEqual([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg"}]);
+        expect(data1).toEqual([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg", haunt: "8楼"}]);
     });
 
     test('getCatInfoWithSelectedAndCoverPhotos()', async () => {

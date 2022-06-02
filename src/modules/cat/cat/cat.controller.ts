@@ -10,7 +10,7 @@ import { SearchCatsQueryDto } from '../dtos/search-cats.query';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags, } from '@nestjs/swagger';
 import { GetCatsResponseDto } from '../dtos/get-cats.response';
 import { GetCatInfoResponseDto } from '../dtos/get-cat-info.response';
-import { SearchCatsOutputDto } from '../dtos/search-cats.response';
+import { SearchCatsResponseDto } from '../dtos/search-cats.response';
 
 @Controller('/')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -47,7 +47,7 @@ export class CatController {
     @ApiOperation({ summary: '搜索猫咪' })
     @ApiOkResponse({
         description: '搜索成功,返回简略的猫咪列表',
-        type: SearchCatsOutputDto,
+        type: SearchCatsResponseDto,
         isArray: true,
     })
     async searchCat(@Query() query: SearchCatsQueryDto) {

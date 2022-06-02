@@ -10,6 +10,9 @@ export class GetCatsResponseDto {
     @ApiProperty({ description: '猫咪描述' })
     description: string;
 
+    @ApiProperty({ description: '猫咪出没地点' })
+    haunt: string;
+
     @ApiProperty({ description: '猫咪封面文件名' })
     coverFileName: string;
 }

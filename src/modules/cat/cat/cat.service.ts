@@ -69,6 +69,7 @@ export class CatService {
             'cats.id as id',
             'cats.name as name',
             'cats.description as description',
+            'cats.haunt as haunt',
             'photo.fileName as coverFileName',
         ]);
         if (ids != undefined) {
@@ -85,6 +86,7 @@ export class CatService {
         return data as {
             id: number;
             name: string;
+            haunt: string,
             description: string;
             coverFileName: string;
         }[];

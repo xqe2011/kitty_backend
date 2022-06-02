@@ -719,7 +719,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "type": "number"
+                                        "$ref": "#/components/schemas/SearchCatsResponseDto"
                                     }
                                 }
                             }
@@ -1073,7 +1073,7 @@
         "description": {
             "$ref": "./index.md"
         },
-        "version": "1.12",
+        "version": "1.15",
         "contact": {},
         "x-logo": {
             "url": "./logo.png",
@@ -1447,6 +1447,10 @@
                         "type": "string",
                         "description": "猫咪描述"
                     },
+                    "haunt": {
+                        "type": "string",
+                        "description": "猫咪出没地点"
+                    },
                     "coverFileName": {
                         "type": "string",
                         "description": "猫咪封面文件名"
@@ -1456,6 +1460,7 @@
                     "id",
                     "name",
                     "description",
+                    "haunt",
                     "coverFileName"
                 ]
             },
@@ -1584,6 +1589,39 @@
                     "selectedPhotos",
                     "vectors",
                     "coverPhoto"
+                ]
+            },
+            "SearchCatsResponseDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "猫咪ID",
+                        "minimum": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "猫咪名称"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "猫咪描述"
+                    },
+                    "haunt": {
+                        "type": "string",
+                        "description": "猫咪出没地点"
+                    },
+                    "coverFileName": {
+                        "type": "string",
+                        "description": "猫咪封面文件名"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "haunt",
+                    "coverFileName"
                 ]
             },
             "GetUserRecommendationsResponseDto": {
