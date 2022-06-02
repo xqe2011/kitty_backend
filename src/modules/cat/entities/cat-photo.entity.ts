@@ -42,7 +42,7 @@ export class CatPhoto {
     comment: string;
 
     /** 原图照片文件名  */
-    @Column({ nullable: false })
+    @Column({ nullable: true })
     rawFileName: string;
 
     /** 展示的照片文件名  */

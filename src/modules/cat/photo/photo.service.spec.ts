@@ -104,6 +104,28 @@ describe('PhotoService', () => {
         })
     });
 
+    test('createUserPhoto() - FileName not provide', async () => {
+        dependencies["CatPhotoRepository"].count = jest.fn().mockResolvedValue(0);
+        dependencies["FileService"].getFileNameByToken = jest.fn();
+        dependencies["CatPhotoRepository"].insert = jest.fn().mockResolvedValue(1);
+        await service.createUserPhoto(2222, 3333, null, "我是嘉狸,我现在很慌[狗头]", 30.33, 22.902683, 113.87516, 3);
+        expect(dependencies["FileService"].getFileNameByToken).toBeCalledTimes(0);
+        expect(dependencies["CatPhotoRepository"].count).toBeCalledTimes(0);
+        expect(dependencies["CatPhotoRepository"].insert).toBeCalledWith({
+            user: {
+                id: 2222,
+            },
+            cat: {
+                id: 3333,
+            },
+            comment: "我是嘉狸,我现在很慌[狗头]",
+            rawFileName: undefined,
+            compassAngle: 30.33,
+            positionAccuration: 3,
+            position: "POINT(113.87516 22.902683)",
+        })
+    });
+
     test('isPhotoExists() - Exist', async () => {
         dependencies["CatPhotoRepository"].count = jest.fn();
         dependencies["CatPhotoRepository"].count.mockResolvedValueOnce(1);

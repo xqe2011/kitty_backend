@@ -17,7 +17,7 @@ export class PhotoService {
      * 创建用户照片
      * @param userID 用户ID
      * @param catID 猫咪ID
-     * @param fileToken 文件TOKEN
+     * @param fileToken 文件TOKEN,若为null则不上传照片
      * @param comment 照片评论
      * @param compassAngle 指南针角度
      * @param latitude 纬度
@@ -25,8 +25,9 @@ export class PhotoService {
      * @param positionAccuration 位置精度
      */
     async createUserPhoto(userID: number, catID: number, fileToken: string, comment: string, compassAngle: number, latitude: number, longitude: number, positionAccuration: number) {
-        const rawFileName = this.fileService.getFileNameByToken(fileToken);
+        const rawFileName = typeof fileToken == "string" ? this.fileService.getFileNameByToken(fileToken) : undefined;
         if (
+            rawFileName != undefined && 
             (await this.catPhotoRepository.count({
                 user: {
                     id: userID,

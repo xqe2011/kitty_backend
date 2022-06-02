@@ -17,7 +17,11 @@ export class UploadPhotoBodyDto {
         FileType.COMPRESSED_IMAGE,
         FileType.UNCOMPRESSED_IMAGE,
     ])
-    @ApiProperty({ description: '文件Token,成功上传文件后获得' })
+    @IsOptional()
+    @ApiProperty({
+        description: '文件Token,成功上传文件后获得,若为null则不上传照片',
+        required: false
+    })
     fileToken: string;
 
     @IsOptional()

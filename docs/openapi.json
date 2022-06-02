@@ -1623,7 +1623,7 @@
                     },
                     "fileToken": {
                         "type": "string",
-                        "description": "文件Token,成功上传文件后获得"
+                        "description": "文件Token,成功上传文件后获得,若为null则不上传照片"
                     },
                     "comment": {
                         "type": "string",
@@ -1645,10 +1645,7 @@
                         "type": "number",
                         "description": "拍照时的位置的精确度,米为单位"
                     }
-                },
-                "required": [
-                    "fileToken"
-                ]
+                }
             },
             "UploadPhotoResponseDto": {
                 "type": "object",
