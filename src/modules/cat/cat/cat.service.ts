@@ -74,6 +74,7 @@ export class CatService {
         ]);
         if (ids != undefined) {
             const selectIDs = ids.slice(start, start + limit);
+            if (selectIDs.length == 0) return [];
             queryBuildinger.andWhereInIds(selectIDs);
             queryBuildinger.orderBy('FIELD(cats.id, :ids)');
             queryBuildinger.setParameter('ids', selectIDs);

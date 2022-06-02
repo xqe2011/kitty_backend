@@ -130,6 +130,29 @@ describe('CatService', () => {
         expect(data1).toEqual([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg", haunt: "8楼"}]);
     });
 
+    test('getCatsListByIDs() - Array but start out of range', async () => {
+        const createQueryBuilder = {
+            innerJoin: jest.fn(),
+            andWhere: jest.fn(),
+            select: jest.fn(),
+        };
+        dependencies["CatRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => createQueryBuilder);
+        const data1 = await service.getCatsListByIDs([1], 5, 4);
+        expect(dependencies["CatRepository"].createQueryBuilder).toBeCalledWith('cats');
+        expect(createQueryBuilder.innerJoin).toBeCalledWith('cats.photos', 'photo');
+        expect(createQueryBuilder.andWhere).toBeCalledWith("photo.type = :type", {
+            type: CatPhotoType.COVER,
+        });
+        expect(createQueryBuilder.select).toBeCalledWith([
+            'cats.id as id',
+            'cats.name as name',
+            'cats.description as description',
+            'cats.haunt as haunt',
+            'photo.fileName as coverFileName',
+        ]);
+        expect(data1).toEqual([]);
+    });
+
     test('getCatInfoWithSelectedAndCoverPhotos()', async () => {
         dependencies["VectorService"].getVetors = jest.fn().mockResolvedValueOnce({"a": 20, "b": 40});
         dependencies["PhotoService"].getPhotosByCatIDAndType = jest.fn().mockResolvedValue([{"vb": "fd"}, {"vb": "fd2"}]);
