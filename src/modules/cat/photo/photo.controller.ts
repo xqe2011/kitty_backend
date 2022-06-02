@@ -43,7 +43,10 @@ export class PhotoController {
 
     @Get('/:id/photos/other')
     @Roles(Role.Admin, Role.RegisteredUser)
-    @ApiOperation({ summary: '获取用户发布的猫咪照片' })
+    @ApiOperation({
+        summary: '获取用户发布的猫咪照片',
+        description: "按照时间倒序返回"
+    })
     @ApiOkResponse({
         description: '获取成功',
         type: GetOtherPhotosResponseDto,

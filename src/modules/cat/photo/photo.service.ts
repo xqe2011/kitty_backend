@@ -67,7 +67,7 @@ export class PhotoService {
     }
 
     /**
-     * 通过猫咪ID和类型获取照片集
+     * 通过猫咪ID和类型获取照片集,默认按照时间倒序
      * @param catID 猫咪ID
      * @param type 照片类型
      * @returns 猫咪照片集
@@ -83,6 +83,7 @@ export class PhotoService {
         queryBuilder.skip(start);
         queryBuilder.take(limit);
         queryBuilder.select(['id', 'rawFileName', 'fileName', 'comment', 'createdDate', 'userId as userID']);
+        queryBuilder.orderBy("createdDate", "DESC");
         const data = await queryBuilder.getRawMany();
         return data as (Pick<CatPhoto, 'id' | 'createdDate' | 'comment' | 'fileName' | 'rawFileName'> | { userID: number })[];
     }

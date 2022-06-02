@@ -134,6 +134,7 @@ describe('PhotoService', () => {
             select: jest.fn(),
             take: jest.fn(),
             skip: jest.fn(),
+            orderBy: jest.fn(),
             getRawMany: jest.fn().mockReturnValue([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg"}])
         };
         dependencies["CatPhotoRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => createQueryBuilder);
@@ -149,6 +150,7 @@ describe('PhotoService', () => {
         expect(createQueryBuilder.getRawMany).toBeCalledWith();
         expect(createQueryBuilder.take).toBeCalledWith(100);
         expect(createQueryBuilder.skip).toBeCalledWith(0);
+        expect(createQueryBuilder.orderBy).toBeCalledWith("createdDate", "DESC");
         expect(data1).toEqual([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg"}]);
     });
 });

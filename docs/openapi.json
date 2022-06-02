@@ -862,6 +862,7 @@
             "get": {
                 "operationId": "PhotoController_getOtherPhotos",
                 "summary": "获取用户发布的猫咪照片",
+                "description": "按照时间倒序返回",
                 "parameters": [
                     {
                         "name": "id",
