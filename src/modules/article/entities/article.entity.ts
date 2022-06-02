@@ -22,7 +22,7 @@ export class Article {
     title: string;
 
     /** 文章内容  */
-    @Column({ nullable: false })
+    @Column({ nullable: false, type: "text" })
     content: string;
 
     @CreateDateColumn()

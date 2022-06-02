@@ -22,7 +22,7 @@ export class Feedback {
     isProcessed: boolean;
 
     /* 反馈内容 */
-    @Column({ nullable: false })
+    @Column({ nullable: false, type: "text" })
     content: string;
 
     /** 对应的用户  */

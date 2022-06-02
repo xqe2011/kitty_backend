@@ -38,7 +38,7 @@ export class CatPhoto {
     compassAngle: number;
 
     /* 照片评论 */
-    @Column({ nullable: true })
+    @Column({ nullable: true, type: "text" })
     comment: string;
 
     /** 原图照片文件名  */
