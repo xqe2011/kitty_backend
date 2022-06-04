@@ -33,15 +33,39 @@ describe('FeedbackService', () => {
         expect(service).toBeDefined();
     });
 
-    test("createFeedback()", async () => {
-        dependencies["FeedbackRepository"].save = jest.fn().mockResolvedValueOnce({ id: 8123 });
+    test("createFeedback() - CatID is number", async () => {
+        dependencies["FeedbackRepository"].insert = jest.fn().mockResolvedValueOnce({ raw: { insertId: 8123 } });
         dependencies["FeedbackPhotoRepository"].insert = jest.fn();
         dependencies["FileService"].getFileNameByToken = jest.fn().mockReturnValueOnce("heeeello.jpg");
         await service.createFeedback(FeedbackType.CAT, 888, 999, "abcd", ["token1"]);
-        expect(dependencies["FeedbackRepository"].save).toBeCalledWith({
+        expect(dependencies["FeedbackRepository"].insert).toBeCalledWith({
             type: FeedbackType.CAT,
             cat: {
                 id: 888
+            },
+            user: {
+                id: 999
+            },
+            content: "abcd"
+        });
+        expect(dependencies["FileService"].getFileNameByToken).toBeCalledWith("token1");
+        expect(dependencies["FeedbackPhotoRepository"].insert).toBeCalledWith({
+            feedback: {
+                id: 8123
+            },
+            fileName: "heeeello.jpg"
+        });
+    });
+
+    test("createFeedback() - CatID is undefined", async () => {
+        dependencies["FeedbackRepository"].insert = jest.fn().mockResolvedValueOnce({ raw: { insertId: 8123 } });
+        dependencies["FeedbackPhotoRepository"].insert = jest.fn();
+        dependencies["FileService"].getFileNameByToken = jest.fn().mockReturnValueOnce("heeeello.jpg");
+        await service.createFeedback(FeedbackType.CAT, null, 999, "abcd", ["token1"]);
+        expect(dependencies["FeedbackRepository"].insert).toBeCalledWith({
+            type: FeedbackType.CAT,
+            cat: {
+                id: null
             },
             user: {
                 id: 999

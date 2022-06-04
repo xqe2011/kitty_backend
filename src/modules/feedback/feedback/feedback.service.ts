@@ -23,10 +23,10 @@ export class FeedbackService {
      * @param content 内容
      */
     async createFeedback(type: FeedbackType, catID: number, userID: number, content: string, tokens: string[]) {
-        const feedback = await this.feedbackRepository.save({
+        const feedback = await this.feedbackRepository.insert({
             type: type,
             cat: {
-                id: catID
+                id: catID === undefined ? null : catID
             },
             user: {
                 id: userID
@@ -37,7 +37,7 @@ export class FeedbackService {
         for (const token of tokens) {
             await this.feedbackPhotoRepository.insert({
                 feedback: {
-                    id: feedback.id
+                    id: feedback.raw.insertId
                 },
                 fileName: this.fileService.getFileNameByToken(token)
             });
