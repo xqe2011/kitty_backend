@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { createMocker } from 'test/utils/create-mocker.function';
 import { MockedObject } from 'test/utils/mocked-object';
-import { Like } from 'typeorm';
 import { ShopService } from './shop.service';
 
 describe('ShopService', () => {
