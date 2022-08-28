@@ -13,6 +13,7 @@ import { ToolModule } from './modules/tool/tool.module';
 import { UserLogModule } from './modules/user-log/user-log.module';
 import { WechatModule } from './modules/wechat/wechat.module';
 import { FeedbackModule } from './modules/feedback/feedback.module';
+import { ShopModule } from './modules/shop/shop.module';
 
 @Global()
 @Module({
@@ -41,7 +42,8 @@ import { FeedbackModule } from './modules/feedback/feedback.module';
         ToolModule,
         UserLogModule,
         WechatModule,
-        FeedbackModule
+        FeedbackModule,
+        ShopModule
     ],
     controllers: [],
     providers: [

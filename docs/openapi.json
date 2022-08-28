@@ -1066,6 +1066,67 @@
                     }
                 ]
             }
+        },
+        "/shop/items": {
+            "get": {
+                "operationId": "ShopController_getItemsList",
+                "summary": "获取商品列表",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,限制数量",
+                        "schema": {
+                            "minimum": 1,
+                            "maximum": 30,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "start",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,开始位置",
+                        "schema": {
+                            "minimum": 0,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功,返回的商品列表",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetItemsResponseDto"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "商店"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
         }
     },
     "info": {
@@ -1946,6 +2007,69 @@
             "CreateFeedbackResponseDto": {
                 "type": "object",
                 "properties": {}
+            },
+            "PhotoInfoDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "照片ID",
+                        "minimum": 1
+                    },
+                    "fileName": {
+                        "type": "string",
+                        "description": "照片文件名"
+                    }
+                },
+                "required": [
+                    "id",
+                    "fileName"
+                ]
+            },
+            "GetItemsResponseDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "商品ID",
+                        "minimum": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "商品名称"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "商品描述"
+                    },
+                    "price": {
+                        "type": "number",
+                        "description": "商品价格"
+                    },
+                    "coverPhoto": {
+                        "description": "商品封面文件名",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/PhotoInfoDto"
+                            }
+                        ]
+                    },
+                    "photos": {
+                        "description": "商品照片",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PhotoInfoDto"
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "price",
+                    "coverPhoto",
+                    "photos"
+                ]
             },
             "HttpExceptionOutputDto": {
                 "type": "object",
