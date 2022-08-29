@@ -28,7 +28,7 @@ import { UserAchievement } from './entities/user-achievement.entity';
         IsUserIDValidValidator,
         AchievementService,
     ],
-    exports: [UsersService],
+    exports: [UsersService, PointsService],
     controllers: [UserinfoController, PointsController, AchievementController],
 })
 export class UserModule {}

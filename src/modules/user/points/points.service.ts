@@ -64,7 +64,7 @@ export class PointsService {
      * @param manager 数据库Manager对象,若存在,则本方法执行后不会自动提交事务,不存在则本方法会创建一个事务并自动提交
      */
     async changePoints(userID: number, points: number, reason: PointsTransactionReason, description: string, manager?: EntityManager) {
-        const func = async (transactionalEntityManager) => {
+        const func = async (transactionalEntityManager: EntityManager) => {
             const pointsTrans = transactionalEntityManager.getRepository(PointsTransaction);
             const user = await transactionalEntityManager
                 .getRepository(User)
@@ -75,7 +75,7 @@ export class PointsService {
             if (user === undefined) throw new NotFoundException('User not found');
             if (user.points + points < 0) throw new ApiException(Error.POINTS_NOT_ENOUGH);
             transactionalEntityManager.update(User, userID, { points: user.points + points });
-            pointsTrans.save({
+            await pointsTrans.save({
                 user: {
                     id: userID,
                 },

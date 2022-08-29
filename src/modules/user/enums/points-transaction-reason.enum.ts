@@ -13,4 +13,7 @@ export enum PointsTransactionReason {
 
     /** 猫咪状态反馈/BUG反馈 */
     FEEDBACK = '4',
+
+    /** 购买商品 */
+    BUY = '5',
 }

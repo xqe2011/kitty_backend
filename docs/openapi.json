@@ -1127,6 +1127,113 @@
                     }
                 ]
             }
+        },
+        "/shop/orders": {
+            "get": {
+                "operationId": "OrderController_getOrdersList",
+                "summary": "获取订单列表",
+                "description": "获取属于用户的订单列表,需要注册用户权限",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,限制数量",
+                        "schema": {
+                            "minimum": 1,
+                            "maximum": 30,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "start",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,开始位置",
+                        "schema": {
+                            "minimum": 0,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功,返回的商品列表",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetOrdersResponseDto"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "商店"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "OrderController_createOrder",
+                "summary": "创建订单",
+                "description": "创建订单并发起购买,需要注册用户权限",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateOrderBodyDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "购买成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateOrderResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "商店"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
         }
     },
     "info": {
@@ -1244,13 +1351,14 @@
                 "properties": {
                     "reason": {
                         "type": "string",
-                        "description": "积分变化原因,0表示管理员加减积分,1表示完成成就,2表示使用猫咪雷达功能,3表示随手拍,4表示猫咪状态反馈/BUG反馈",
+                        "description": "积分变化原因,0表示管理员加减积分,1表示完成成就,2表示使用猫咪雷达功能,3表示随手拍,4表示猫咪状态反馈/BUG反馈,5表示购买商品",
                         "enum": [
                             "0",
                             "1",
                             "2",
                             "3",
-                            "4"
+                            "4",
+                            "5"
                         ]
                     },
                     "points": {
@@ -2070,6 +2178,78 @@
                     "coverPhoto",
                     "photos"
                 ]
+            },
+            "GetOrdersResponseDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "订单ID",
+                        "minimum": 1
+                    },
+                    "itemID": {
+                        "type": "string",
+                        "description": "商品ID"
+                    },
+                    "unitPrice": {
+                        "type": "number",
+                        "description": "商品单价"
+                    },
+                    "quantity": {
+                        "type": "number",
+                        "description": "商品数量"
+                    },
+                    "totalPrice": {
+                        "type": "number",
+                        "description": "订单总价"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "订单状态,0表示备货中,1表示待取货,2表示交易成功,3表示交易取消",
+                        "enum": [
+                            "0",
+                            "1",
+                            "2",
+                            "3"
+                        ]
+                    },
+                    "createDate": {
+                        "type": "number",
+                        "description": "订单创建日期"
+                    }
+                },
+                "required": [
+                    "id",
+                    "itemID",
+                    "unitPrice",
+                    "quantity",
+                    "totalPrice",
+                    "status",
+                    "createDate"
+                ]
+            },
+            "CreateOrderBodyDto": {
+                "type": "object",
+                "properties": {
+                    "itemID": {
+                        "type": "number",
+                        "description": "商品ID",
+                        "minimum": 1
+                    },
+                    "quantity": {
+                        "type": "number",
+                        "description": "商品数量",
+                        "minimum": 1
+                    }
+                },
+                "required": [
+                    "itemID",
+                    "quantity"
+                ]
+            },
+            "CreateOrderResponseDto": {
+                "type": "object",
+                "properties": {}
             },
             "HttpExceptionOutputDto": {
                 "type": "object",

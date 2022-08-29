@@ -56,5 +56,15 @@ export class ShopService {
                 fileName: string;
             }[]
         }[];
+        
+    }
+
+    /**
+     * 商品是否存在
+     * @param id 商品ID
+     * @returns 是否存在
+     */
+    async isItemExists(id: number) {
+        return (await this.itemRepository.count({ id: id })) > 0;
     }
 }
