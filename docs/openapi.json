@@ -1096,7 +1096,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "获取成功,返回的商品列表",
+                        "description": "获取成功,返回简略的商品列表",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1104,6 +1104,53 @@
                                     "items": {
                                         "$ref": "#/components/schemas/GetItemsResponseDto"
                                     }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "商店"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/shop/item/{id}": {
+            "get": {
+                "operationId": "ShopController_getItem",
+                "summary": "获取商品详细信息",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "商品ID",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功,返回详细的商品信息",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetItemResponseDto"
                                 }
                             }
                         }
@@ -2146,6 +2193,38 @@
                         "type": "string",
                         "description": "商品名称"
                     },
+                    "price": {
+                        "type": "number",
+                        "description": "商品价格"
+                    },
+                    "coverPhoto": {
+                        "description": "商品封面文件名",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/PhotoInfoDto"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "price",
+                    "coverPhoto"
+                ]
+            },
+            "ItemInfoDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "商品ID",
+                        "minimum": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "商品名称"
+                    },
                     "description": {
                         "type": "string",
                         "description": "商品描述"
@@ -2153,6 +2232,25 @@
                     "price": {
                         "type": "number",
                         "description": "商品价格"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "price"
+                ]
+            },
+            "GetItemResponseDto": {
+                "type": "object",
+                "properties": {
+                    "info": {
+                        "description": "商品信息",
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/ItemInfoDto"
+                            }
+                        ]
                     },
                     "coverPhoto": {
                         "description": "商品封面文件名",
@@ -2171,10 +2269,7 @@
                     }
                 },
                 "required": [
-                    "id",
-                    "name",
-                    "description",
-                    "price",
+                    "info",
                     "coverPhoto",
                     "photos"
                 ]
