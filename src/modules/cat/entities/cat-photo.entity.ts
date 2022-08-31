@@ -49,6 +49,9 @@ export class CatPhoto {
     @Column({ nullable: true })
     fileName: string;
 
+    /** 评论区ID */
+    commentsAreaID: number;
+
     @CreateDateColumn()
     createdDate: Date;
 

@@ -1281,6 +1281,370 @@
                     }
                 ]
             }
+        },
+        "/comments": {
+            "post": {
+                "operationId": "CommentController_createComment",
+                "summary": "发表评论",
+                "description": "发表评论,需要注册用户权限",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateCommentBodyDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "发表成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateCommentResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "评论"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/comments/by-area/{id}": {
+            "get": {
+                "operationId": "CommentController_getCommentsByAreaID",
+                "summary": "通过评论区ID获取评论列表",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "评论区ID",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "rootLimit",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,一级评论限制数量",
+                        "schema": {
+                            "minimum": 1,
+                            "maximum": 30,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "childrenLimit",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,二级评论限制数量",
+                        "schema": {
+                            "minimum": 1,
+                            "maximum": 30,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "rootStart",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,一级评论开始位置",
+                        "schema": {
+                            "minimum": 0,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetCommentsByAreaIDResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "评论"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/comments/by-parent/{id}": {
+            "get": {
+                "operationId": "CommentController_getCommentsByParentID",
+                "summary": "通过父评论ID获取评论列表",
+                "description": "通过一级评论ID获取对应的子评论列表",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "父评论ID",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,限制数量",
+                        "schema": {
+                            "minimum": 1,
+                            "maximum": 30,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "start",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,开始位置",
+                        "schema": {
+                            "minimum": 0,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetCommentsByParentIDResponseDto"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "评论"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/comments/by-conversation/{id}": {
+            "get": {
+                "operationId": "CommentController_getCommentsByConversationID",
+                "summary": "通过讨论ID获取评论列表",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "讨论ID",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,限制数量",
+                        "schema": {
+                            "minimum": 1,
+                            "maximum": 30,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "start",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,开始位置",
+                        "schema": {
+                            "minimum": 0,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetCommentsByConversationIDResponseDto"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "评论"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/comment/{id}": {
+            "delete": {
+                "operationId": "CommentController_deleteComment",
+                "summary": "删除评论",
+                "description": "删除评论,需要注册用户权限",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "评论ID",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "删除成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeleteCommentsResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "评论"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/comments_area/{id}": {
+            "get": {
+                "operationId": "CommentsAreaController_getAreaInfoByID",
+                "summary": "获取评论区状态信息",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "评论区ID",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetCommentAreaInfoResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "评论"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
         }
     },
     "info": {
@@ -2300,12 +2664,13 @@
                     },
                     "status": {
                         "type": "string",
-                        "description": "订单状态,0表示备货中,1表示待取货,2表示交易成功,3表示交易取消",
+                        "description": "订单状态,0表示备货中,1表示待取货,2表示交易成功,3表示交易取消,4表示已退款",
                         "enum": [
                             "0",
                             "1",
                             "2",
-                            "3"
+                            "3",
+                            "4"
                         ]
                     },
                     "createDate": {
@@ -2345,6 +2710,158 @@
             "CreateOrderResponseDto": {
                 "type": "object",
                 "properties": {}
+            },
+            "CreateCommentBodyDto": {
+                "type": "object",
+                "properties": {
+                    "areaID": {
+                        "type": "number",
+                        "description": "评论区ID",
+                        "minimum": 1
+                    },
+                    "parentID": {
+                        "type": "number",
+                        "description": "父评论ID",
+                        "minimum": 1
+                    },
+                    "conversationID": {
+                        "type": "number",
+                        "description": "讨论ID",
+                        "minimum": 1
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "评论内容"
+                    }
+                },
+                "required": [
+                    "areaID",
+                    "content"
+                ]
+            },
+            "CreateCommentResponseDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "GetCommentsByAreaIDResponseDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "评论ID",
+                        "minimum": 1
+                    },
+                    "conversationID": {
+                        "type": "number",
+                        "description": "对话ID",
+                        "minimum": 1
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "评论内容"
+                    },
+                    "createdDate": {
+                        "format": "date-time",
+                        "type": "string",
+                        "description": "发表时间"
+                    },
+                    "childrenTotal": {
+                        "type": "number",
+                        "description": "子评论总数",
+                        "minimum": 0
+                    },
+                    "childrenComments": {
+                        "description": "子评论",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "conversationID",
+                    "content",
+                    "createdDate",
+                    "childrenTotal",
+                    "childrenComments"
+                ]
+            },
+            "GetCommentsByParentIDResponseDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "评论ID",
+                        "minimum": 1
+                    },
+                    "conversationID": {
+                        "type": "number",
+                        "description": "对话ID",
+                        "minimum": 1
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "评论内容"
+                    },
+                    "createdDate": {
+                        "format": "date-time",
+                        "type": "string",
+                        "description": "发表时间"
+                    }
+                },
+                "required": [
+                    "id",
+                    "conversationID",
+                    "content",
+                    "createdDate"
+                ]
+            },
+            "GetCommentsByConversationIDResponseDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "评论ID",
+                        "minimum": 1
+                    },
+                    "conversationID": {
+                        "type": "number",
+                        "description": "对话ID",
+                        "minimum": 1
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "评论内容"
+                    },
+                    "createdDate": {
+                        "format": "date-time",
+                        "type": "string",
+                        "description": "发表时间"
+                    }
+                },
+                "required": [
+                    "id",
+                    "conversationID",
+                    "content",
+                    "createdDate"
+                ]
+            },
+            "DeleteCommentsResponseDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "GetCommentAreaInfoResponseDto": {
+                "type": "object",
+                "properties": {
+                    "isDisplay": {
+                        "type": "boolean",
+                        "description": "是否可见"
+                    }
+                },
+                "required": [
+                    "isDisplay"
+                ]
             },
             "HttpExceptionOutputDto": {
                 "type": "object",

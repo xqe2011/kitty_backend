@@ -16,8 +16,8 @@ export class PhotoService implements OnApplicationBootstrap{
     ) {}
 
     async onApplicationBootstrap() {
-        if (await this.settingService.getSetting("cats.photo.censor") == "") {
-            this.settingService.createSetting("cats.photo.censor", true, true);
+        if (await this.settingService.getSetting("cats.photo.censor") === "") {
+            await this.settingService.createSetting("cats.photo.censor", true, true);
         }
     }
 
@@ -97,6 +97,6 @@ export class PhotoService implements OnApplicationBootstrap{
         queryBuilder.select(['id', 'rawFileName', 'fileName', 'comment', 'createdDate', 'userId as userID']);
         queryBuilder.orderBy("createdDate", "DESC");
         const data = await queryBuilder.getRawMany();
-        return data as (Pick<CatPhoto, 'id' | 'createdDate' | 'comment' | 'fileName' | 'rawFileName'> | { userID: number })[];
+        return data as (Pick<CatPhoto, 'id' | 'createdDate' | 'comment' | 'fileName' | 'rawFileName' | 'commentsAreaID'> | { userID: number })[];
     }
 }

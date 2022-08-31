@@ -5,6 +5,7 @@ import { Role } from '../enums/role.enum';
 import { PointsTransaction } from './points-transaction.entity';
 import { CatPhoto } from 'src/modules/cat/entities/cat-photo.entity';
 import { UserAchievement } from './user-achievement.entity';
+import { Comment } from 'src/modules/comment/entities/comment.entity';
 
 @Entity()
 export class User {
@@ -61,6 +62,10 @@ export class User {
     /** 用户成就 */
     @OneToMany(() => UserAchievement, (userAchievement) => userAchievement.user)
     achievements: UserAchievement[];
+
+    /** 发表的评论  */
+    @OneToMany(() => Comment, (comment) => comment.user)
+    comments: Comment[];
 
     /** 上一次登陆时间 */
     @Column()

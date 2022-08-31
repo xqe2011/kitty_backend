@@ -18,7 +18,7 @@ export class GetOrdersResponseDto {
     totalPrice: number;
 
     @ApiProperty({
-        description: '订单状态,0表示备货中,1表示待取货,2表示交易成功,3表示交易取消',
+        description: '订单状态,0表示备货中,1表示待取货,2表示交易成功,3表示交易取消,4表示已退款',
         enum: OrderStatusType
     })
     status: OrderStatusType;

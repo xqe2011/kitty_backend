@@ -41,7 +41,7 @@ describe('PhotoService', () => {
     });
 
     test('onApplicationBootstrap() - "cats.photo.censor" Not Exists', async () => {
-        dependencies["SettingService"].getSetting = jest.fn().mockResolvedValueOnce(false);
+        dependencies["SettingService"].getSetting = jest.fn().mockResolvedValueOnce("");
         dependencies["SettingService"].createSetting = jest.fn();
         await service.onApplicationBootstrap();
         expect(dependencies["SettingService"].getSetting).toBeCalledWith('cats.photo.censor');
