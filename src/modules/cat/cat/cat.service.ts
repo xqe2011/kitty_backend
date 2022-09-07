@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { Cat } from '../entities/cat.entity';
 import { CatPhotoType } from '../enums/cat-photo-type.enum';
+import { CatStatusType } from '../enums/cat-status-type.enum';
 import { PhotoService } from '../photo/photo.service';
 import { VectorService } from '../vector/vector.service';
 
@@ -134,5 +135,61 @@ export class CatService {
             },
             select: ['status', 'name', 'isNeuter', 'description', 'haunt', 'species']
         });
+    }
+
+    /**
+     * 创建猫咪
+     *
+     * @param name 猫咪名称
+     * @param species 猫咪物种
+     * @param isNeuter 猫咪是否已经绝育
+     * @param description 猫咪描述
+     * @param haunt 猫咪出没地点
+     * @param status 猫咪状态
+     * @return 猫咪ID
+     */
+    async createCat(name: string, species: string, isNeuter: boolean, description: string, haunt: string, status: CatStatusType) {
+        return (await this.catRepository.insert({
+            name,
+            species,
+            isNeuter,
+            description,
+            haunt,
+            status
+        })).identifiers[0].id;
+    }
+
+    /**
+     * 修改猫咪信息
+     *
+     * @param id 猫咪ID
+     * @param name 猫咪名称
+     * @param species 猫咪物种
+     * @param isNeuter 猫咪是否已经绝育
+     * @param description 猫咪描述
+     * @param haunt 猫咪出没地点
+     * @param status 猫咪状态
+     */
+     async updateCat(id: number, name: string, species: string, isNeuter: boolean, description: string, haunt: string, status: CatStatusType) {
+        await this.catRepository.update(
+            { id },
+            {
+                name,
+                species,
+                isNeuter,
+                description,
+                haunt,
+                status
+            }
+        );
+    }
+
+    /**
+     * 删除猫咪
+     *
+     * @param id 猫咪ID
+     */
+    async deleteCat(id: number) {
+        await this.catRepository.softDelete(id);
     }
 }

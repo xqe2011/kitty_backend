@@ -15,6 +15,7 @@ import { WechatModule } from './modules/wechat/wechat.module';
 import { FeedbackModule } from './modules/feedback/feedback.module';
 import { ShopModule } from './modules/shop/shop.module';
 import { CommentModule } from './modules/comment/comment.module';
+import { ManageModule } from './modules/manage/manage.module';
 
 @Global()
 @Module({
@@ -45,7 +46,8 @@ import { CommentModule } from './modules/comment/comment.module';
         WechatModule,
         FeedbackModule,
         ShopModule,
-        CommentModule
+        CommentModule,
+        ManageModule
     ],
     controllers: [],
     providers: [

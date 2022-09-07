@@ -34,5 +34,6 @@ import { CatVector } from './entities/cat-vector.entity';
         VectorService,
     ],
     controllers: [CatController, RecommendationController, PhotoController],
+    exports: [ CatService ]
 })
 export class CatModule {}

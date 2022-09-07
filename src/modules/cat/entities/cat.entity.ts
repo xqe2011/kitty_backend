@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, DeleteDateColumn, } from 'typeorm';
 import { CatStatusType } from '../enums/cat-status-type.enum';
 import { CatPhoto } from './cat-photo.entity';
 import { CatVector } from './cat-vector.entity';
@@ -61,4 +61,7 @@ export class Cat {
 
     @CreateDateColumn()
     createdDate: Date;
+
+    @DeleteDateColumn()
+    deleteDate: Date;
 }

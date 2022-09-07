@@ -3,6 +3,7 @@ import { createMocker } from 'test/utils/create-mocker.function';
 import { MockedObject } from 'test/utils/mocked-object';
 import { Like } from 'typeorm';
 import { CatPhotoType } from '../enums/cat-photo-type.enum';
+import { CatStatusType } from '../enums/cat-status-type.enum';
 import { CatService } from './cat.service';
 
 describe('CatService', () => {
@@ -212,5 +213,44 @@ describe('CatService', () => {
             select: ['status', 'name', 'isNeuter', 'description', 'haunt', 'species']
         });
         expect(data1).toEqual({"aaa": "bbb"});
+    });
+
+    test('createCat()', async () => {
+        dependencies["CatRepository"].insert = jest.fn().mockResolvedValueOnce({
+            identifiers: [ {id: 1} ]
+        });
+        const data1 = await service.createCat('狸','花', false, '猫', '活动地点', CatStatusType.NORMAL);
+        expect(dependencies["CatRepository"].insert).toBeCalledWith({
+            name: '狸',
+            species: '花',
+            isNeuter: false,
+            description: '猫',
+            haunt: '活动地点',
+            status: CatStatusType.NORMAL
+        });
+        expect(data1).toEqual(1);
+    });
+
+    test('updateCat()', async () => {
+        dependencies["CatRepository"].update = jest.fn();
+        await service.updateCat(1, '狸','花', false, '猫', '活动地点', CatStatusType.NORMAL);
+        expect(dependencies["CatRepository"].update).toBeCalledWith(
+            { id: 1 },
+            {
+                name: '狸',
+                species: '花',
+                isNeuter: false,
+                description: '猫',
+                haunt: '活动地点',
+                status: CatStatusType.NORMAL
+        
+            }
+        );
+    });
+
+    test('deleteCat()', async () => {
+        dependencies["CatRepository"].softDelete = jest.fn();
+        await service.deleteCat(1);
+        expect(dependencies["CatRepository"].softDelete).toBeCalledWith(1);
     });
 });
