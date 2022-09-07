@@ -24,7 +24,10 @@ export class CatController {
     ) { }
 
     @Post('cats')
-    @ApiOperation({ summary: '创建猫咪' })
+    @ApiOperation({
+        summary: '创建猫咪',
+        description: '创建猫咪,需要管理员权限'
+    })
     @ApiOkResponse({
         description: '创建成功',
         type: CreateCatResponseDto
@@ -36,7 +39,10 @@ export class CatController {
     }
 
     @Put('cat/:id')
-    @ApiOperation({ summary: '修改猫咪信息' })
+    @ApiOperation({
+        summary: '修改猫咪信息',
+        description: '修改猫咪信息,需要管理员权限'
+    })
     @ApiOkResponse({
         description: '修改成功',
         type: UpdateCatResponseDto
@@ -47,7 +53,10 @@ export class CatController {
     }
 
     @Delete('cat/:id')
-    @ApiOperation({ summary: '删除猫咪' })
+    @ApiOperation({
+        summary: '删除猫咪',
+        description: '删除猫咪,需要管理员权限'
+    })
     @ApiOkResponse({
         description: '删除成功',
         type: DeleteCatResponseDto

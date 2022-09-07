@@ -44,8 +44,8 @@ export class PhotoController {
     @Get('/:id/photos/other')
     @Roles(Role.Admin, Role.RegisteredUser, Role.NormalUser)
     @ApiOperation({
-        summary: '获取用户发布的猫咪照片',
-        description: "按照时间倒序返回"
+        summary: '获取其他类型的猫咪照片',
+        description: "获取除了封面和精选照片以外的照片,即其他用户发布的照片,按照时间倒序返回"
     })
     @ApiOkResponse({
         description: '获取成功',

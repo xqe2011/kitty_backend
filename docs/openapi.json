@@ -861,8 +861,8 @@
         "/cats/{id}/photos/other": {
             "get": {
                 "operationId": "PhotoController_getOtherPhotos",
-                "summary": "获取用户发布的猫咪照片",
-                "description": "按照时间倒序返回",
+                "summary": "获取其他类型的猫咪照片",
+                "description": "获取除了封面和精选照片以外的照片,即其他用户发布的照片,按照时间倒序返回",
                 "parameters": [
                     {
                         "name": "id",
@@ -1638,6 +1638,157 @@
                 },
                 "tags": [
                     "评论"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/manage/cats": {
+            "post": {
+                "operationId": "CatController_createCat",
+                "summary": "创建猫咪",
+                "description": "创建猫咪,需要管理员权限",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateCatBodyDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "创建成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateCatResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "管理"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/manage/cat/{id}": {
+            "put": {
+                "operationId": "CatController_updateCat",
+                "summary": "修改猫咪信息",
+                "description": "修改猫咪信息,需要管理员权限",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "猫咪ID",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCatBodyDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "修改成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateCatResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "管理"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "operationId": "CatController_deleteCat",
+                "summary": "删除猫咪",
+                "description": "删除猫咪,需要管理员权限",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "猫咪ID",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "删除成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeleteCatResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "管理"
                 ],
                 "security": [
                     {
@@ -2862,6 +3013,117 @@
                 "required": [
                     "isDisplay"
                 ]
+            },
+            "CreateCatBodyDto": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "猫咪名称"
+                    },
+                    "species": {
+                        "type": "string",
+                        "description": "猫咪物种"
+                    },
+                    "isNeuter": {
+                        "type": "boolean",
+                        "description": "猫咪是否已经绝育"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "猫咪描述"
+                    },
+                    "haunt": {
+                        "type": "string",
+                        "description": "猫咪出没地点"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "猫咪状态,0表示失踪,1表示正常,2表示生病,3表示住院,4表示被领养,5表示死亡",
+                        "enum": [
+                            "0",
+                            "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5"
+                        ]
+                    }
+                },
+                "required": [
+                    "name",
+                    "species",
+                    "isNeuter",
+                    "description",
+                    "haunt",
+                    "status"
+                ]
+            },
+            "CreateCatResponseDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "猫咪ID",
+                        "minimum": 1
+                    }
+                },
+                "required": [
+                    "id"
+                ]
+            },
+            "UpdateCatBodyDto": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "猫咪名称"
+                    },
+                    "species": {
+                        "type": "string",
+                        "description": "猫咪物种"
+                    },
+                    "isNeuter": {
+                        "type": "boolean",
+                        "description": "猫咪是否已经绝育"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "猫咪描述"
+                    },
+                    "haunt": {
+                        "type": "string",
+                        "description": "猫咪出没地点"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "猫咪状态,0表示失踪,1表示正常,2表示生病,3表示住院,4表示被领养,5表示死亡",
+                        "enum": [
+                            "0",
+                            "1",
+                            "2",
+                            "3",
+                            "4",
+                            "5"
+                        ]
+                    }
+                },
+                "required": [
+                    "name",
+                    "species",
+                    "isNeuter",
+                    "description",
+                    "haunt",
+                    "status"
+                ]
+            },
+            "UpdateCatResponseDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "DeleteCatResponseDto": {
+                "type": "object",
+                "properties": {}
             },
             "HttpExceptionOutputDto": {
                 "type": "object",
