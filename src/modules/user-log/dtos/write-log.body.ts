@@ -6,7 +6,7 @@ import { IsCatIDValidValidator } from 'src/modules/cat/validators/is-catid-valid
 import { IsPhotoIDValidValidator } from 'src/modules/cat/validators/is-photoid-valid.validator';
 import { UserLogType } from '../enums/user-log-type.enum';
 
-class LogViewCatInputDto {
+class LogViewCatBodyDto {
     @Validate(IsCatIDValidValidator)
     @ApiProperty({ description: '猫咪ID' })
     catID: number;
@@ -17,17 +17,17 @@ class LogViewCatInputDto {
     dwellTime: number;
 }
 
-class LogUploadPhotoInputDto {
+class LogUploadPhotoBodyDto {
     @Validate(IsPhotoIDValidValidator)
     @ApiProperty({ description: '用户照片ID' })
     photoID: number;
 }
 
-class LogLoginInputDto {}
+class LogLoginBodyDto {}
 
-class LogRaderInputDto {}
+class LogRaderBodyDto {}
 
-class LogViewArticleInputDto {
+class LogViewArticleBodyDto {
     @Validate(IsArticleIDValidValidator)
     @ApiProperty({ description: '文章ID' })
     articleID: number;
@@ -38,7 +38,7 @@ class LogViewArticleInputDto {
     dwellTime: number;
 }
 
-export class WriteLogInputDto {
+export class WriteLogBodyDto {
     @IsEnum(UserLogType)
     @ApiProperty({
         description:
@@ -50,52 +50,52 @@ export class WriteLogInputDto {
     @ValidateIf((o) => o.type === UserLogType.VIEW_CAT)
     @ValidateNested()
     @IsNotEmptyObject()
-    @Type(() => LogViewCatInputDto)
+    @Type(() => LogViewCatBodyDto)
     @ApiProperty({
         description: '日记信息,类型为查看猫咪信息时必填',
         required: false,
     })
-    message0: LogViewCatInputDto;
+    message0: LogViewCatBodyDto;
 
     @ValidateIf((o) => o.type === UserLogType.UPLOAD_PHOTO)
     @ValidateNested()
     @IsNotEmptyObject()
-    @Type(() => LogUploadPhotoInputDto)
+    @Type(() => LogUploadPhotoBodyDto)
     @ApiProperty({
         description: '日记信息,类型为上传猫咪照片时必填',
         required: false,
     })
-    message2: LogUploadPhotoInputDto;
+    message2: LogUploadPhotoBodyDto;
 
     @ValidateIf((o) => o.type === UserLogType.LOGIN)
     @ValidateNested()
     @IsNotEmptyObject()
-    @Type(() => LogLoginInputDto)
+    @Type(() => LogLoginBodyDto)
     @ApiProperty({
         description: '日记信息,类型为用户登陆时必填',
         required: false,
     })
-    message3: LogLoginInputDto;
+    message3: LogLoginBodyDto;
 
     @ValidateIf((o) => o.type === UserLogType.RADER)
     @ValidateNested()
     @IsNotEmptyObject()
-    @Type(() => LogRaderInputDto)
+    @Type(() => LogRaderBodyDto)
     @ApiProperty({
         description: '日记信息,类型为使用猫咪雷达功能时必填',
         required: false,
     })
-    message4: LogRaderInputDto;
+    message4: LogRaderBodyDto;
 
     @ValidateIf((o) => o.type === UserLogType.VIEW_ARTICLE)
     @ValidateNested()
     @IsNotEmptyObject()
-    @Type(() => LogViewArticleInputDto)
+    @Type(() => LogViewArticleBodyDto)
     @ApiProperty({
         description: '日记信息,类型为阅读文章时必填',
         required: false,
     })
-    message5: LogViewArticleInputDto;
+    message5: LogViewArticleBodyDto;
 
     @IsDateString()
     @ApiProperty({ description: '日记发生的时间' })

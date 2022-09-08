@@ -11,7 +11,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/UpdateUserInfoInputDto"
+                                "$ref": "#/components/schemas/UpdateUserInfoBodyDto"
                             }
                         }
                     }
@@ -22,7 +22,41 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/UpdateUserInfoOutputDto"
+                                    "$ref": "#/components/schemas/UpdateUserInfoResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "用户"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "get": {
+                "operationId": "UserinfoController_getCurrentInfo",
+                "summary": "获取当前用户信息",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetCurrentUserInfoResponseDto"
                                 }
                             }
                         }
@@ -47,16 +81,16 @@
                 ]
             }
         },
-        "/users/{id}": {
+        "/user/{id}": {
             "get": {
                 "operationId": "UserinfoController_getInfo",
                 "summary": "获取用户信息",
                 "parameters": [
                     {
                         "name": "id",
-                        "required": false,
+                        "required": true,
                         "in": "path",
-                        "description": "用户ID,若不传递则返回当前用户",
+                        "description": "用户ID",
                         "schema": {
                             "minimum": 1,
                             "type": "number"
@@ -984,7 +1018,7 @@
                             "schema": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/WriteLogInputDto"
+                                    "$ref": "#/components/schemas/WriteLogBodyDto"
                                 }
                             }
                         }
@@ -996,7 +1030,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/WriteLogOutputDto"
+                                    "$ref": "#/components/schemas/WriteLogResponseDto"
                                 }
                             }
                         }
@@ -1998,7 +2032,7 @@
             }
         },
         "schemas": {
-            "UpdateUserInfoInputDto": {
+            "UpdateUserInfoBodyDto": {
                 "type": "object",
                 "properties": {
                     "nickName": {
@@ -2015,16 +2049,39 @@
                     "avatarFileToken"
                 ]
             },
-            "UpdateUserInfoOutputDto": {
+            "UpdateUserInfoResponseDto": {
                 "type": "object",
                 "properties": {}
             },
             "GetUserInfoResponseDto": {
                 "type": "object",
                 "properties": {
+                    "nickName": {
+                        "type": "string",
+                        "description": "用户昵称"
+                    },
+                    "avatarFileName": {
+                        "type": "string",
+                        "description": "头像文件名"
+                    },
+                    "id": {
+                        "type": "number",
+                        "description": "用户ID",
+                        "minimum": 1
+                    }
+                },
+                "required": [
+                    "nickName",
+                    "avatarFileName",
+                    "id"
+                ]
+            },
+            "GetCurrentUserInfoResponseDto": {
+                "type": "object",
+                "properties": {
                     "role": {
                         "type": "string",
-                        "description": "用户角色,只有查询当前用户时会返回,其他时候返回null,0表示禁用账户,1表示未注册用户,2表示已注册用户,3表示管理员",
+                        "description": "用户角色,0表示禁用账户,1表示未注册用户,2表示已注册用户,3表示管理员",
                         "enum": [
                             "0",
                             "1",
@@ -2047,13 +2104,15 @@
                     },
                     "points": {
                         "type": "number",
-                        "description": "用户当前积分,只有查询当前用户时会返回,其他时候返回null"
+                        "description": "用户当前积分"
                     }
                 },
                 "required": [
+                    "role",
                     "nickName",
                     "avatarFileName",
-                    "id"
+                    "id",
+                    "points"
                 ]
             },
             "GetRankingResponseDto": {
@@ -2692,7 +2751,7 @@
                     "token"
                 ]
             },
-            "LogViewCatInputDto": {
+            "LogViewCatBodyDto": {
                 "type": "object",
                 "properties": {
                     "catID": {
@@ -2709,7 +2768,7 @@
                     "dwellTime"
                 ]
             },
-            "LogUploadPhotoInputDto": {
+            "LogUploadPhotoBodyDto": {
                 "type": "object",
                 "properties": {
                     "photoID": {
@@ -2721,15 +2780,15 @@
                     "photoID"
                 ]
             },
-            "LogLoginInputDto": {
+            "LogLoginBodyDto": {
                 "type": "object",
                 "properties": {}
             },
-            "LogRaderInputDto": {
+            "LogRaderBodyDto": {
                 "type": "object",
                 "properties": {}
             },
-            "LogViewArticleInputDto": {
+            "LogViewArticleBodyDto": {
                 "type": "object",
                 "properties": {
                     "articleID": {
@@ -2746,7 +2805,7 @@
                     "dwellTime"
                 ]
             },
-            "WriteLogInputDto": {
+            "WriteLogBodyDto": {
                 "type": "object",
                 "properties": {
                     "type": {
@@ -2765,7 +2824,7 @@
                         "description": "日记信息,类型为查看猫咪信息时必填",
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/LogViewCatInputDto"
+                                "$ref": "#/components/schemas/LogViewCatBodyDto"
                             }
                         ]
                     },
@@ -2773,7 +2832,7 @@
                         "description": "日记信息,类型为上传猫咪照片时必填",
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/LogUploadPhotoInputDto"
+                                "$ref": "#/components/schemas/LogUploadPhotoBodyDto"
                             }
                         ]
                     },
@@ -2781,7 +2840,7 @@
                         "description": "日记信息,类型为用户登陆时必填",
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/LogLoginInputDto"
+                                "$ref": "#/components/schemas/LogLoginBodyDto"
                             }
                         ]
                     },
@@ -2789,7 +2848,7 @@
                         "description": "日记信息,类型为使用猫咪雷达功能时必填",
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/LogRaderInputDto"
+                                "$ref": "#/components/schemas/LogRaderBodyDto"
                             }
                         ]
                     },
@@ -2797,7 +2856,7 @@
                         "description": "日记信息,类型为阅读文章时必填",
                         "allOf": [
                             {
-                                "$ref": "#/components/schemas/LogViewArticleInputDto"
+                                "$ref": "#/components/schemas/LogViewArticleBodyDto"
                             }
                         ]
                     },
@@ -2812,7 +2871,7 @@
                     "date"
                 ]
             },
-            "WriteLogOutputDto": {
+            "WriteLogResponseDto": {
                 "type": "object",
                 "properties": {}
             },

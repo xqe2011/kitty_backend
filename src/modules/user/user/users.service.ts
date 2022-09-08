@@ -25,17 +25,20 @@ export class UsersService {
     /**
      * 根据用户ID获取用户可以输出的信息(非User实例)
      * @param id 用户ID
-     * @param isDetail 是否显示角色,积分等敏感信息
+     * @param isDetail 是否包含角色,积分等敏感信息
      * @returns 用户信息
      */
     async getUserInfoByID(id: number, isDetail: boolean) {
         const user = await this.getUserByID(id);
+        const sensitive = isDetail ? {
+            role: user.role,
+            points: isDetail ? user.points : null,
+        } : {};
         return {
-            role: isDetail ? user.role : null,
             nickName: user.nickName,
             avatarFileName: user.avatarFileName,
             id: user.id,
-            points: isDetail ? user.points : null,
+            ...sensitive
         };
     }
 

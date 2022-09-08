@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Put, Req, UseGuards } from '@nestjs/common';
-import { UpdateUserInfoInputDto } from '../dtos/update-user-info.input';
+import { UpdateUserInfoBodyDto } from '../dtos/update-user-info.body';
 import { UsersService } from '../user/users.service';
 import { Roles } from 'src/modules/auth/roles/roles.decorator';
 import { Role } from 'src/modules/user/enums/role.enum';
@@ -7,8 +7,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { GetUserInfoParamDto } from '../dtos/get-user-info.param';
 import { RolesGuard } from 'src/modules/auth/roles/roles.guard';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags, } from '@nestjs/swagger';
-import { UpdateUserInfoOutputDto } from '../dtos/update-user-info.output';
-import { GetUserInfoResponseDto } from '../dtos/get-user-info.output';
+import { GetUserInfoResponseDto } from '../dtos/get-user-info.response';
+import { GetCurrentUserInfoResponseDto } from '../dtos/get-current-user-info.response';
+import { UpdateUserInfoResponseDto } from '../dtos/update-user-info.response';
 
 @Controller('/')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -22,9 +23,9 @@ export class UserinfoController {
     @ApiOperation({ summary: '更新当前用户信息' })
     @ApiOkResponse({
         description: '更新成功',
-        type: UpdateUserInfoOutputDto,
+        type: UpdateUserInfoResponseDto,
     })
-    async update(@Req() request, @Body() body: UpdateUserInfoInputDto) {
+    async update(@Req() request, @Body() body: UpdateUserInfoBodyDto) {
         await this.usersService.updateUserinfoAndRole(
             request.user.id,
             body.nickName,
@@ -33,17 +34,25 @@ export class UserinfoController {
         return {};
     }
 
-    @Get('/users/:id')
+    @Get('/user/:id')
     @Roles(Role.NormalUser, Role.RegisteredUser, Role.Admin)
     @ApiOperation({ summary: '获取用户信息' })
     @ApiOkResponse({
         description: '获取成功',
         type: GetUserInfoResponseDto,
     })
-    async getInfo(@Req() request, @Param() body: GetUserInfoParamDto) {
-        return await this.usersService.getUserInfoByID(
-            body.id === null ? request.user.id : body.id,
-            body.id === null,
-        );
+    async getInfo(@Param() param: GetUserInfoParamDto) {
+        return await this.usersService.getUserInfoByID(param.id, false);
+    }
+
+    @Get('/user')
+    @Roles(Role.NormalUser, Role.RegisteredUser, Role.Admin)
+    @ApiOperation({ summary: '获取当前用户信息' })
+    @ApiOkResponse({
+        description: '获取成功',
+        type: GetCurrentUserInfoResponseDto,
+    })
+    async getCurrentInfo(@Req() request) {
+        return await this.usersService.getUserInfoByID(request.user.id, true);
     }
 }

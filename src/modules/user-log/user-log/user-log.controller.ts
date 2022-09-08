@@ -4,8 +4,8 @@ import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiOperation, ApiTags, } from '@
 import { Roles } from 'src/modules/auth/roles/roles.decorator';
 import { RolesGuard } from 'src/modules/auth/roles/roles.guard';
 import { Role } from 'src/modules/user/enums/role.enum';
-import { WriteLogInputDto } from '../dtos/write-log.input';
-import { WriteLogOutputDto } from '../dtos/write-log.output';
+import { WriteLogBodyDto } from '../dtos/write-log.body';
+import { WriteLogResponseDto } from '../dtos/write-log.response';
 import { UserLogService } from './user-log.service';
 
 @Controller('logs')
@@ -20,13 +20,13 @@ export class UserLogController {
     @ApiOperation({ summary: '批量写入操作日记' })
     @ApiOkResponse({
         description: '写入成功',
-        type: WriteLogOutputDto,
+        type: WriteLogResponseDto,
     })
     @ApiBody({
-        type: WriteLogInputDto,
+        type: WriteLogBodyDto,
         isArray: true,
     })
-    async writeLogs(@Req() request, @Body(new ParseArrayPipe({ items: WriteLogInputDto })) body: WriteLogInputDto[]) {
+    async writeLogs(@Req() request, @Body(new ParseArrayPipe({ items: WriteLogBodyDto })) body: WriteLogBodyDto[]) {
         for (const item of body) {
             /** Magic */
             const message = item['message' + item.type];
