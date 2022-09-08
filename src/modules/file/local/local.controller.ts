@@ -4,7 +4,7 @@ import { LocalService } from './local.service';
 import { UploadLocalBodyDto } from '../dtos/upload-local.body';
 import { ApiConflictResponse, ApiConsumes, ApiCreatedResponse, ApiOperation, ApiTags, getSchemaPath, } from '@nestjs/swagger';
 import { UploadLocalResponseDto } from '../dtos/upload-local.response';
-import { HttpExceptionOutputDto } from 'src/docs/dtos/http-exception.output';
+import { HttpExceptionResponseDto } from 'src/docs/dtos/http-exception.response';
 
 @Controller('files/local')
 @ApiTags('文件管理')
@@ -25,7 +25,7 @@ export class LocalController {
     @ApiConflictResponse({
         description: '文件重复上传',
         schema: {
-            $ref: getSchemaPath(HttpExceptionOutputDto),
+            $ref: getSchemaPath(HttpExceptionResponseDto),
         },
     })
     async uploadFile(@UploadedFile() file: Express.Multer.File, @Body() body: UploadLocalBodyDto) {

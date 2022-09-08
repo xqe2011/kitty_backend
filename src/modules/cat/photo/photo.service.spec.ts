@@ -236,4 +236,21 @@ describe('PhotoService', () => {
         expect(createQueryBuilder.orderBy).toBeCalledWith("createdDate", "DESC");
         expect(data1).toEqual([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg"}]);
     });
+
+    test('updatePhotoInfo()', async () => {
+        dependencies["CatPhotoRepository"].update = jest.fn();
+        await service.updatePhotoInfo(1, CatPhotoType.COVER);
+        expect(dependencies["CatPhotoRepository"].update).toBeCalledWith(
+            1,
+            {
+                type: CatPhotoType.COVER
+            }
+        );
+    });
+
+    test('deletePhoto()', async () => {
+        dependencies["CatPhotoRepository"].softDelete = jest.fn();
+        await service.deletePhoto(1);
+        expect(dependencies["CatPhotoRepository"].softDelete).toBeCalledWith(1);
+    });
 });

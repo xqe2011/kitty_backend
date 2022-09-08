@@ -3,12 +3,13 @@ import { AuthGuard } from '@nestjs/passport';
 import { Role } from 'src/modules/user/enums/role.enum';
 import { Roles } from 'src/modules/auth/roles/roles.decorator';
 import { RolesGuard } from 'src/modules/auth/roles/roles.guard';
-import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags, } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags, ApiUnprocessableEntityResponse, } from '@nestjs/swagger';
 import { OrderService } from './order.service';
 import { GetOrdersQueryDto } from '../dtos/get-orders.query';
 import { GetOrdersResponseDto } from '../dtos/get-orders.response';
 import { CreateOrderResponseDto } from '../dtos/create-order.response';
 import { CreateOrderBodyDto } from '../dtos/create-order.body';
+import { ApiExceptionResponseDto } from 'src/docs/dtos/api-exception.response';
 
 @Controller('/shop')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -41,6 +42,10 @@ export class OrderController {
     @ApiOkResponse({
         description: '购买成功',
         type: CreateOrderResponseDto
+    })
+    @ApiUnprocessableEntityResponse({
+        description: "业务错误,请查阅业务错误代码列表",
+        type: ApiExceptionResponseDto
     })
     async createOrder(@Req() request, @Body() body: CreateOrderBodyDto) {
         await this.orderService.createOrder(request.user.id, body.itemID, body.quantity);

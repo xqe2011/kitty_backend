@@ -1,9 +1,4 @@
-import {
-    ExceptionFilter,
-    Catch,
-    ArgumentsHost,
-    HttpException,
-} from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
 import { Response } from 'express';
 
 @Catch(HttpException)
@@ -19,7 +14,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
         response.status(status).json({
             status: status,
-            msg: output,
+            msg: typeof output === 'object' ? (output as any).message : output,
         });
     }
 }

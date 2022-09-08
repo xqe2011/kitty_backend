@@ -4,7 +4,7 @@ import { AppModule } from '../app.module';
 import { SwaggerModule, DocumentBuilder, OpenAPIObject, getSchemaPath } from '@nestjs/swagger';
 import { mkdir, pathExists, remove, writeFile } from 'fs-extra';
 import { Logger } from '@nestjs/common';
-import { HttpExceptionOutputDto } from 'src/docs/dtos/http-exception.output';
+import { HttpExceptionResponseDto } from 'src/docs/dtos/http-exception.response';
 
 function addLogo(document: OpenAPIObject) {
     document.info['x-logo'] = {
@@ -25,16 +25,7 @@ function addGlobalExceptions(document: OpenAPIObject) {
         content: {
             'application/json': {
                 schema: {
-                    $ref: getSchemaPath(HttpExceptionOutputDto),
-                },
-            },
-        },
-    };
-    const errorApiContent = {
-        content: {
-            'application/json': {
-                schema: {
-                    $ref: '#/components/schemas/api-exception',
+                    $ref: getSchemaPath(HttpExceptionResponseDto),
                 },
             },
         },
@@ -50,10 +41,6 @@ function addGlobalExceptions(document: OpenAPIObject) {
     document.components.responses['400'] = {
         description: '参数错误',
         ...errorAllContent,
-    };
-    document.components.responses['422'] = {
-        description: '业务错误',
-        ...errorApiContent,
     };
     for (const path in document.paths) {
         for (const method in document.paths[path]) {
@@ -83,7 +70,7 @@ async function bootstrap() {
         .addBearerAuth({ name: '统一认证', type: 'http' })
         .build();
     const document = SwaggerModule.createDocument(app, config, {
-        extraModels: [HttpExceptionOutputDto],
+        extraModels: [HttpExceptionResponseDto],
     });
     /** 批量添加全局错误 */
     addGlobalExceptions(document);

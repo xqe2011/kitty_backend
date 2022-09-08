@@ -297,7 +297,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/HttpExceptionOutputDto"
+                                    "$ref": "#/components/schemas/HttpExceptionResponseDto"
                                 }
                             }
                         }
@@ -1270,6 +1270,16 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/403"
+                    },
+                    "422": {
+                        "description": "业务错误,请查阅业务错误代码列表",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ApiExceptionResponseDto"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -1773,6 +1783,172 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/DeleteCatResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "管理"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/manage/cats/photos": {
+            "get": {
+                "operationId": "CatPhotoController_getPhotos",
+                "summary": "获取所有猫咪照片",
+                "description": "创建猫咪,需要管理员权限",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,限制数量",
+                        "schema": {
+                            "minimum": 1,
+                            "maximum": 30,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "start",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,开始位置",
+                        "schema": {
+                            "minimum": 0,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetCatsPhotosResponseDto"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "管理"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/manage/cats/photo/{id}": {
+            "put": {
+                "operationId": "CatPhotoController_updatePhoto",
+                "summary": "修改猫咪照片信息",
+                "description": "修改猫咪照片信息,需要管理员权限",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "照片ID",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCatPhotoBodyDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "修改成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateCatPhotoResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "管理"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "operationId": "CatPhotoController_deletePhoto",
+                "summary": "删除猫咪照片",
+                "description": "删除猫咪照片,需要管理员权限",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "照片ID",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "删除成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeleteCatPhotoResponseDto"
                                 }
                             }
                         }
@@ -2862,6 +3038,23 @@
                 "type": "object",
                 "properties": {}
             },
+            "ApiExceptionResponseDto": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "number",
+                        "description": "HTTP状态码"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "description": "错误类型"
+                    }
+                },
+                "required": [
+                    "status",
+                    "msg"
+                ]
+            },
             "CreateCommentBodyDto": {
                 "type": "object",
                 "properties": {
@@ -3125,7 +3318,84 @@
                 "type": "object",
                 "properties": {}
             },
-            "HttpExceptionOutputDto": {
+            "GetCatsPhotosResponseDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "照片ID",
+                        "minimum": 1
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "照片状态,0表示封面图,1表示精选图,2表示其他,3表示正在审核",
+                        "enum": [
+                            "0",
+                            "1",
+                            "2",
+                            "3"
+                        ]
+                    },
+                    "rawFileName": {
+                        "type": "string",
+                        "description": "原图图片文件名"
+                    },
+                    "fileName": {
+                        "type": "string",
+                        "description": "展示图片文件名",
+                        "nullable": true
+                    },
+                    "createdDate": {
+                        "format": "date-time",
+                        "type": "string",
+                        "description": "图片发布时间"
+                    },
+                    "comment": {
+                        "type": "string",
+                        "description": "照片评论"
+                    },
+                    "userID": {
+                        "type": "number",
+                        "description": "照片发布者ID"
+                    }
+                },
+                "required": [
+                    "id",
+                    "type",
+                    "rawFileName",
+                    "fileName",
+                    "createdDate",
+                    "comment",
+                    "userID"
+                ]
+            },
+            "UpdateCatPhotoBodyDto": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "description": "照片状态,0表示封面图,1表示精选图,2表示其他,3表示正在审核 ",
+                        "enum": [
+                            "0",
+                            "1",
+                            "2",
+                            "3"
+                        ]
+                    }
+                },
+                "required": [
+                    "type"
+                ]
+            },
+            "UpdateCatPhotoResponseDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "DeleteCatPhotoResponseDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "HttpExceptionResponseDto": {
                 "type": "object",
                 "properties": {
                     "status": {
@@ -3133,7 +3403,7 @@
                         "description": "HTTP状态码"
                     },
                     "msg": {
-                        "type": "string",
+                        "type": "object",
                         "description": "错误信息"
                     }
                 },
@@ -3149,7 +3419,7 @@
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/HttpExceptionOutputDto"
+                            "$ref": "#/components/schemas/HttpExceptionResponseDto"
                         }
                     }
                 }
@@ -3159,7 +3429,7 @@
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/HttpExceptionOutputDto"
+                            "$ref": "#/components/schemas/HttpExceptionResponseDto"
                         }
                     }
                 }
@@ -3169,17 +3439,7 @@
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/HttpExceptionOutputDto"
-                        }
-                    }
-                }
-            },
-            "422": {
-                "description": "业务错误",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/api-exception"
+                            "$ref": "#/components/schemas/HttpExceptionResponseDto"
                         }
                     }
                 }

@@ -99,4 +99,36 @@ export class PhotoService implements OnApplicationBootstrap{
         const data = await queryBuilder.getRawMany();
         return data as (Pick<CatPhoto, 'id' | 'createdDate' | 'comment' | 'fileName' | 'rawFileName' | 'commentsAreaID'> | { userID: number })[];
     }
+
+    /**
+     * 通过所有照片,默认按照时间倒序
+     * @returns 猫咪照片集
+     */
+    async getPhotos(limit: number, start: number) {
+        const queryBuilder = this.catPhotoRepository.createQueryBuilder('photo');
+        queryBuilder.skip(start);
+        queryBuilder.take(limit);
+        queryBuilder.select(['id', 'rawFileName', 'fileName', 'comment', 'createdDate', 'userId as userID', 'type']);
+        queryBuilder.orderBy("createdDate", "DESC");
+        const data = await queryBuilder.getRawMany();
+        return data as (Pick<CatPhoto, 'id' | 'createdDate' | 'comment' | 'fileName' | 'rawFileName' | 'commentsAreaID' | 'type'> | { userID: number })[];
+    }
+
+    /**
+     * 更新照片信息
+     * @param id 照片ID
+     * @param type 照片类型
+     */
+    async updatePhotoInfo(id: number, type: CatPhotoType) {
+        await this.catPhotoRepository.update(id, { type });
+    }
+
+    /**
+     * 删除照片
+     *
+     * @param id 照片ID
+     */
+    async deletePhoto(id: number) {
+        await this.catPhotoRepository.softDelete(id);
+    }
 }
