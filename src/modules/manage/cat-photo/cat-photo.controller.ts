@@ -26,7 +26,7 @@ export class CatPhotoController {
     @Get('cats/photos')
     @ApiOperation({
         summary: '获取所有猫咪照片',
-        description: '创建猫咪,需要管理员权限'
+        description: '获取所有猫咪照片,需要管理员权限'
     })
     @ApiOkResponse({
         description: '获取成功',

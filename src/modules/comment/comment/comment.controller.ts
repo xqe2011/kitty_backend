@@ -4,13 +4,13 @@ import { Role } from 'src/modules/user/enums/role.enum';
 import { Roles } from 'src/modules/auth/roles/roles.decorator';
 import { RolesGuard } from 'src/modules/auth/roles/roles.guard';
 import { CommentService } from './comment.service';
-import { DeleteCommentsParamDto } from '../dtos/delete-comment.param';
+import { DeleteCommentParamDto } from '../dtos/delete-comment.param';
 import { GetCommentsByAreaIDQueryDto } from '../dtos/get-comments-by-area-id.query';
 import { CreateCommentBodyDto } from '../dtos/create-comment.body';
 import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateCommentResponseDto } from '../dtos/create-comment.response';
 import { GetCommentsByAreaIDResponseDto } from '../dtos/get-comments-by-area-id.response';
-import { DeleteCommentsResponseDto } from '../dtos/delete-comment.response';
+import { DeleteCommentResponseDto } from '../dtos/delete-comment.response';
 import { GetCommentsByAreaIDParamDto } from '../dtos/get-comments-by-area-id.param';
 import { GetCommentsByParentIDResponseDto } from '../dtos/get-comments-by-parent-id.response';
 import { GetCommentsByParentIDParamDto } from '../dtos/get-comments-by-parent-id.param';
@@ -93,9 +93,9 @@ export class CommentController {
     })
     @ApiOkResponse({
         description: '删除成功',
-        type: DeleteCommentsResponseDto,
+        type: DeleteCommentResponseDto,
     })
-    async deleteComment(@Req() request, @Param() param: DeleteCommentsParamDto) {
+    async deleteComment(@Req() request, @Param() param: DeleteCommentParamDto) {
         if (!(await this.commentService.isCommentBelongToUser(param.id, request.user.id))) {
             throw new ForbiddenException('This comment is not belong to you.');
         }

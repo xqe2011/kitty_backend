@@ -1618,7 +1618,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/DeleteCommentsResponseDto"
+                                    "$ref": "#/components/schemas/DeleteCommentResponseDto"
                                 }
                             }
                         }
@@ -1795,15 +1795,15 @@
                 ]
             },
             "delete": {
-                "operationId": "CatController_deleteCat",
-                "summary": "删除猫咪",
-                "description": "删除猫咪,需要管理员权限",
+                "operationId": "CommentController_deleteComment",
+                "summary": "删除评论",
+                "description": "删除评论,需要管理员权限",
                 "parameters": [
                     {
                         "name": "id",
                         "required": true,
                         "in": "path",
-                        "description": "猫咪ID",
+                        "description": "评论ID",
                         "schema": {
                             "minimum": 1,
                             "type": "number"
@@ -1816,7 +1816,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/DeleteCatResponseDto"
+                                    "$ref": "#/components/schemas/DeleteCommentResponseDto"
                                 }
                             }
                         }
@@ -1845,7 +1845,7 @@
             "get": {
                 "operationId": "CatPhotoController_getPhotos",
                 "summary": "获取所有猫咪照片",
-                "description": "创建猫咪,需要管理员权限",
+                "description": "获取所有猫咪照片,需要管理员权限",
                 "parameters": [
                     {
                         "name": "limit",
@@ -1983,6 +1983,184 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/DeleteCatPhotoResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "管理"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/manage/comments": {
+            "get": {
+                "operationId": "CommentController_getPhotos",
+                "summary": "获取所有评论",
+                "description": "获取所有评论,需要管理员权限",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,限制数量",
+                        "schema": {
+                            "minimum": 1,
+                            "maximum": 30,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "start",
+                        "required": true,
+                        "in": "query",
+                        "description": "分页参数,开始位置",
+                        "schema": {
+                            "minimum": 0,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetCommentsResponseDto"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "管理"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/manage/comment/{id}": {
+            "put": {
+                "operationId": "CommentController_updateComment",
+                "summary": "修改评论信息",
+                "description": "修改评论信息,需要管理员权限",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "评论ID",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCommentBodyDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "修改成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateCommentResponseDto"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/400"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403"
+                    }
+                },
+                "tags": [
+                    "管理"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/manage/comments_area/{id}": {
+            "put": {
+                "operationId": "CommentsAreaController_updateComment",
+                "summary": "修改评论区信息",
+                "description": "修改评论区信息,需要管理员权限",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "description": "评论区ID",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCommentsAreaBodyDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "修改成功",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateCommentsAreaResponseDto"
                                 }
                             }
                         }
@@ -3250,7 +3428,7 @@
                     "createdDate"
                 ]
             },
-            "DeleteCommentsResponseDto": {
+            "DeleteCommentResponseDto": {
                 "type": "object",
                 "properties": {}
             },
@@ -3433,7 +3611,7 @@
                 "properties": {
                     "type": {
                         "type": "string",
-                        "description": "照片状态,0表示封面图,1表示精选图,2表示其他,3表示正在审核 ",
+                        "description": "照片状态,0表示封面图,1表示精选图,2表示其他,3表示正在审核",
                         "enum": [
                             "0",
                             "1",
@@ -3451,6 +3629,93 @@
                 "properties": {}
             },
             "DeleteCatPhotoResponseDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "GetCommentsResponseDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "description": "评论ID",
+                        "minimum": 1
+                    },
+                    "conversationID": {
+                        "type": "number",
+                        "description": "对话ID",
+                        "minimum": 1
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "评论内容"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "评论状态,0表示未审核,1表示正常显示,2表示隐藏"
+                    },
+                    "userID": {
+                        "type": "number",
+                        "description": "照片发布者ID"
+                    },
+                    "parentCommentID": {
+                        "type": "number",
+                        "description": "父评论ID"
+                    },
+                    "areaID": {
+                        "type": "number",
+                        "description": "评论区ID"
+                    },
+                    "createdDate": {
+                        "format": "date-time",
+                        "type": "string",
+                        "description": "发表时间"
+                    }
+                },
+                "required": [
+                    "id",
+                    "conversationID",
+                    "content",
+                    "status",
+                    "userID",
+                    "parentCommentID",
+                    "areaID",
+                    "createdDate"
+                ]
+            },
+            "UpdateCommentBodyDto": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "description": "评论状态,0表示未审核,1表示正常显示,2表示隐藏",
+                        "enum": [
+                            "0",
+                            "1",
+                            "2"
+                        ]
+                    }
+                },
+                "required": [
+                    "status"
+                ]
+            },
+            "UpdateCommentResponseDto": {
+                "type": "object",
+                "properties": {}
+            },
+            "UpdateCommentsAreaBodyDto": {
+                "type": "object",
+                "properties": {
+                    "isDisplay": {
+                        "type": "boolean",
+                        "description": "评论区是否展示"
+                    }
+                },
+                "required": [
+                    "isDisplay"
+                ]
+            },
+            "UpdateCommentsAreaResponseDto": {
                 "type": "object",
                 "properties": {}
             },

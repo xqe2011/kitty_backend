@@ -355,4 +355,40 @@ describe('CommentService', () => {
         });
         expect(data1).toEqual(false);
     });
+
+    test('getComments()', async () => {
+        const createQueryBuilder = {
+            select: jest.fn(),
+            take: jest.fn(),
+            skip: jest.fn(),
+            orderBy: jest.fn(),
+            getRawMany: jest.fn().mockReturnValue([{id: 111, content: "你好", status: CommentStatus.PENDING}])
+        };
+        dependencies["CommentRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => createQueryBuilder);
+        const data1 = await service.getComments(10, 0);
+        expect(dependencies["CommentRepository"].createQueryBuilder).toBeCalledWith('comment');
+        expect(createQueryBuilder.select).toBeCalledWith(['id', 'conversationID', 'status', 'createdDate', 'content', 'areaId as areaID', 'parentCommentId as parentCommentID', 'userId as userID']);
+        expect(createQueryBuilder.getRawMany).toBeCalledWith();
+        expect(createQueryBuilder.take).toBeCalledWith(10);
+        expect(createQueryBuilder.skip).toBeCalledWith(0);
+        expect(createQueryBuilder.orderBy).toBeCalledWith('createdDate', 'DESC');
+        expect(data1).toEqual([{id: 111, content: "你好", status: CommentStatus.PENDING}]);
+    });
+
+    test('updateCommentInfo()', async () => {
+        dependencies["CommentRepository"].update = jest.fn();
+        await service.updateCommentInfo(1, CommentStatus.PENDING);
+        expect(dependencies["CommentRepository"].update).toBeCalledWith(
+            1,
+            {
+                status: CommentStatus.PENDING
+            }
+        );
+    });
+
+    test('deletePhoto()', async () => {
+        dependencies["CommentRepository"].softDelete = jest.fn();
+        await service.deletePhoto(1);
+        expect(dependencies["CommentRepository"].softDelete).toBeCalledWith(1);
+    });
 });

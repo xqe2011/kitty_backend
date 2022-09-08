@@ -89,4 +89,15 @@ describe('CommentsAreaService', () => {
         await service.setAreaVisible(1111, true);
         expect(dependencies["CommentsAreaRepository"].update).toBeCalledWith({ id: 1111 }, { isDisplay: true },);
     });
+
+    test('updateAreaInfo()', async () => {
+        dependencies["CommentsAreaRepository"].update = jest.fn();
+        await service.updateAreaInfo(1, true);
+        expect(dependencies["CommentsAreaRepository"].update).toBeCalledWith(
+            1,
+            {
+                isDisplay: true
+            }
+        );
+    });
 });

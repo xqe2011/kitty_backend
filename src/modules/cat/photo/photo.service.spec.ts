@@ -237,6 +237,25 @@ describe('PhotoService', () => {
         expect(data1).toEqual([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg"}]);
     });
 
+    test('getPhotos()', async () => {
+        const createQueryBuilder = {
+            select: jest.fn(),
+            take: jest.fn(),
+            skip: jest.fn(),
+            orderBy: jest.fn(),
+            getRawMany: jest.fn().mockReturnValue([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg", type: CatPhotoType.PEDNING}])
+        };
+        dependencies["CatPhotoRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => createQueryBuilder);
+        const data1 = await service.getPhotos(10, 0);
+        expect(dependencies["CatPhotoRepository"].createQueryBuilder).toBeCalledWith('photo');
+        expect(createQueryBuilder.select).toBeCalledWith(['id', 'rawFileName', 'fileName', 'comment', 'createdDate', 'userId as userID', 'type']);
+        expect(createQueryBuilder.getRawMany).toBeCalledWith();
+        expect(createQueryBuilder.take).toBeCalledWith(10);
+        expect(createQueryBuilder.skip).toBeCalledWith(0);
+        expect(createQueryBuilder.orderBy).toBeCalledWith("createdDate", "DESC");
+        expect(data1).toEqual([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg", type: CatPhotoType.PEDNING}]);
+    });
+
     test('updatePhotoInfo()', async () => {
         dependencies["CatPhotoRepository"].update = jest.fn();
         await service.updatePhotoInfo(1, CatPhotoType.COVER);

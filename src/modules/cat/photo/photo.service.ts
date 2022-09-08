@@ -101,7 +101,7 @@ export class PhotoService implements OnApplicationBootstrap{
     }
 
     /**
-     * 通过所有照片,默认按照时间倒序
+     * 获取所有照片,默认按照时间倒序
      * @returns 猫咪照片集
      */
     async getPhotos(limit: number, start: number) {

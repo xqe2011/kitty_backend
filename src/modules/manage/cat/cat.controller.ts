@@ -15,7 +15,7 @@ import { DeleteCatParamDto } from '../dtos/delete-cat.param';
 
 @Controller('/manage')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
-@Roles(Role.Admin, Role.RegisteredUser)
+@Roles(Role.Admin)
 @ApiBearerAuth()
 @ApiTags('管理')
 export class CatController {

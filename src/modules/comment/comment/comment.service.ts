@@ -190,4 +190,36 @@ export class CommentService implements OnApplicationBootstrap{
             },
         })) > 0;
     }
+
+    /**
+     * 获取所有评论,默认按照时间倒序
+     * @returns 评论
+     */
+     async getComments(limit: number, start: number) {
+        const queryBuilder = this.commentRepository.createQueryBuilder('comment');
+        queryBuilder.skip(start);
+        queryBuilder.take(limit);
+        queryBuilder.select(['id', 'conversationID', 'status', 'createdDate', 'content', 'areaId as areaID', 'parentCommentId as parentCommentID', 'userId as userID']);
+        queryBuilder.orderBy("createdDate", "DESC");
+        const data = await queryBuilder.getRawMany();
+        return data as (Pick<Comment, 'id' | 'createdDate' | 'content' | 'conversationID' | 'status'> | { userID: number, parentCommentID: number, areaID: number })[];
+    }
+
+    /**
+     * 更新评论信息
+     * @param id 评论ID
+     * @param status 评论状态
+     */
+    async updateCommentInfo(id: number, status: CommentStatus) {
+        await this.commentRepository.update(id, { status });
+    }
+
+    /**
+     * 删除评论
+     *
+     * @param id 评论ID
+     */
+    async deletePhoto(id: number) {
+        await this.commentRepository.softDelete(id);
+    }
 }

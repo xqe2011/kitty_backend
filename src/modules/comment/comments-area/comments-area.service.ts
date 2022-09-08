@@ -67,4 +67,13 @@ export class CommentsAreaService {
             { isDisplay: isDisplay },
         );
     }
+
+    /**
+     * 更新评论区信息
+     * @param id 评论区ID
+     * @param isDisplay 是否展示
+     */
+     async updateAreaInfo(id: number, isDisplay: boolean) {
+        await this.commentsAreaRepository.update(id, { isDisplay });
+    }
 }
