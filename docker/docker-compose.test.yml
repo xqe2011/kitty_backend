@@ -1,0 +1,63 @@
+version: "3"
+services:
+  backend_docs:
+    build: ./backend_docs
+    restart: always
+    environment: 
+      VIRTUAL_HOST: backend.docs.kitty.xqe2011.cn
+      LETSENCRYPT_HOST: backend.docs.kitty.xqe2011.cn
+
+    networks:
+      - default
+      - web
+
+  mariadb:
+    build: ./mariadb
+    restart: always
+    volumes:
+      - mariadb-database:/var/lib/mysql
+    ports:
+      - 33066:3306
+    environment:
+      MARIADB_DATABASE: kitty
+      MARIADB_USER: kitty
+      MARIADB_PASSWORD: yeMAoinkpK6kVAKf
+      MARIADB_ROOT_PASSWORD: HgwdJeLiIbAy0VFb
+      KITTY_DA_USERNAME: "kitty-da"
+      KITTY_DA_PASSWORD: "q64DV8oj2JImBLuV"
+      
+  backend:
+    build: ./backend
+    restart: always
+    depends_on: 
+      - mariadb
+    environment: 
+      VIRTUAL_HOST: api.test.kitty.xqe2011.cn
+      LETSENCRYPT_HOST: api.test.kitty.xqe2011.cn
+      database.host: mariadb
+      database.username: kitty
+      database.password: yeMAoinkpK6kVAKf
+      database.name: kitty
+      secret: SzG0QKRUCna8fahUBoZfG8HqBO94NK9j
+      debug: "true"
+      api.url: https://api.test.kitty.xqe2011.cn
+      files.url: https://cdn.test.kitty.xqe2011.cn
+      files.upload.provider: qiniu
+      files.providers.qiniu.scope: test-dgut-kitty-static
+      files.providers.qiniu.upload.url: https://up-z2.qiniup.com
+      files.providers.qiniu.access_key: Abx06yGeogHj8WPC7LlM3r9X3uFllR9FMLH9Zm4m
+      files.providers.qiniu.secret_key: GvxP_N4eEWbTfjUmW2CM2GB7UvkSzp-KAEbuQIIu
+      wechat.miniprogram.appid: wx47ec75e385a4a337
+      wechat.miniprogram.appsecret: 7f469abeb10d84a0be0134e33f1665e2
+      
+    networks:
+      - default
+      - web
+
+networks: 
+  web:
+    external:
+      name: web-gateway_web
+
+volumes:
+  mariadb-database:

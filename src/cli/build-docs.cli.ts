@@ -64,9 +64,13 @@ async function bootstrap() {
     useContainer(app.select(AppModule), { fallbackOnErrors: true });
     const logger = new Logger('CLI');
     logger.log('Start building documentation...');
+    let version = process.env["GITHUB_SHA"];
+    if (version !== undefined) {
+        version = version.slice(0, 8);
+    }
     const config = new DocumentBuilder()
         .setTitle('Kitty后端APi服务')
-        .setVersion('1.15')
+        .setVersion(version)
         .addBearerAuth({ name: '统一认证', type: 'http' })
         .build();
     const document = SwaggerModule.createDocument(app, config, {

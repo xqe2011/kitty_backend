@@ -1,9 +1,9 @@
 # compiled output
 /dist
 /node_modules
-/docker
 /tmp
 .env
+/docs/openapi.json
 
 # Logs
 logs
