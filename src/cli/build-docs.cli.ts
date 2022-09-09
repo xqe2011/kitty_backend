@@ -66,7 +66,7 @@ async function bootstrap() {
     logger.log('Start building documentation...');
     let version = process.env["GITHUB_SHA"];
     if (version !== undefined) {
-        version = version.slice(0, 8);
+        version = version.slice(0, 7);
     }
     const config = new DocumentBuilder()
         .setTitle('Kitty后端APi服务')
