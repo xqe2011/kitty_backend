@@ -78,7 +78,6 @@ jobs:
           port: ${{ secrets.SERVER_TENCENT1_PORT }}
           script: |
             cd apps/test-kitty
-            docker-compose down
             docker-compose build
             docker-compose up -d
 
