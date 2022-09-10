@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, ForbiddenException, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Role } from 'src/modules/user/enums/role.enum';
 import { Roles } from 'src/modules/auth/roles/roles.decorator';
@@ -10,6 +10,8 @@ import { GetOrdersResponseDto } from '../dtos/get-orders.response';
 import { CreateOrderResponseDto } from '../dtos/create-order.response';
 import { CreateOrderBodyDto } from '../dtos/create-order.body';
 import { ApiExceptionResponseDto } from 'src/docs/dtos/api-exception.response';
+import { CancelOrderParamDto } from '../dtos/cancel-order.param';
+import { CancelOrderResponseDto } from '../dtos/cancel-order.response';
 
 @Controller('/shop')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -49,6 +51,28 @@ export class OrderController {
     })
     async createOrder(@Req() request, @Body() body: CreateOrderBodyDto) {
         await this.orderService.createOrder(request.user.id, body.itemID, body.quantity);
+        return {};
+    }
+
+    @Post('/order/:id/cancel')
+    @Roles(Role.RegisteredUser, Role.Admin)
+    @ApiOperation({
+        summary: '取消订单',
+        description: '取消订单,需要注册用户权限'
+    })
+    @ApiOkResponse({
+        description: '取消成功',
+        type: CancelOrderResponseDto
+    })
+    @ApiUnprocessableEntityResponse({
+        description: "业务错误,请查阅业务错误代码列表",
+        type: ApiExceptionResponseDto
+    })
+    async cancelOrder(@Req() request, @Param() param: CancelOrderParamDto) {
+        if (!(await this.orderService.isOrderBelongToUser(param.id, request.user.id))) {
+            throw new ForbiddenException('This comment is not belong to you.');
+        }
+        await this.orderService.cancelOrder(param.id, true);
         return {};
     }
 }

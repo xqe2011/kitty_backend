@@ -10,7 +10,4 @@ export enum OrderStatusType {
 
     /** 交易取消 */
     CANCEL = '3',
-
-    /** 已退款 */
-    REFUND = '4'
 }

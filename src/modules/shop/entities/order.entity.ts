@@ -37,6 +37,10 @@ export class Order {
     })
     status: OrderStatusType;
 
+    /* 订单取消原因 */
+    @Column({ nullable: true })
+    cancelReason: string;
+
     @CreateDateColumn()
     createdDate: Date;
 

@@ -16,4 +16,7 @@ export enum PointsTransactionReason {
 
     /** 购买商品 */
     BUY = '5',
+
+    /** 退款 */
+    REFUND = '6',
 }
