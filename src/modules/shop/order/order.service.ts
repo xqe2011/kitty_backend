@@ -107,7 +107,10 @@ export class OrderService implements OnApplicationBootstrap{
             const orderRepository = manager.getRepository<Order>(Order);
             const orderInfo = await orderRepository.findOne({
                 where: { id },
-                relations: ['user']
+                relations: ['user'],
+                lock: {
+                    mode: 'pessimistic_write',
+                },
             });
             if (byUser) {
                 if (orderInfo.status != OrderStatusType.STOCKING && orderInfo.status != OrderStatusType.PENDING_RECEIPT) {
@@ -125,7 +128,6 @@ export class OrderService implements OnApplicationBootstrap{
             }
             orderInfo.status = OrderStatusType.CANCEL;
             await orderRepository.save(orderInfo);
-            console.log(orderInfo)
             /* 退款 */
             await this.pointsService.changePoints(orderInfo.user.id, orderInfo.totalPrice, PointsTransactionReason.REFUND, "订单退款-ID" + orderInfo.id, manager);
         });
@@ -152,5 +154,45 @@ export class OrderService implements OnApplicationBootstrap{
      */
     async isOrderExists(id: number) {
         return (await this.orderRepository.count({ id: id })) > 0;
+    }
+
+    /**
+     * 搜索订单,默认按照时间倒序
+     * @param status 订单状态,若为undefined则不指定
+     * @param userID 用户ID,若为undefined则不指定
+     * @returns 订单列表
+     */
+    async searchOrders(status: OrderStatusType, userID: number, limit: number, start: number) {
+        const queryBuilder = this.orderRepository.createQueryBuilder('order');
+        if (status !== undefined) queryBuilder.andWhere({ status });
+        if (userID !== undefined) queryBuilder.andWhere({ user: { id: userID } });
+        queryBuilder.skip(start);
+        queryBuilder.take(limit);
+        queryBuilder.select(['id', 'unitPrice', 'quantity', 'totalPrice', 'createdDate', 'userId as userID', 'itemId as itemID', 'status', 'cancelReason']);
+        queryBuilder.orderBy("createdDate", "DESC");
+        const data = await queryBuilder.getRawMany();
+        return data as (Pick<Order, 'id' | 'unitPrice' | 'quantity' | 'totalPrice' | 'createdDate' | 'status' | 'cancelReason'> | { userID: number, itemID: number })[];
+    }
+
+    /**
+     * 更新订单信息
+     * @param id 订单ID
+     * @param status 订单状态
+     */
+    async updateOrderInfo(id: number, status: OrderStatusType) {
+        await this.entityManager.transaction(async manager => {
+            const orderRepository = manager.getRepository<Order>(Order);
+            const orderInfo = await orderRepository.findOne({
+                where: { id },
+                lock: {
+                    mode: 'pessimistic_write',
+                },
+            });
+            if (orderInfo.status === OrderStatusType.CANCEL) {
+                throw new ForbiddenException("This order is not allowed to update!");
+            }
+            orderInfo.status = status;
+            orderRepository.save(orderInfo);
+        });
     }
 }

@@ -20,6 +20,6 @@ import { IsOrderIDValidValidator } from './validators/is-orderid-valid.validator
     ],
     providers: [ShopService, OrderService, IsItemIDValidValidator, IsOrderIDValidValidator],
     controllers: [ShopController, OrderController],
-    exports: [],
+    exports: [OrderService],
 })
 export class ShopModule {}

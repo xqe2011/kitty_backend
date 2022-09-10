@@ -124,7 +124,10 @@ describe('OrderService', () => {
         expect(dependencies["EntityManager"].transaction).toBeCalledTimes(1);
         expect(orderRepository.findOne).toBeCalledWith({
             where: { id: 2222 },
-            relations: ['user']
+            relations: ['user'],
+            lock: {
+                mode: 'pessimistic_write',
+            }
         });
         expect(orderRepository.save).toBeCalledWith({
             id: 3333,
@@ -168,7 +171,10 @@ describe('OrderService', () => {
         expect(dependencies["EntityManager"].transaction).toBeCalledTimes(1);
         expect(orderRepository.findOne).toBeCalledWith({
             where: { id: 2222 },
-            relations: ['user']
+            relations: ['user'],
+            lock: {
+                mode: 'pessimistic_write',
+            }
         });
         expect(manager.getRepository).toBeCalledTimes(1);
     });
@@ -199,7 +205,10 @@ describe('OrderService', () => {
         expect(dependencies["EntityManager"].transaction).toBeCalledTimes(1);
         expect(orderRepository.findOne).toBeCalledWith({
             where: { id: 2222 },
-            relations: ['user']
+            relations: ['user'],
+            lock: {
+                mode: 'pessimistic_write',
+            }
         });
         expect(manager.getRepository).toBeCalledTimes(1);
     });
@@ -227,7 +236,10 @@ describe('OrderService', () => {
         expect(dependencies["EntityManager"].transaction).toBeCalledTimes(1);
         expect(orderRepository.findOne).toBeCalledWith({
             where: { id: 2222 },
-            relations: ['user']
+            relations: ['user'],
+            lock: {
+                mode: 'pessimistic_write',
+            }
         });
         expect(orderRepository.save).toBeCalledWith({
             id: 3333,
@@ -268,7 +280,10 @@ describe('OrderService', () => {
         expect(dependencies["EntityManager"].transaction).toBeCalledTimes(1);
         expect(orderRepository.findOne).toBeCalledWith({
             where: { id: 2222 },
-            relations: ['user']
+            relations: ['user'],
+            lock: {
+                mode: 'pessimistic_write',
+            }
         });
         expect(manager.getRepository).toBeCalledTimes(1);
     });
@@ -323,5 +338,98 @@ describe('OrderService', () => {
         await service.onApplicationBootstrap();
         expect(dependencies["SettingService"].getSetting).toBeCalledWith("shop.order.cancel_timeout_by_user");
         expect(dependencies["SettingService"].createSetting).toBeCalledWith("shop.order.cancel_timeout_by_user", 0, true);
+    });
+
+    test('updateOrderInfo() - Not Cancelled', async () => {
+        const orderRepository = {
+            findOne: jest.fn().mockResolvedValueOnce({
+                status: OrderStatusType.STOCKING
+            }),
+            save: jest.fn()
+        };
+        const manager = {
+            getRepository: jest.fn().mockReturnValueOnce(orderRepository)
+        };
+        dependencies["EntityManager"].transaction = jest.fn().mockImplementation(func => func(manager));
+        await service.updateOrderInfo(2222, OrderStatusType.CANCEL);
+        expect(dependencies["EntityManager"].transaction).toBeCalledTimes(1);
+        expect(orderRepository.findOne).toBeCalledWith({
+            where: { id: 2222 },
+            lock: {
+                mode: 'pessimistic_write',
+            }
+        });
+        expect(orderRepository.save).toBeCalledWith({
+            status: OrderStatusType.CANCEL
+        });
+        expect(manager.getRepository).toBeCalledTimes(1);
+    });
+
+    test('updateOrderInfo() - Cancelled', async () => {
+        const orderRepository = {
+            findOne: jest.fn().mockResolvedValueOnce({
+                status: OrderStatusType.CANCEL
+            })
+        };
+        const manager = {
+            getRepository: jest.fn().mockReturnValueOnce(orderRepository)
+        };
+        dependencies["EntityManager"].transaction = jest.fn().mockImplementation(func => func(manager));
+        try {
+            await service.updateOrderInfo(2222, OrderStatusType.CANCEL);
+        } catch (e) {
+            expect(e).toEqual(new ForbiddenException("This order is not allowed to update!"));
+        }
+        expect(dependencies["EntityManager"].transaction).toBeCalledTimes(1);
+        expect(orderRepository.findOne).toBeCalledWith({
+            where: { id: 2222 },
+            lock: {
+                mode: 'pessimistic_write',
+            }
+        });
+        expect(manager.getRepository).toBeCalledTimes(1);
+    });
+
+    test('searchOrders() - Without UserID and status', async () => {
+        const createQueryBuilder = {
+            select: jest.fn(),
+            take: jest.fn(),
+            skip: jest.fn(),
+            orderBy: jest.fn(),
+            getRawMany: jest.fn().mockReturnValue([{id: 111, status: OrderStatusType.PENDING_RECEIPT}])
+        };
+        dependencies["OrderRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => createQueryBuilder);
+        const data1 = await service.searchOrders(undefined, undefined, 10, 0);
+        expect(dependencies["OrderRepository"].createQueryBuilder).toBeCalledWith('order');
+        expect(createQueryBuilder.select).toBeCalledWith(['id', 'unitPrice', 'quantity', 'totalPrice', 'createdDate', 'userId as userID', 'itemId as itemID', 'status', 'cancelReason']);
+        expect(createQueryBuilder.getRawMany).toBeCalledWith();
+        expect(createQueryBuilder.take).toBeCalledWith(10);
+        expect(createQueryBuilder.skip).toBeCalledWith(0);
+        expect(createQueryBuilder.orderBy).toBeCalledWith('createdDate', 'DESC');
+        expect(data1).toEqual([{id: 111, status: OrderStatusType.PENDING_RECEIPT}]);
+    });
+
+    test('searchOrders() - With UserID and status', async () => {
+        const createQueryBuilder = {
+            andWhere: jest.fn(),
+            select: jest.fn(),
+            take: jest.fn(),
+            skip: jest.fn(),
+            orderBy: jest.fn(),
+            getRawMany: jest.fn().mockReturnValue([{id: 111, status: OrderStatusType.PENDING_RECEIPT}])
+        };
+        dependencies["OrderRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => createQueryBuilder);
+        const data1 = await service.searchOrders(OrderStatusType.PENDING_RECEIPT, 222, 10, 0);
+        expect(dependencies["OrderRepository"].createQueryBuilder).toBeCalledWith('order');
+        expect(createQueryBuilder.select).toBeCalledWith(['id', 'unitPrice', 'quantity', 'totalPrice', 'createdDate', 'userId as userID', 'itemId as itemID', 'status', 'cancelReason']);
+        expect(createQueryBuilder.getRawMany).toBeCalledWith();
+        expect(createQueryBuilder.andWhere.mock.calls).toEqual([
+            [{status: OrderStatusType.PENDING_RECEIPT }],
+            [{user: { id: 222 } }],
+        ]);
+        expect(createQueryBuilder.take).toBeCalledWith(10);
+        expect(createQueryBuilder.skip).toBeCalledWith(0);
+        expect(createQueryBuilder.orderBy).toBeCalledWith('createdDate', 'DESC');
+        expect(data1).toEqual([{id: 111, status: OrderStatusType.PENDING_RECEIPT}]);
     });
 });

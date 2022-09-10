@@ -9,7 +9,7 @@ export class Order {
     id: number;
 
     /* 对应的商品 */
-    @ManyToOne(() => ShopItem, (shopItem) => shopItem.photos, { nullable: false })
+    @ManyToOne(() => ShopItem, (shopItem) => shopItem.orders, { nullable: false })
     item: ShopItem;
 
     /* 单价 */

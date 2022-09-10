@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, DeleteDateColumn, Index, OneToMany, } from 'typeorm';
+import { Order } from './order.entity';
 import { ShopItemPhoto } from './shop-item-photo.entity';
 
 @Entity()
@@ -29,6 +30,10 @@ export class ShopItem {
     /** 商品对应的照片 */
     @OneToMany(() => ShopItemPhoto, (shopItemPhoto) => shopItemPhoto.item)
     photos: ShopItemPhoto[];
+
+    /** 商品对应的订单 */
+    @OneToMany(() => Order, (order) => order.item)
+    orders: Order[];
 
     @CreateDateColumn()
     createdDate: Date;

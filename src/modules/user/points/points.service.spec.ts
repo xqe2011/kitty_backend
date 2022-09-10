@@ -83,6 +83,9 @@ describe('AchievementService', () => {
         expect(userRepository.findOne).toBeCalledWith({
             where: { id: 2222 },
             select: ['points'],
+            lock: {
+                mode: 'pessimistic_write',
+            },
         });
         expect(manager.update).toBeCalledWith(User, 2222, { points: 10 });
         expect(pointsTransactionRepository.save).toBeCalledWith({
@@ -114,6 +117,9 @@ describe('AchievementService', () => {
         expect(userRepository.findOne).toBeCalledWith({
             where: { id: 2222 },
             select: ['points'],
+            lock: {
+                mode: 'pessimistic_write',
+            },
         });
         expect(manager.update).toBeCalledTimes(0);
         expect(pointsTransactionRepository.save).toBeCalledTimes(0);
@@ -138,6 +144,9 @@ describe('AchievementService', () => {
         expect(userRepository.findOne).toBeCalledWith({
             where: { id: 2222 },
             select: ['points'],
+            lock: {
+                mode: 'pessimistic_write',
+            },
         });
         expect(manager.update).toBeCalledTimes(0);
         expect(pointsTransactionRepository.save).toBeCalledTimes(0);
@@ -160,6 +169,9 @@ describe('AchievementService', () => {
         expect(userRepository.findOne).toBeCalledWith({
             where: { id: 2222 },
             select: ['points'],
+            lock: {
+                mode: 'pessimistic_write',
+            },
         });
         expect(manager.update).toBeCalledWith(User, 2222, { points: 10 });
         expect(pointsTransactionRepository.save).toBeCalledWith({

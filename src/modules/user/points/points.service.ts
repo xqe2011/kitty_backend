@@ -71,6 +71,9 @@ export class PointsService {
                 .findOne({
                     where: { id: userID },
                     select: ['points'],
+                    lock: {
+                        mode: 'pessimistic_write',
+                    },
                 });
             if (user === undefined) throw new NotFoundException('User not found');
             if (user.points + points < 0) throw new ApiException(Error.POINTS_NOT_ENOUGH);
