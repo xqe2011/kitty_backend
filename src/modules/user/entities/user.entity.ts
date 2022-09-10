@@ -23,7 +23,7 @@ export class User {
     unionID: string;
 
     /** 用户昵称 */
-    @Column({ default: '' })
+    @Column({ nullable: true })
     nickName: string;
 
     /** 用户头像文件ID */

@@ -1,7 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Role } from '../enums/role.enum';
+import { ApiProperty } from "@nestjs/swagger";
+import { Role } from "src/modules/user/enums/role.enum";
 
-export class GetCurrentUserInfoResponseDto {
+export class GetUserInfoResponseDto {
     @ApiProperty({ description: '注册时间' })
     createdDate: Date;
 

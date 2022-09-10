@@ -32,7 +32,9 @@ export class UsersService {
         const user = await this.getUserByID(id);
         const sensitive = isDetail ? {
             role: user.role,
-            points: isDetail ? user.points : null,
+            points: user.points,
+            createdDate: user.createdDate,
+            lastLoginDate: user.lastLoginDate
         } : {};
         return {
             nickName: user.nickName,

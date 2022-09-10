@@ -46,10 +46,10 @@ describe('UsersService', () => {
     });
 
     test('getUserInfoByID() - Details', async () => {
-        service.getUserByID = jest.fn().mockResolvedValueOnce({role: Role.Admin, nickName: "dgs", avatarFileName: "dgnfs.jpg", id: 2222, points: 10});
+        service.getUserByID = jest.fn().mockResolvedValueOnce({role: Role.Admin, nickName: "dgs", avatarFileName: "dgnfs.jpg", id: 2222, points: 10, createdDate: 1, lastLoginDate: 2});
         const data1 = await service.getUserInfoByID(2222, true);
         expect(service.getUserByID).toBeCalledWith(2222);
-        expect(data1).toEqual({role: Role.Admin, nickName: "dgs", avatarFileName: "dgnfs.jpg", id: 2222, points: 10});
+        expect(data1).toEqual({role: Role.Admin, nickName: "dgs", avatarFileName: "dgnfs.jpg", id: 2222, points: 10, createdDate: 1, lastLoginDate: 2});
     });
 
     test('getUserInfoByID() - Not Details', async () => {
