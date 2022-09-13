@@ -1,8 +1,8 @@
 import { Injectable, OnApplicationBootstrap, Type } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ModuleRef } from '@nestjs/core';
-import { enc, HmacSHA256 } from 'crypto-js';
 import { SettingService } from 'src/modules/setting/setting/setting.service';
+import { CryptoService } from 'src/modules/tool/crypto/crypto.service';
 import { ToolService } from 'src/modules/tool/tool/tool.service';
 import { FileType } from '../enums/file-type.enum';
 import { UploadPrividerInterface } from '../upload-provider.interface';
@@ -16,6 +16,7 @@ export class FileService implements OnApplicationBootstrap {
         private moduleRef: ModuleRef,
         private toolService: ToolService,
         private settingService: SettingService,
+        private cryptoService: CryptoService
     ) {}
 
     async onApplicationBootstrap() {
@@ -74,8 +75,8 @@ export class FileService implements OnApplicationBootstrap {
      * @param token 文件上传TOKEN不包含前面的部分
      * @returns 签名
      */
-    getTokenSign(token: string) {
-        return enc.Base64.stringify(HmacSHA256(token, this.configService.get<string>('secret')));
+    async getTokenSign(token: string) {
+        return this.cryptoService.hmac(await this.cryptoService.derivatKey('file-token'), token);
     }
 
     /**
@@ -83,7 +84,7 @@ export class FileService implements OnApplicationBootstrap {
      * @param token 文件上传TOKEN
      * @returns 是否正确
      */
-    verifyFileToken(token: string) {
+    async verifyFileToken(token: string) {
         if (typeof token != 'string' || token.length < 15) return false;
         const tokenArray = token.split('|');
         const timestamp = parseInt(tokenArray[3]);
@@ -92,7 +93,7 @@ export class FileService implements OnApplicationBootstrap {
             timestamp === NaN ||
             tokenArray[0] != 'file' ||
             !Object.values(FileType).includes(tokenArray[2] as FileType) ||
-            tokenArray[4] != this.getTokenSign(tokenArray[0] + '|' + tokenArray[1] + '|' + tokenArray[2] + '|' + tokenArray[3])
+            tokenArray[4] != await this.getTokenSign(tokenArray[0] + '|' + tokenArray[1] + '|' + tokenArray[2] + '|' + tokenArray[3])
         ) {
             return false;
         }
@@ -113,7 +114,7 @@ export class FileService implements OnApplicationBootstrap {
      */
     async generateFileToken(name: string, type: FileType) {
         let token = 'file|' + name + '|' + type + '|' + this.toolService.getNowTimestamp();
-        token += '|' + this.getTokenSign(token);
+        token += '|' + await this.getTokenSign(token);
         return token;
     }
 }

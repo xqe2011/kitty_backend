@@ -7,6 +7,7 @@ import { JwtHelperStrategy } from '../auth/jwt-helper/jwt-helper.strategy';
 import { UserModule } from 'src/modules/user/user.module';
 import { LoginService } from './login/login.service';
 import { WechatModule } from '../wechat/wechat.module';
+import { ToolModule } from '../tool/tool.module';
 
 @Module({
     imports: [
@@ -25,6 +26,7 @@ import { WechatModule } from '../wechat/wechat.module';
         }),
         UserModule,
         WechatModule,
+        ToolModule
     ],
     providers: [JwtHelperService, JwtHelperStrategy, LoginService],
     exports: [JwtHelperStrategy],

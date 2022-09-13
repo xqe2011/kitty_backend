@@ -2,15 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Role } from '../../user/enums/role.enum';
 import { JwtType } from '../enums/jwt-type.enum';
-import { AES, enc } from 'crypto-js';
-import { ConfigService } from '@nestjs/config';
 import { User } from 'src/modules/user/entities/user.entity';
+import { CryptoService } from 'src/modules/tool/crypto/crypto.service';
 
 @Injectable()
 export class JwtHelperService {
     constructor(
         private jwtService: JwtService,
-        private configService: ConfigService,
+        private cryptoService: CryptoService
     ) {}
 
     /**
@@ -24,10 +23,10 @@ export class JwtHelperService {
             sub: user.id,
             role: user.role,
             type: JwtType.MiniProgram,
-            en: AES.encrypt(
-                sessionKey,
-                this.configService.get<string>('secret'),
-            ).toString(),
+            en: await this.cryptoService.aesEcbEncryptReturnInBase64(
+                    await this.cryptoService.derivatKey('jwt-miniprogram-secret'),
+                    Buffer.from(sessionKey, 'base64')
+                )
         });
     }
 
@@ -44,10 +43,10 @@ export class JwtHelperService {
         };
         if (val.type === JwtType.MiniProgram) {
             val['miniprogram'] = {
-                sessionKey: AES.decrypt(
-                    payload.en,
-                    this.configService.get<string>('secret'),
-                ).toString(enc.Utf8),
+                sessionKey: await this.cryptoService.aesEcbDecrypt(
+                    await this.cryptoService.derivatKey('jwt-miniprogram-secret'),
+                    payload.en
+                ),
             };
         }
         return val;

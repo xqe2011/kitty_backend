@@ -4,13 +4,12 @@ import { LocalService } from '../local/local.service';
 
 @ValidatorConstraint({ async: true })
 @Injectable()
-export class IsUploadTokenValidValidator
-    implements ValidatorConstraintInterface
+export class IsUploadTokenValidValidator implements ValidatorConstraintInterface
 {
     constructor(private localService: LocalService) {}
 
     async validate(token: string) {
-        return this.localService.verifyToken(token);
+        return await this.localService.verifyToken(token);
     }
 
     defaultMessage(args: ValidationArguments) {

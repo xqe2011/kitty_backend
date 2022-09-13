@@ -12,7 +12,8 @@ describe('LocalService', () => {
     let dependencies: { 
         "ConfigService": MockedObject,
         "FileService": MockedObject,
-        "ToolService": MockedObject
+        "ToolService": MockedObject,
+        "CryptoService": MockedObject
     };
 
     beforeEach(async () => {
@@ -21,6 +22,7 @@ describe('LocalService', () => {
             "ConfigService": {},
             "ToolService": {},
             "FileService": {},
+            "CryptoService": {}
         };
         const module: TestingModule = await Test.createTestingModule({
             providers: [LocalService],
@@ -44,45 +46,53 @@ describe('LocalService', () => {
         expect(dependencies["FileService"].registerTokenProvider).toBeCalledWith('local', LocalService);
     });
 
+    test('getTokenSign()', async () => {
+        dependencies["CryptoService"].hmac = jest.fn().mockResolvedValueOnce('xqexqexqexqe');
+        dependencies["CryptoService"].derivatKey = jest.fn().mockResolvedValueOnce('abcdefgh');
+        const data1 = await service.getTokenSign("1|2|3|4");
+        expect(dependencies["CryptoService"].hmac).toBeCalledWith('abcdefgh', '1|2|3|4');
+        expect(data1).toEqual("xqexqexqexqe");
+    });
+
     test('verifyToken() - Valid Token', async () => {
-        dependencies["FileService"].getTokenSign = jest.fn().mockReturnValueOnce("snl2ury/2jJE3WvaUEEahEqUTQGCG/VthfDU1l3GdrA=");
+        service.getTokenSign = jest.fn().mockResolvedValueOnce("snl2ury/2jJE3WvaUEEahEqUTQGCG/VthfDU1l3GdrA=");
         dependencies["ConfigService"].get = jest.fn().mockImplementation(key => key == 'debug' ? false : '60');
         dependencies["ToolService"].getNowTimestamp = jest.fn().mockReturnValueOnce('1652246404');
         const data1 = await service.verifyToken("upload:123.jpg:0:1652246384:snl2ury/2jJE3WvaUEEahEqUTQGCG/VthfDU1l3GdrA=");
-        expect(dependencies["FileService"].getTokenSign).toBeCalledWith("upload:123.jpg:0:1652246384");
+        expect(service.getTokenSign).toBeCalledWith("upload:123.jpg:0:1652246384");
         expect(dependencies["ToolService"].getNowTimestamp).toBeCalledTimes(1);
         expect(dependencies["ConfigService"].get).toBeCalledTimes(2);
         expect(data1).toEqual(true);
     });
 
     test('verifyToken() - Invalid Token but not expired', async () => {
-        dependencies["FileService"].getTokenSign = jest.fn().mockReturnValueOnce("snl2ury/2jJE3WvaUEEahEqUTQGCG/VthfDU1l3GdrA=");
+        service.getTokenSign = jest.fn().mockResolvedValueOnce("snl2ury/2jJE3WvaUEEahEqUTQGCG/VthfDU1l3GdrA=");
         dependencies["ConfigService"].get = jest.fn().mockImplementation(key => key == 'debug' ? false : '60');
         dependencies["ToolService"].getNowTimestamp = jest.fn().mockReturnValueOnce('1652246404');
         const data1 = await service.verifyToken("upload:123.jpg:9:1652246384:snl2ury/2jJE3WvaUEEahEqUTQGCG/VthfDU1l3GdrA=");
-        expect(dependencies["FileService"].getTokenSign).toBeCalledTimes(0);
+        expect(service.getTokenSign).toBeCalledTimes(0);
         expect(dependencies["ToolService"].getNowTimestamp).toBeCalledTimes(0);
         expect(dependencies["ConfigService"].get).toBeCalledTimes(0);
         expect(data1).toEqual(false);
     });
 
     test('verifyToken() - Valid Token but expired', async () => {
-        dependencies["FileService"].getTokenSign = jest.fn().mockReturnValueOnce("snl2ury/2jJE3WvaUEEahEqUTQGCG/VthfDU1l3GdrA=");
+        service.getTokenSign = jest.fn().mockResolvedValueOnce("snl2ury/2jJE3WvaUEEahEqUTQGCG/VthfDU1l3GdrA=");
         dependencies["ConfigService"].get = jest.fn().mockImplementation(key => key == 'debug' ? false : '10');
         dependencies["ToolService"].getNowTimestamp = jest.fn().mockReturnValueOnce('1652246404');
         const data1 = await service.verifyToken("upload:123.jpg:0:1652246384:snl2ury/2jJE3WvaUEEahEqUTQGCG/VthfDU1l3GdrA=");
-        expect(dependencies["FileService"].getTokenSign).toBeCalledTimes(1);
+        expect(service.getTokenSign).toBeCalledTimes(1);
         expect(dependencies["ToolService"].getNowTimestamp).toBeCalledTimes(1);
         expect(dependencies["ConfigService"].get).toBeCalledTimes(2);
         expect(data1).toEqual(false);
     });
 
     test('createUploadParams() - Match Extensions', async () => {
-        dependencies["FileService"].getTokenSign = jest.fn().mockReturnValueOnce("snl2ury/2jJE3WvaUEEahEqUTQGCG/VthfDU1l3GdrA=");
+        service.getTokenSign = jest.fn().mockResolvedValueOnce("snl2ury/2jJE3WvaUEEahEqUTQGCG/VthfDU1l3GdrA=");
         dependencies["ConfigService"].get = jest.fn().mockReturnValueOnce("http://test.api")
         dependencies["ToolService"].getNowTimestamp = jest.fn().mockReturnValueOnce('1652246384');
         const data1 = await service.createUploadParams(2222, FileType.UNCOMPRESSED_IMAGE, "jpg");
-        expect(dependencies["FileService"].getTokenSign).toBeCalledTimes(1);
+        expect(service.getTokenSign).toBeCalledTimes(1);
         expect(dependencies["ToolService"].getNowTimestamp).toBeCalledTimes(1);
         expect(dependencies["ConfigService"].get).toBeCalledTimes(1);
         expect(data1).toEqual( {
@@ -94,7 +104,7 @@ describe('LocalService', () => {
     });
 
     test('createUploadParams() - Unmached Extensions', async () => {
-        dependencies["FileService"].getTokenSign = jest.fn().mockReturnValueOnce("snl2ury/2jJE3WvaUEEahEqUTQGCG/VthfDU1l3GdrA=");
+        service.getTokenSign = jest.fn().mockResolvedValueOnce("snl2ury/2jJE3WvaUEEahEqUTQGCG/VthfDU1l3GdrA=");
         dependencies["ConfigService"].get = jest.fn().mockReturnValueOnce("http://test.api");
         dependencies["ToolService"].getNowTimestamp = jest.fn().mockReturnValueOnce('1652246384');
         try {
@@ -102,7 +112,7 @@ describe('LocalService', () => {
         } catch(e) {
             expect(e).toBeInstanceOf(BadRequestException);
         }
-        expect(dependencies["FileService"].getTokenSign).toBeCalledTimes(0);
+        expect(service.getTokenSign).toBeCalledTimes(0);
         expect(dependencies["ToolService"].getNowTimestamp).toBeCalledTimes(0);
         expect(dependencies["ConfigService"].get).toBeCalledTimes(0);
     });

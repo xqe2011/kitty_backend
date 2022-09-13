@@ -11,7 +11,8 @@ describe('FileService', () => {
         "ConfigService": MockedObject,
         "Object": MockedObject,
         "ToolService": MockedObject,
-        "SettingService": MockedObject
+        "SettingService": MockedObject,
+        "CryptoService": MockedObject
     };
 
     beforeEach(async () => {
@@ -21,6 +22,7 @@ describe('FileService', () => {
             "Object": {},
             "ToolService": {},
             "SettingService": {},
+            "CryptoService": {}
         };
         const module: TestingModule = await Test.createTestingModule({
             providers: [
@@ -107,14 +109,15 @@ describe('FileService', () => {
     });
 
     test('getTokenSign()', async () => {
-        dependencies["ConfigService"].get = jest.fn().mockReturnValueOnce('xqexqexqexqe');
+        dependencies["CryptoService"].hmac = jest.fn().mockResolvedValueOnce('xqexqexqexqe');
+        dependencies["CryptoService"].derivatKey = jest.fn().mockResolvedValueOnce('abcdefgh');
         const data1 = await service.getTokenSign("1|2|3|4");
-        expect(dependencies["ConfigService"].get).toBeCalledWith('secret');
-        expect(data1).toEqual("OoL85ddBEtZTkzuIybnlCk51v26WOGwcq7V0j20rcbg=");
+        expect(dependencies["CryptoService"].hmac).toBeCalledWith('abcdefgh', '1|2|3|4');
+        expect(data1).toEqual("xqexqexqexqe");
     });
 
     test('verifyFileToken() - Valid Token', async () => {
-        service.getTokenSign = jest.fn().mockReturnValueOnce("+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=");
+        service.getTokenSign = jest.fn().mockResolvedValueOnce("+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=");
         dependencies["ConfigService"].get = jest.fn().mockImplementation(key => key == 'debug' ? false : '60');
         dependencies["ToolService"].getNowTimestamp = jest.fn().mockReturnValueOnce('1652246404');
         const data1 = await service.verifyFileToken("file|123.jpg|0|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=");
@@ -125,7 +128,7 @@ describe('FileService', () => {
     });
 
     test('verifyFileToken() - Invalid Token but not expired', async () => {
-        service.getTokenSign = jest.fn().mockReturnValueOnce("+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=");
+        service.getTokenSign = jest.fn().mockResolvedValueOnce("+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=");
         dependencies["ConfigService"].get = jest.fn().mockImplementation(key => key == 'debug' ? false : '60');
         dependencies["ToolService"].getNowTimestamp = jest.fn().mockReturnValueOnce('1652246404');
         const data1 = await service.verifyFileToken("file|123.jpg|9|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=");
@@ -136,7 +139,7 @@ describe('FileService', () => {
     });
 
     test('verifyFileToken() - Valid Token but expired', async () => {
-        service.getTokenSign = jest.fn().mockReturnValueOnce("+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=");
+        service.getTokenSign = jest.fn().mockResolvedValueOnce("+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=");
         dependencies["ConfigService"].get = jest.fn().mockImplementation(key => key == 'debug' ? false : '10');
         dependencies["ToolService"].getNowTimestamp = jest.fn().mockReturnValueOnce('1652246404');
         const data1 = await service.verifyFileToken("file|123.jpg|0|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=");
@@ -147,7 +150,7 @@ describe('FileService', () => {
     });
 
     test('generateFileToken()', async () => {
-        service.getTokenSign = jest.fn().mockReturnValueOnce("+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=");
+        service.getTokenSign = jest.fn().mockResolvedValueOnce("+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=");
         dependencies["ToolService"].getNowTimestamp = jest.fn().mockReturnValueOnce('1652246384');
         const data1 = await service.generateFileToken("123.jpg", FileType.UNCOMPRESSED_IMAGE);
         expect(service.getTokenSign).toBeCalledTimes(1);

@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { randomBytes } from 'crypto';
 import { move, pathExists } from 'fs-extra';
 import { join } from 'path';
+import { CryptoService } from 'src/modules/tool/crypto/crypto.service';
 import { ToolService } from 'src/modules/tool/tool/tool.service';
 import { FileType } from '../enums/file-type.enum';
 import { FileService } from '../file/file.service';
@@ -22,6 +23,7 @@ export class LocalService
         private configService: ConfigService,
         private fileService: FileService,
         private toolService: ToolService,
+        private cryptoService: CryptoService
     ) {}
 
     onApplicationBootstrap() {
@@ -33,7 +35,7 @@ export class LocalService
      * @param token 文件上传TOKEN
      * @returns 是否正确
      */
-    verifyToken(token: string) {
+    async verifyToken(token: string) {
         if (typeof token != 'string' || token.length < 15) return false;
         const tokenArray = token.split(':');
         const timestamp = parseInt(tokenArray[3]);
@@ -42,7 +44,7 @@ export class LocalService
             timestamp === NaN ||
             tokenArray[0] != 'upload' ||
             !Object.values(FileType).includes(tokenArray[2] as FileType) ||
-            tokenArray[4] != this.fileService.getTokenSign(tokenArray[0] + ':' + tokenArray[1] + ':' + tokenArray[2] + ':' + tokenArray[3])
+            tokenArray[4] != await this.getTokenSign(tokenArray[0] + ':' + tokenArray[1] + ':' + tokenArray[2] + ':' + tokenArray[3])
         ) {
             return false;
         }
@@ -53,6 +55,15 @@ export class LocalService
             return false;
         }
         return true;
+    }
+
+    /**
+     * 计算文件上传TOKEN签名
+     * @param token 文件上传上传TOKEN不包含前面的部分
+     * @returns 签名
+     */
+    async getTokenSign(token: string) {
+        return this.cryptoService.hmac(await this.cryptoService.derivatKey('file-upload-token'), token);
     }
 
     /**
@@ -68,7 +79,7 @@ export class LocalService
             throw new BadRequestException('This file type is not matched to the extension name!');
         }
         let token = 'upload:' + fileName + ':' + fileType + ':' + this.toolService.getNowTimestamp();
-        token += ':' + this.fileService.getTokenSign(token);
+        token += ':' + await this.getTokenSign(token);
         return {
             url: this.configService.get<string>('api.url') + '/files/local/upload',
             params: {
