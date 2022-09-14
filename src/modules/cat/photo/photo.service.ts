@@ -97,7 +97,7 @@ export class PhotoService implements OnApplicationBootstrap{
         queryBuilder.select(['id', 'rawFileName', 'fileName', 'comment', 'createdDate', 'userId as userID']);
         queryBuilder.orderBy("createdDate", "DESC");
         const data = await queryBuilder.getRawMany();
-        return data as (Pick<CatPhoto, 'id' | 'createdDate' | 'comment' | 'fileName' | 'rawFileName' | 'commentsAreaID'> | { userID: number })[];
+        return data as (Pick<CatPhoto, 'id' | 'createdDate' | 'comment' | 'fileName' | 'rawFileName' | 'commentsAreaID'> & { userID: number })[];
     }
 
     /**
@@ -111,7 +111,7 @@ export class PhotoService implements OnApplicationBootstrap{
         queryBuilder.select(['id', 'rawFileName', 'fileName', 'comment', 'createdDate', 'userId as userID', 'type']);
         queryBuilder.orderBy("createdDate", "DESC");
         const data = await queryBuilder.getRawMany();
-        return data as (Pick<CatPhoto, 'id' | 'createdDate' | 'comment' | 'fileName' | 'rawFileName' | 'commentsAreaID' | 'type'> | { userID: number })[];
+        return data as (Pick<CatPhoto, 'id' | 'createdDate' | 'comment' | 'fileName' | 'rawFileName' | 'commentsAreaID' | 'type'> & { userID: number })[];
     }
 
     /**

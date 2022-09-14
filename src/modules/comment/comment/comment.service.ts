@@ -202,7 +202,7 @@ export class CommentService implements OnApplicationBootstrap{
         queryBuilder.select(['id', 'conversationID', 'status', 'createdDate', 'content', 'areaId as areaID', 'parentCommentId as parentCommentID', 'userId as userID']);
         queryBuilder.orderBy("createdDate", "DESC");
         const data = await queryBuilder.getRawMany();
-        return data as (Pick<Comment, 'id' | 'createdDate' | 'content' | 'conversationID' | 'status'> | { userID: number, parentCommentID: number, areaID: number })[];
+        return data as (Pick<Comment, 'id' | 'createdDate' | 'content' | 'conversationID' | 'status'> & { userID: number, parentCommentID: number, areaID: number })[];
     }
 
     /**

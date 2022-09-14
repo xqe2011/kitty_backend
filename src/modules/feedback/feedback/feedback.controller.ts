@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/modules/auth/roles/roles.decorator';
@@ -6,6 +6,8 @@ import { RolesGuard } from 'src/modules/auth/roles/roles.guard';
 import { Role } from 'src/modules/user/enums/role.enum';
 import { CreateFeedbackBodyDto } from '../dtos/create-feedback.body';
 import { CreateFeedbackResponseDto } from '../dtos/create-feedback.response';
+import { GetFeedbacksQueryDto } from '../dtos/get-feedbacks.query';
+import { GetFeedbacksResponseDto } from '../dtos/get-feedbacks.response';
 import { FeedbackType } from '../enums/feedback-type.enum';
 import { FeedbackService } from './feedback.service';
 
@@ -34,5 +36,19 @@ export class FeedbackController {
             body.fileTokens
         );
         return {};
+    }
+
+    @Get('/')
+    @ApiOperation({
+        summary: '获取反馈',
+        description: '获取用户提交的反馈,需要管理员权限'
+    })
+    @ApiOkResponse({
+        description: '获取成功',
+        type: GetFeedbacksResponseDto,
+        isArray: true
+    })
+    async searchFeedbacks(@Req() request, @Query() query: GetFeedbacksQueryDto) {
+        return await this.feedbackService.searchFeedbacks(request.user.id, undefined, undefined, query.limit, query.start, query.photoLimit);
     }
 }

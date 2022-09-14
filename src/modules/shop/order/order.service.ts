@@ -171,7 +171,7 @@ export class OrderService implements OnApplicationBootstrap{
         queryBuilder.select(['id', 'unitPrice', 'quantity', 'totalPrice', 'createdDate', 'userId as userID', 'itemId as itemID', 'status', 'cancelReason']);
         queryBuilder.orderBy("createdDate", "DESC");
         const data = await queryBuilder.getRawMany();
-        return data as (Pick<Order, 'id' | 'unitPrice' | 'quantity' | 'totalPrice' | 'createdDate' | 'status' | 'cancelReason'> | { userID: number, itemID: number })[];
+        return data as (Pick<Order, 'id' | 'unitPrice' | 'quantity' | 'totalPrice' | 'createdDate' | 'status' | 'cancelReason'> & { userID: number, itemID: number })[];
     }
 
     /**

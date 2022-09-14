@@ -6,7 +6,7 @@ export class FeedbackPhoto {
     @PrimaryGeneratedColumn()
     id: number;
 
-    /** 对应的猫咪  */
+    /** 对应的反馈  */
     @ManyToOne(() => Feedback, (feedback) => feedback.photos)
     feedback: Feedback;
 

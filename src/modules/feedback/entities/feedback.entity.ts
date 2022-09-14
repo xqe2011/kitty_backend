@@ -1,6 +1,7 @@
 import { Cat } from 'src/modules/cat/entities/cat.entity';
 import { User } from 'src/modules/user/entities/user.entity';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, OneToMany, DeleteDateColumn } from 'typeorm';
+import { FeedbackProgress } from '../enums/feedback-progress.enum';
 import { FeedbackType } from '../enums/feedback-type.enum';
 import { FeedbackPhoto } from './feedback-photo.entity';
 
@@ -9,7 +10,7 @@ export class Feedback {
     @PrimaryGeneratedColumn()
     id: number;
 
-    /** 反馈类型  */
+    /** 反馈类型 */
     @Column({
         type: 'enum',
         enum: FeedbackType,
@@ -17,9 +18,14 @@ export class Feedback {
     })
     type: FeedbackType;
 
-    /* 是否已经处理 */
-    @Column({ nullable: false, default: false })
-    isProcessed: boolean;
+    /** 进度 */
+    @Column({
+        type: 'enum',
+        enum: FeedbackProgress,
+        nullable: false,
+        default: FeedbackProgress.PENDING
+    })
+    progress: FeedbackProgress;
 
     /* 反馈内容 */
     @Column({ nullable: false, type: "text" })

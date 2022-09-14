@@ -6,6 +6,7 @@ import { Feedback } from './entities/feedback.entity';
 import { FeedbackPhoto } from './entities/feedback-photo.entity';
 import { CatModule } from '../cat/cat.module';
 import { UserModule } from '../user/user.module';
+import { IsFeedbackIDValidValidator } from './validators/is-feedbackid-valid.validator';
 
 @Module({
     imports: [
@@ -16,7 +17,8 @@ import { UserModule } from '../user/user.module';
             FeedbackPhoto
         ]),
     ],
-    providers: [FeedbackService],
-    controllers: [FeedbackController]
+    providers: [FeedbackService, IsFeedbackIDValidValidator],
+    controllers: [FeedbackController],
+    exports: [ FeedbackService ]
 })
 export class FeedbackModule { }
