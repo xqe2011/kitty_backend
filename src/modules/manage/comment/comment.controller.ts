@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Role } from 'src/modules/user/enums/role.enum';
 import { Roles } from 'src/modules/auth/roles/roles.decorator';
@@ -12,6 +12,8 @@ import { UpdateCommentParamDto } from '../dtos/update-comment.param';
 import { UpdateCommentResponseDto } from '../dtos/update-comment.response';
 import { DeleteCommentResponseDto } from '../dtos/delete-comment.response';
 import { DeleteCommentParamDto } from '../dtos/delete-comment.param';
+import { ManageLogService } from '../manage-log/manage-log.service';
+import { ManageLogType } from '../enums/manage-log-type.enum';
 
 @Controller('/manage')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -20,7 +22,8 @@ import { DeleteCommentParamDto } from '../dtos/delete-comment.param';
 @ApiTags('管理')
 export class CommentController {
     constructor(
-        private commentService: CommentService
+        private commentService: CommentService,
+        private manageLogService: ManageLogService
     ) { }
 
     @Get('comments')
@@ -46,12 +49,13 @@ export class CommentController {
         description: '修改成功',
         type: UpdateCommentResponseDto
     })
-    async updateComment(@Param() param: UpdateCommentParamDto, @Body() body: UpdateCommentBodyDto) {
+    async updateComment(@Req() request, @Param() param: UpdateCommentParamDto, @Body() body: UpdateCommentBodyDto) {
         await this.commentService.updateCommentInfo(param.id, body.status);
+        await this.manageLogService.writeLog(request.user.id, ManageLogType.UPDATE_COMMENT, { ...param, ...body });
         return {};
     }
 
-    @Delete('cat/:id')
+    @Delete('comment/:id')
     @ApiOperation({
         summary: '删除评论',
         description: '删除评论,需要管理员权限'
@@ -60,8 +64,9 @@ export class CommentController {
         description: '删除成功',
         type: DeleteCommentResponseDto
     })
-    async deleteComment(@Param() param: DeleteCommentParamDto) {
+    async deleteComment(@Req() request, @Param() param: DeleteCommentParamDto) {
         await this.commentService.deleteComment(param.id);
+        await this.manageLogService.writeLog(request.user.id, ManageLogType.DELETE_COMMENT, { ...param });
         return {};
     }
 }

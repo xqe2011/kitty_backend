@@ -50,6 +50,7 @@ export class CatPhoto {
     fileName: string;
 
     /** 评论区ID */
+    @Column()
     commentsAreaID: number;
 
     @CreateDateColumn()

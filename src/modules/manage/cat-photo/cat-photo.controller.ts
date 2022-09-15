@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Role } from 'src/modules/user/enums/role.enum';
 import { Roles } from 'src/modules/auth/roles/roles.decorator';
@@ -12,6 +12,8 @@ import { UpdateCatPhotoParamDto } from '../dtos/update-cat-photo.param';
 import { UpdateCatPhotoBodyDto } from '../dtos/update-cat-photo.body';
 import { DeleteCatPhotoResponseDto } from '../dtos/delete-cat-photo.response';
 import { DeleteCatPhotoParamDto } from '../dtos/delete-cat-photo.param';
+import { ManageLogService } from '../manage-log/manage-log.service';
+import { ManageLogType } from '../enums/manage-log-type.enum';
 
 @Controller('/manage')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -20,7 +22,8 @@ import { DeleteCatPhotoParamDto } from '../dtos/delete-cat-photo.param';
 @ApiTags('管理')
 export class CatPhotoController {
     constructor(
-        private photoService: PhotoService
+        private photoService: PhotoService,
+        private manageLogService: ManageLogService
     ) { }
 
     @Get('cats/photos')
@@ -46,8 +49,9 @@ export class CatPhotoController {
         description: '修改成功',
         type: UpdateCatPhotoResponseDto
     })
-    async updatePhoto(@Param() param: UpdateCatPhotoParamDto, @Body() body: UpdateCatPhotoBodyDto) {
+    async updatePhoto(@Req() request, @Param() param: UpdateCatPhotoParamDto, @Body() body: UpdateCatPhotoBodyDto) {
         await this.photoService.updatePhotoInfo(param.id, body.type);
+        await this.manageLogService.writeLog(request.user.id, ManageLogType.UPDATE_CAT_PHOTO, { ...param, ...body });
         return {};
     }
 
@@ -60,8 +64,9 @@ export class CatPhotoController {
         description: '删除成功',
         type: DeleteCatPhotoResponseDto
     })
-    async deletePhoto(@Param() param: DeleteCatPhotoParamDto) {
+    async deletePhoto(@Req() request, @Param() param: DeleteCatPhotoParamDto) {
         await this.photoService.deletePhoto(param.id);
+        await this.manageLogService.writeLog(request.user.id, ManageLogType.DELETE_CAT_PHOTO, { ...param });
         return {};
     }
 }

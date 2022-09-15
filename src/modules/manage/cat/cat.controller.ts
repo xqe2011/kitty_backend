@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Role } from 'src/modules/user/enums/role.enum';
 import { Roles } from 'src/modules/auth/roles/roles.decorator';
@@ -12,6 +12,8 @@ import { UpdateCatBodyDto } from '../dtos/update-cat.body';
 import { UpdateCatParamDto } from '../dtos/update-cat.param';
 import { DeleteCatResponseDto } from '../dtos/delete-cat.response';
 import { DeleteCatParamDto } from '../dtos/delete-cat.param';
+import { ManageLogService } from '../manage-log/manage-log.service';
+import { ManageLogType } from '../enums/manage-log-type.enum';
 
 @Controller('/manage')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -20,7 +22,8 @@ import { DeleteCatParamDto } from '../dtos/delete-cat.param';
 @ApiTags('管理')
 export class CatController {
     constructor(
-        private catService: CatService
+        private catService: CatService,
+        private manageLogService: ManageLogService
     ) { }
 
     @Post('cats')
@@ -32,10 +35,12 @@ export class CatController {
         description: '创建成功',
         type: CreateCatResponseDto
     })
-    async createCat(@Body() body: CreateCatBodyDto) {
-        return {
+    async createCat(@Req() request, @Body() body: CreateCatBodyDto) {
+        const data = {
             id: await this.catService.createCat(body.name, body.species, body.isNeuter, body.description, body.haunt, body.status)
         };
+        await this.manageLogService.writeLog(request.user.id, ManageLogType.CREATE_CAT, { ...body, ...data });
+        return data;
     }
 
     @Put('cat/:id')
@@ -47,8 +52,9 @@ export class CatController {
         description: '修改成功',
         type: UpdateCatResponseDto
     })
-    async updateCat(@Param() param: UpdateCatParamDto, @Body() body: UpdateCatBodyDto) {
+    async updateCat(@Req() request, @Param() param: UpdateCatParamDto, @Body() body: UpdateCatBodyDto) {
         await this.catService.updateCat(param.id, body.name, body.species, body.isNeuter, body.description, body.haunt, body.status);
+        await this.manageLogService.writeLog(request.user.id, ManageLogType.UPDATE_CAT, { ...param, ...body });
         return {};
     }
 
@@ -61,8 +67,9 @@ export class CatController {
         description: '删除成功',
         type: DeleteCatResponseDto
     })
-    async deleteCat(@Param() param: DeleteCatParamDto) {
+    async deleteCat(@Req() request, @Param() param: DeleteCatParamDto) {
         await this.catService.deleteCat(param.id);
+        await this.manageLogService.writeLog(request.user.id, ManageLogType.DELETE_CAT, { ...param });
         return {};
     }
 }

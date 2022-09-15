@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Role } from 'src/modules/user/enums/role.enum';
 import { Roles } from 'src/modules/auth/roles/roles.decorator';
@@ -10,6 +10,8 @@ import { SearchFeedbacksQueryDto } from '../dtos/search-feedbacks.query';
 import { UpdateFeedbackResponseDto } from '../dtos/update-feedback.response';
 import { UpdateFeedbackParamDto } from '../dtos/update-feedback.param';
 import { UpdateFeedbackBodyDto } from '../dtos/update-feedback.body';
+import { ManageLogService } from '../manage-log/manage-log.service';
+import { ManageLogType } from '../enums/manage-log-type.enum';
 
 @Controller('/manage')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -18,7 +20,8 @@ import { UpdateFeedbackBodyDto } from '../dtos/update-feedback.body';
 @ApiTags('管理')
 export class FeedbackController {
     constructor(
-        private feedbackService: FeedbackService
+        private feedbackService: FeedbackService,
+        private manageLogService: ManageLogService
     ) { }
 
     @Get('feedbacks')
@@ -44,8 +47,9 @@ export class FeedbackController {
         description: '修改成功',
         type: UpdateFeedbackResponseDto
     })
-    async updateFeedback(@Param() param: UpdateFeedbackParamDto, @Body() body: UpdateFeedbackBodyDto) {
+    async updateFeedback(@Req() request, @Param() param: UpdateFeedbackParamDto, @Body() body: UpdateFeedbackBodyDto) {
         await this.feedbackService.updateFeedbackInfo(param.id, body.type, body.progress);
+        await this.manageLogService.writeLog(request.user.id, ManageLogType.UPDATE_FEEDBACK, { ...param, ...body });
         return {};
     }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Role } from 'src/modules/user/enums/role.enum';
 import { Roles } from 'src/modules/auth/roles/roles.decorator';
@@ -14,6 +14,8 @@ import { CancelOrderParamDto } from '../dtos/cancel-order.param';
 import { CancelOrderBodyDto } from '../dtos/cancel-order.body';
 import { CancelOrderResponseDto } from '../dtos/cancel-order.response';
 import { OrderStatusType } from 'src/modules/shop/enums/order-status-type.enum';
+import { ManageLogService } from '../manage-log/manage-log.service';
+import { ManageLogType } from '../enums/manage-log-type.enum';
 
 @Controller('/manage')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -22,7 +24,8 @@ import { OrderStatusType } from 'src/modules/shop/enums/order-status-type.enum';
 @ApiTags('管理')
 export class ShopOrderController {
     constructor(
-        private orderService: OrderService
+        private orderService: OrderService,
+        private manageLogService: ManageLogService
     ) { }
 
     @Get('shop/orders')
@@ -48,8 +51,9 @@ export class ShopOrderController {
         description: '修改成功',
         type: UpdateOrderResponseDto
     })
-    async updateOrder(@Param() param: UpdateOrderParamDto, @Body() body: UpdateOrderBodyDto) {
+    async updateOrder(@Req() request, @Param() param: UpdateOrderParamDto, @Body() body: UpdateOrderBodyDto) {
         await this.orderService.updateOrderInfo(param.id, body.status as unknown as OrderStatusType);
+        await this.manageLogService.writeLog(request.user.id, ManageLogType.UPDATE_ORDER, { ...param, ...body });
         return {};
     }
 
@@ -62,8 +66,9 @@ export class ShopOrderController {
         description: '取消成功',
         type: CancelOrderResponseDto
     })
-    async cancelOrder(@Param() param: CancelOrderParamDto, @Body() body: CancelOrderBodyDto) {
+    async cancelOrder(@Req() request, @Param() param: CancelOrderParamDto, @Body() body: CancelOrderBodyDto) {
         await this.orderService.cancelOrder(param.id, false, body.reason);
+        await this.manageLogService.writeLog(request.user.id, ManageLogType.CANCEL_ORDER, { ...param, ...body });
         return {};
     }
 
