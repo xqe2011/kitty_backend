@@ -64,6 +64,6 @@
 | 错误代码                           | 描述                                       |
 | ----                              | ----                                      |
 | ERR_POINTS_NOT_ENOUGH             | 积分不足                                   |
-| ERR_CANCEL_ORDER_TIMEOUT          | 订单已超过允许取消的时间或者订单处于无法取消状态  |
+| ERR_CANCEL_ORDER_TIMEOUT          | 订单已超过允许取消的时间                      |
 | ERR_DISALLOW_DUPLICATE_LIKE       | 该点赞实体不允许同一个用户重复点赞              |
 <SecurityDefinitions />

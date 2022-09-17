@@ -25,4 +25,10 @@ export class GetCatsPhotosResponseDto {
 
     @ApiProperty({ description: '照片发布者ID' })
     userID: number;
+
+    @ApiProperty({ description: '点赞实体ID' })
+    likeableEntityID: number;
+
+    @ApiProperty({ description: '评论区ID' })
+    commentsAreaID: number;
 }

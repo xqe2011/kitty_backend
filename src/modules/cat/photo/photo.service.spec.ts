@@ -276,7 +276,7 @@ describe('PhotoService', () => {
             },
             type: CatPhotoType.OTHERS
         });
-        expect(createQueryBuilder.select).toBeCalledWith(['id', 'rawFileName', 'fileName', 'comment', 'createdDate', 'userId as userID']);
+        expect(createQueryBuilder.select).toBeCalledWith(['id', 'rawFileName', 'fileName', 'comment', 'createdDate', 'userId as userID', 'commentsAreaID', 'likeableEntityID']);
         expect(createQueryBuilder.getRawMany).toBeCalledWith();
         expect(createQueryBuilder.take).toBeCalledWith(100);
         expect(createQueryBuilder.skip).toBeCalledWith(0);
@@ -295,7 +295,7 @@ describe('PhotoService', () => {
         dependencies["CatPhotoRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => createQueryBuilder);
         const data1 = await service.getPhotos(10, 0);
         expect(dependencies["CatPhotoRepository"].createQueryBuilder).toBeCalledWith('photo');
-        expect(createQueryBuilder.select).toBeCalledWith(['id', 'rawFileName', 'fileName', 'comment', 'createdDate', 'userId as userID', 'type']);
+        expect(createQueryBuilder.select).toBeCalledWith(['id', 'rawFileName', 'fileName', 'comment', 'createdDate', 'userId as userID', 'type', 'commentsAreaID', 'likeableEntityID']);
         expect(createQueryBuilder.getRawMany).toBeCalledWith();
         expect(createQueryBuilder.take).toBeCalledWith(10);
         expect(createQueryBuilder.skip).toBeCalledWith(0);

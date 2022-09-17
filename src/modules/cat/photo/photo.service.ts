@@ -106,10 +106,10 @@ export class PhotoService implements OnApplicationBootstrap{
         });
         queryBuilder.skip(start);
         queryBuilder.take(limit);
-        queryBuilder.select(['id', 'rawFileName', 'fileName', 'comment', 'createdDate', 'userId as userID']);
+        queryBuilder.select(['id', 'rawFileName', 'fileName', 'comment', 'createdDate', 'userId as userID', 'commentsAreaID', 'likeableEntityID']);
         queryBuilder.orderBy("createdDate", "DESC");
         const data = await queryBuilder.getRawMany();
-        return data as (Pick<CatPhoto, 'id' | 'createdDate' | 'comment' | 'fileName' | 'rawFileName' | 'commentsAreaID'> & { userID: number })[];
+        return data as (Pick<CatPhoto, 'id' | 'createdDate' | 'comment' | 'fileName' | 'rawFileName' | 'commentsAreaID'| 'likeableEntityID'> & { userID: number })[];
     }
 
     /**
@@ -120,10 +120,10 @@ export class PhotoService implements OnApplicationBootstrap{
         const queryBuilder = this.catPhotoRepository.createQueryBuilder('photo');
         queryBuilder.skip(start);
         queryBuilder.take(limit);
-        queryBuilder.select(['id', 'rawFileName', 'fileName', 'comment', 'createdDate', 'userId as userID', 'type']);
+        queryBuilder.select(['id', 'rawFileName', 'fileName', 'comment', 'createdDate', 'userId as userID', 'type', 'commentsAreaID', 'likeableEntityID']);
         queryBuilder.orderBy("createdDate", "DESC");
         const data = await queryBuilder.getRawMany();
-        return data as (Pick<CatPhoto, 'id' | 'createdDate' | 'comment' | 'fileName' | 'rawFileName' | 'commentsAreaID' | 'type'> & { userID: number })[];
+        return data as (Pick<CatPhoto, 'id' | 'createdDate' | 'comment' | 'fileName' | 'rawFileName' | 'commentsAreaID' | 'type' | 'commentsAreaID' | 'likeableEntityID'> & { userID: number })[];
     }
 
     /**
