@@ -1,0 +1,75 @@
+
+name: 自动测试Dockerfile是否能构建,并运行单元测试
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  dockerfile_test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 17
+      - name: Install package dependencies
+        run: npm install --save
+      - name: Install global dependencies
+        run: npm i -g @nestjs/cli
+      - name: Build package
+        run: rm -rf build && nest build
+      - name: Build docker image
+        run: |
+          cp -R dist package.json package-lock.json docker/backend/app
+          cp -R docs/* docker/backend_docs/dist
+          mv docker/docker-compose.test.yml docker/docker-compose.yml
+      - name: Create Network
+        run: docker network create web-gateway_web
+      - name: Run container
+        working-directory: docker
+        run: docker-compose up -d
+      - name: Test
+        run: docker run --network web-gateway_web appropriate/curl --retry 30 --retry-delay 3 --retry-connrefused http://backend:3000
+
+  unit_test:
+    runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+          image: mariadb:latest
+          env:
+            MARIADB_DATABASE: kitty
+            MARIADB_USER: kitty
+            MARIADB_PASSWORD: 123456
+            MARIADB_ROOT_PASSWORD: 123456
+          ports:
+            - 3306
+          options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+    
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 17
+      - name: Install package dependencies
+        run: npm install --save
+      - name: Install global dependencies
+        run: npm i -g @nestjs/cli@8.1.8 jest@27.5.1
+      - name: Wait mariadb to start
+        run: |
+          while ! mysqladmin ping -h"127.0.0.1" -P"${{ job.services.mariadb.ports[3306] }}" --silent; do
+            sleep 1
+          done
+      - name: Generate .env
+        run: |
+          mv default.env .env
+          sed -i -e 's/; database.port=3306/database.port=${{ job.services.mariadb.ports[3306] }}/g' .env
+      - name: Build documentation
+        run: npm run build:docs
+      - name: Run jest
+        run: jest
+
+

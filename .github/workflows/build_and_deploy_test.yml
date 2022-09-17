@@ -39,7 +39,7 @@ jobs:
       - name: Generate .env
         run: |
           mv default.env .env
-          sed -i -e 's/database.port=3306/database.port=${{ job.services.mariadb.ports[3306] }}/g' .env
+          sed -i -e 's/; database.port=3306/database.port=${{ job.services.mariadb.ports[3306] }}/g' .env
       - name: Build documentation
         run: npm run build:docs
       - name: Build package
