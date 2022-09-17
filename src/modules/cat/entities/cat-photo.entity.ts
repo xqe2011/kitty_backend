@@ -50,8 +50,12 @@ export class CatPhoto {
     fileName: string;
 
     /** 评论区ID */
-    @Column()
+    @Column({ default: 1 })
     commentsAreaID: number;
+
+    /** 点赞实体ID */
+    @Column({ default: 1 })
+    likeableEntityID: number;
 
     @CreateDateColumn()
     createdDate: Date;

@@ -31,6 +31,10 @@ export class ShopItem {
     @OneToMany(() => ShopItemPhoto, (shopItemPhoto) => shopItemPhoto.item)
     photos: ShopItemPhoto[];
 
+    /** 点赞实体ID */
+    @Column({ default: 1 })
+    likeableEntityID: number;
+
     /** 商品对应的订单 */
     @OneToMany(() => Order, (order) => order.item)
     orders: Order[];

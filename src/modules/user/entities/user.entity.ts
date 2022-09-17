@@ -6,6 +6,7 @@ import { PointsTransaction } from './points-transaction.entity';
 import { CatPhoto } from 'src/modules/cat/entities/cat-photo.entity';
 import { UserAchievement } from './user-achievement.entity';
 import { Comment } from 'src/modules/comment/entities/comment.entity';
+import { LikeItem } from 'src/modules/like/entities/like-item.entity';
 
 @Entity()
 export class User {
@@ -62,6 +63,10 @@ export class User {
     /** 用户成就 */
     @OneToMany(() => UserAchievement, (userAchievement) => userAchievement.user)
     achievements: UserAchievement[];
+
+    /** 用户点赞 */
+    @OneToMany(() => LikeItem, (likeItem) => likeItem.user)
+    likes: LikeItem[];
 
     /** 发表的评论  */
     @OneToMany(() => Comment, (comment) => comment.user)

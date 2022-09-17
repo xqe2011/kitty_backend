@@ -53,7 +53,8 @@ describe('ShopService', () => {
         expect(createQueryBuilder.select).toBeCalledWith([
             'item.id',
             'item.name',
-            'item.price'
+            'item.price',
+            'item.likeableEntityID'
         ]);
         expect(createQueryBuilder.getMany).toBeCalledWith();
         expect(data1).toEqual([{id: 111, coverPhoto: { id: 111, fileName: 111 }}, {id: 222, coverPhoto: { id: 222, fileName: 222 }}]);
@@ -64,7 +65,7 @@ describe('ShopService', () => {
         const data1 = await service.getItemInfoByID(2222);
         expect(dependencies["ShopItemRepository"].findOne).toBeCalledWith({
             where: { id: 2222 },
-            select: ['id', 'description', 'name', 'price']
+            select: ['id', 'description', 'name', 'price', 'likeableEntityID']
         });
         expect(data1).toEqual({ id: 2222, name: "2222" });
     });

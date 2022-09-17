@@ -1,8 +1,10 @@
 import { ConflictException, Injectable, OnApplicationBootstrap } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
+import { CommentsAreaService } from 'src/modules/comment/comments-area/comments-area.service';
 import { FileService } from 'src/modules/file/file/file.service';
+import { LikeableEntityService } from 'src/modules/like/likeable-entity/likeable-entity.service';
 import { SettingService } from 'src/modules/setting/setting/setting.service';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { CatPhoto } from '../entities/cat-photo.entity';
 import { CatPhotoType } from '../enums/cat-photo-type.enum';
 
@@ -12,7 +14,11 @@ export class PhotoService implements OnApplicationBootstrap{
         @InjectRepository(CatPhoto)
         private catPhotoRepository: Repository<CatPhoto>,
         private fileService: FileService,
-        private settingService: SettingService
+        private settingService: SettingService,
+        @InjectEntityManager()
+        private entityManager: EntityManager,
+        private commentsAreaService: CommentsAreaService,
+        private likeableEntityService: LikeableEntityService
     ) {}
 
     async onApplicationBootstrap() {
@@ -46,20 +52,26 @@ export class PhotoService implements OnApplicationBootstrap{
             throw new ConflictException('File Name exists!');
         }
         const enableCensor = await this.settingService.getSetting("cats.photo.censor");
-        await this.catPhotoRepository.insert({
-            type: enableCensor ? CatPhotoType.PEDNING : CatPhotoType.OTHERS,
-            user: {
-                id: userID,
-            },
-            cat: {
-                id: catID,
-            },
-            comment: comment,
-            rawFileName: rawFileName,
-            fileName: enableCensor ? undefined : rawFileName,
-            compassAngle: compassAngle,
-            positionAccuration: positionAccuration,
-            position: longitude && latitude ? `POINT(${longitude} ${latitude})` : undefined,
+        await this.entityManager.transaction(async manager => {
+            const commentsAreaID = await this.commentsAreaService.createArea(manager);
+            const likeableEntityID = await this.likeableEntityService.createEntity(false, manager);
+            await manager.insert(CatPhoto, {
+                type: enableCensor ? CatPhotoType.PEDNING : CatPhotoType.OTHERS,
+                user: {
+                    id: userID,
+                },
+                cat: {
+                    id: catID,
+                },
+                commentsAreaID,
+                likeableEntityID,
+                comment,
+                rawFileName,
+                fileName: rawFileName,
+                compassAngle,
+                positionAccuration,
+                position: longitude && latitude ? `POINT(${longitude} ${latitude})` : undefined,
+            });
         });
     }
 

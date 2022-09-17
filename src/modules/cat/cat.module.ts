@@ -14,6 +14,8 @@ import { IsCatIDValidValidator } from './validators/is-catid-valid.validator';
 import { IsPhotoIDValidValidator } from './validators/is-photoid-valid.validator';
 import { VectorService } from './vector/vector.service';
 import { CatVector } from './entities/cat-vector.entity';
+import { CommentModule } from '../comment/comment.module';
+import { LikeModule } from '../like/like.module';
 
 @Module({
     imports: [
@@ -24,6 +26,8 @@ import { CatVector } from './entities/cat-vector.entity';
             CatVector,
         ]),
         SettingModule,
+        CommentModule,
+        LikeModule
     ],
     providers: [
         RecommendationService,

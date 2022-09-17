@@ -17,6 +17,7 @@ import { ShopModule } from './modules/shop/shop.module';
 import { CommentModule } from './modules/comment/comment.module';
 import { ManageModule } from './modules/manage/manage.module';
 import { QRCodeModule } from './modules/qrcode/qrcode.module';
+import { LikeModule } from './modules/like/like.module';
 
 @Global()
 @Module({
@@ -49,7 +50,8 @@ import { QRCodeModule } from './modules/qrcode/qrcode.module';
         ShopModule,
         CommentModule,
         ManageModule,
-        QRCodeModule
+        QRCodeModule,
+        LikeModule
     ],
     controllers: [],
     providers: [

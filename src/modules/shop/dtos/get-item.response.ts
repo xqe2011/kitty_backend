@@ -12,6 +12,9 @@ export class ItemInfoDto {
 
     @ApiProperty({ description: '商品价格' })
     price: number;
+
+    @ApiProperty({ description: '点赞实体ID' })
+    likeableEntityID: number;
 }
 
 export class PhotoInfoDto {

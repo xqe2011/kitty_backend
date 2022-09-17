@@ -27,7 +27,8 @@ export class ShopService {
         queryBuildinger.select([
             'item.id',
             'item.name',
-            'item.price'
+            'item.price',
+            'item.likeableEntityID'
         ]);
         const itemsWithoutCover = await queryBuildinger.getMany() as any;
         for (const item of itemsWithoutCover) {
@@ -39,6 +40,7 @@ export class ShopService {
             description: string;
             price: number;
             coverPhoto: string;
+            likeableEntityID: number;
             photos: {
                 id: number;
                 fileName: string;
@@ -55,7 +57,7 @@ export class ShopService {
     async getItemInfoByID(id: number) {
         return await this.itemRepository.findOne({
             where: { id },
-            select: ['id', 'description', 'name', 'price']
+            select: ['id', 'description', 'name', 'price', 'likeableEntityID']
         });
     }
 

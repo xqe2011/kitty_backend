@@ -30,5 +30,8 @@ export enum ManageLogType {
     UPDATE_FEEDBACK = '9',
 
     /* 删除猫咪 */
-    DELETE_CAT = '10'
+    DELETE_CAT = '10',
+
+    /* 修改点赞实体状态 */
+    UPDATE_LIKEABLE_ENTITY = '11'
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { CommentsArea } from '../entities/comments-area.entity';
 
 @Injectable()
@@ -47,12 +47,13 @@ export class CommentsAreaService {
 
     /**
      * 创建评论区
+     * @param manager 事务,不传入则不使用事务写
      * @returns 评论区ID
      */
-    async createArea() {
+    async createArea(manager: EntityManager) {
         let area = new CommentsArea();
         area.isDisplay = true;
-        area = await this.commentsAreaRepository.save(area);
+        area = manager === undefined ? await this.commentsAreaRepository.save(area) : await manager.save(area);
         return area.id;
     }
 

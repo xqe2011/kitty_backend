@@ -60,4 +60,10 @@
 
 # 认证
 本系统除了登陆及文件上传等接口外(具体可参考各API的AUTHORIZATIONS字段)都需要通过HTTP Header进行认证,每次请求时需要携带认证头,认证方式如下:
+# 业务错误代码列表
+| 错误代码                           | 描述                                       |
+| ----                              | ----                                      |
+| ERR_POINTS_NOT_ENOUGH             | 积分不足                                   |
+| ERR_CANCEL_ORDER_TIMEOUT          | 订单已超过允许取消的时间或者订单处于无法取消状态  |
+| ERR_DISALLOW_DUPLICATE_LIKE       | 该点赞实体不允许同一个用户重复点赞              |
 <SecurityDefinitions />

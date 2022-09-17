@@ -2,6 +2,7 @@ import { ConflictException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { createMocker } from 'test/utils/create-mocker.function';
 import { MockedObject } from 'test/utils/mocked-object';
+import { CatPhoto } from '../entities/cat-photo.entity';
 import { CatPhotoType } from '../enums/cat-photo-type.enum';
 import { PhotoService } from './photo.service';
 
@@ -11,7 +12,10 @@ describe('PhotoService', () => {
     let dependencies: { 
         "CatPhotoRepository": MockedObject,
         "FileService": MockedObject,
-        "SettingService": MockedObject
+        "SettingService": MockedObject,
+        "EntityManager": MockedObject,
+        "CommentsAreaService": MockedObject,
+        "LikeableEntityService": MockedObject
     };
 
     beforeEach(async () => {
@@ -19,7 +23,10 @@ describe('PhotoService', () => {
         dependencies = {
             "CatPhotoRepository": {},
             "FileService": {},
-            "SettingService": {}
+            "SettingService": {},
+            "EntityManager": {},
+            "CommentsAreaService": {},
+            "LikeableEntityService": {}
         };
         const module: TestingModule = await Test.createTestingModule({
             providers: [PhotoService],
@@ -53,7 +60,7 @@ describe('PhotoService', () => {
         dependencies["CatPhotoRepository"].count = jest.fn().mockResolvedValue(1);
         dependencies["FileService"].getFileNameByToken = jest.fn().mockReturnValue("123.jpg");
         try {
-            await service.createUserPhoto(2222, 3333, "file|123.jpg|0|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=", "我是嘉狸,我现在很慌[狗头]", undefined, undefined, undefined, undefined);
+            await service.createUserPhoto(2222, 3333, "file|123.jpg|0|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=", "我是BUG,我现在很慌[狗头]", undefined, undefined, undefined, undefined);
         } catch(e) {
             expect(e).toBeInstanceOf(ConflictException);
         }
@@ -71,8 +78,16 @@ describe('PhotoService', () => {
         dependencies["SettingService"].getSetting = jest.fn().mockResolvedValueOnce(true);
         dependencies["CatPhotoRepository"].count = jest.fn().mockResolvedValue(0);
         dependencies["FileService"].getFileNameByToken = jest.fn().mockReturnValue("123.jpg");
-        dependencies["CatPhotoRepository"].insert = jest.fn().mockResolvedValue(1);
-        await service.createUserPhoto(2222, 3333, "file|123.jpg|0|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=", "我是嘉狸,我现在很慌[狗头]", undefined, undefined, undefined, undefined);
+        const manager = {
+            insert: jest.fn()
+        };
+        dependencies["EntityManager"].transaction = jest.fn().mockImplementation(func => func(manager));
+        dependencies["CommentsAreaService"].createArea = jest.fn().mockResolvedValueOnce(9999);
+        dependencies["LikeableEntityService"].createEntity = jest.fn().mockResolvedValueOnce(888);
+        await service.createUserPhoto(2222, 3333, "file|123.jpg|0|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=", "我是BUG,我现在很慌[狗头]", undefined, undefined, undefined, undefined);
+        expect(dependencies["EntityManager"].transaction).toBeCalledTimes(1);
+        expect(dependencies["CommentsAreaService"].createArea).toBeCalledWith(manager);
+        expect(dependencies["LikeableEntityService"].createEntity).toBeCalledWith(false, manager);
         expect(dependencies["FileService"].getFileNameByToken).toBeCalledWith("file|123.jpg|0|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=");
         expect(dependencies["SettingService"].getSetting).toBeCalledWith("cats.photo.censor");
         expect(dependencies["CatPhotoRepository"].count).toBeCalledWith({
@@ -81,7 +96,7 @@ describe('PhotoService', () => {
             },
             rawFileName: "123.jpg",
         });
-        expect(dependencies["CatPhotoRepository"].insert).toBeCalledWith({
+        expect(manager.insert).toBeCalledWith(CatPhoto, {
             type: CatPhotoType.PEDNING,
             user: {
                 id: 2222,
@@ -89,9 +104,11 @@ describe('PhotoService', () => {
             cat: {
                 id: 3333,
             },
-            comment: "我是嘉狸,我现在很慌[狗头]",
+            commentsAreaID: 9999,
+            likeableEntityID: 888,
+            comment: "我是BUG,我现在很慌[狗头]",
             rawFileName: "123.jpg",
-            fileName: undefined,
+            fileName: "123.jpg",
             compassAngle: undefined,
             positionAccuration: undefined,
             position: undefined,
@@ -103,8 +120,16 @@ describe('PhotoService', () => {
         dependencies["SettingService"].getSetting = jest.fn().mockResolvedValueOnce(true);
         dependencies["CatPhotoRepository"].count = jest.fn().mockResolvedValue(0);
         dependencies["FileService"].getFileNameByToken = jest.fn().mockReturnValue("123.jpg");
-        dependencies["CatPhotoRepository"].insert = jest.fn().mockResolvedValue(1);
-        await service.createUserPhoto(2222, 3333, "file|123.jpg|0|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=", "我是嘉狸,我现在很慌[狗头]", 30.33, 22.902683, 113.87516, 3);
+        const manager = {
+            insert: jest.fn()
+        };
+        dependencies["EntityManager"].transaction = jest.fn().mockImplementation(func => func(manager));
+        dependencies["CommentsAreaService"].createArea = jest.fn().mockResolvedValueOnce(9999);
+        dependencies["LikeableEntityService"].createEntity = jest.fn().mockResolvedValueOnce(888);
+        await service.createUserPhoto(2222, 3333, "file|123.jpg|0|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=", "我是BUG,我现在很慌[狗头]", 30.33, 22.902683, 113.87516, 3);
+        expect(dependencies["EntityManager"].transaction).toBeCalledTimes(1);
+        expect(dependencies["CommentsAreaService"].createArea).toBeCalledWith(manager);
+        expect(dependencies["LikeableEntityService"].createEntity).toBeCalledWith(false, manager);
         expect(dependencies["FileService"].getFileNameByToken).toBeCalledWith("file|123.jpg|0|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=");
         expect(dependencies["SettingService"].getSetting).toBeCalledWith("cats.photo.censor");
         expect(dependencies["CatPhotoRepository"].count).toBeCalledWith({
@@ -113,7 +138,7 @@ describe('PhotoService', () => {
             },
             rawFileName: "123.jpg",
         });
-        expect(dependencies["CatPhotoRepository"].insert).toBeCalledWith({
+        expect(manager.insert).toBeCalledWith(CatPhoto, {
             type: CatPhotoType.PEDNING,
             user: {
                 id: 2222,
@@ -121,9 +146,11 @@ describe('PhotoService', () => {
             cat: {
                 id: 3333,
             },
-            comment: "我是嘉狸,我现在很慌[狗头]",
+            commentsAreaID: 9999,
+            likeableEntityID: 888,
+            comment: "我是BUG,我现在很慌[狗头]",
             rawFileName: "123.jpg",
-            fileName: undefined,
+            fileName: "123.jpg",
             compassAngle: 30.33,
             positionAccuration: 3,
             position: "POINT(113.87516 22.902683)",
@@ -134,12 +161,20 @@ describe('PhotoService', () => {
         dependencies["SettingService"].getSetting = jest.fn().mockResolvedValueOnce(true);
         dependencies["CatPhotoRepository"].count = jest.fn().mockResolvedValue(0);
         dependencies["FileService"].getFileNameByToken = jest.fn();
-        dependencies["CatPhotoRepository"].insert = jest.fn().mockResolvedValue(1);
-        await service.createUserPhoto(2222, 3333, null, "我是嘉狸,我现在很慌[狗头]", 30.33, 22.902683, 113.87516, 3);
+        const manager = {
+            insert: jest.fn()
+        };
+        dependencies["EntityManager"].transaction = jest.fn().mockImplementation(func => func(manager));
+        dependencies["CommentsAreaService"].createArea = jest.fn().mockResolvedValueOnce(9999);
+        dependencies["LikeableEntityService"].createEntity = jest.fn().mockResolvedValueOnce(888);
+        await service.createUserPhoto(2222, 3333, null, "我是BUG,我现在很慌[狗头]", 30.33, 22.902683, 113.87516, 3);
+        expect(dependencies["EntityManager"].transaction).toBeCalledTimes(1);
+        expect(dependencies["CommentsAreaService"].createArea).toBeCalledWith(manager);
+        expect(dependencies["LikeableEntityService"].createEntity).toBeCalledWith(false, manager);
         expect(dependencies["FileService"].getFileNameByToken).toBeCalledTimes(0);
         expect(dependencies["CatPhotoRepository"].count).toBeCalledTimes(0);
         expect(dependencies["SettingService"].getSetting).toBeCalledWith("cats.photo.censor");
-        expect(dependencies["CatPhotoRepository"].insert).toBeCalledWith({
+        expect(manager.insert).toBeCalledWith(CatPhoto, {
             type: CatPhotoType.PEDNING,
             user: {
                 id: 2222,
@@ -147,7 +182,9 @@ describe('PhotoService', () => {
             cat: {
                 id: 3333,
             },
-            comment: "我是嘉狸,我现在很慌[狗头]",
+            commentsAreaID: 9999,
+            likeableEntityID: 888,
+            comment: "我是BUG,我现在很慌[狗头]",
             rawFileName: undefined,
             fileName: undefined,
             compassAngle: 30.33,
@@ -160,8 +197,16 @@ describe('PhotoService', () => {
         dependencies["SettingService"].getSetting = jest.fn().mockResolvedValueOnce(false);
         dependencies["CatPhotoRepository"].count = jest.fn().mockResolvedValue(0);
         dependencies["FileService"].getFileNameByToken = jest.fn().mockReturnValue("123.jpg");
-        dependencies["CatPhotoRepository"].insert = jest.fn().mockResolvedValue(1);
-        await service.createUserPhoto(2222, 3333, "file|123.jpg|0|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=", "我是嘉狸,我现在很慌[狗头]", undefined, undefined, undefined, undefined);
+        const manager = {
+            insert: jest.fn()
+        };
+        dependencies["EntityManager"].transaction = jest.fn().mockImplementation(func => func(manager));
+        dependencies["CommentsAreaService"].createArea = jest.fn().mockResolvedValueOnce(9999);
+        dependencies["LikeableEntityService"].createEntity = jest.fn().mockResolvedValueOnce(888);
+        await service.createUserPhoto(2222, 3333, "file|123.jpg|0|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=", "我是BUG,我现在很慌[狗头]", undefined, undefined, undefined, undefined);
+        expect(dependencies["EntityManager"].transaction).toBeCalledTimes(1);
+        expect(dependencies["CommentsAreaService"].createArea).toBeCalledWith(manager);
+        expect(dependencies["LikeableEntityService"].createEntity).toBeCalledWith(false, manager);
         expect(dependencies["FileService"].getFileNameByToken).toBeCalledWith("file|123.jpg|0|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=");
         expect(dependencies["SettingService"].getSetting).toBeCalledWith("cats.photo.censor");
         expect(dependencies["CatPhotoRepository"].count).toBeCalledWith({
@@ -170,7 +215,7 @@ describe('PhotoService', () => {
             },
             rawFileName: "123.jpg",
         });
-        expect(dependencies["CatPhotoRepository"].insert).toBeCalledWith({
+        expect(manager.insert).toBeCalledWith(CatPhoto, {
             type: CatPhotoType.OTHERS,
             user: {
                 id: 2222,
@@ -178,7 +223,9 @@ describe('PhotoService', () => {
             cat: {
                 id: 3333,
             },
-            comment: "我是嘉狸,我现在很慌[狗头]",
+            commentsAreaID: 9999,
+            likeableEntityID: 888,
+            comment: "我是BUG,我现在很慌[狗头]",
             rawFileName: "123.jpg",
             fileName: "123.jpg",
             compassAngle: undefined,

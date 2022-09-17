@@ -76,11 +76,13 @@ describe('CommentsAreaService', () => {
     });
 
     test('createArea()', async () => {
-        dependencies["CommentsAreaRepository"].save = jest.fn().mockResolvedValueOnce({id: 1111});
-        const data1 = await service.createArea();
+        const manager = {
+            save: jest.fn().mockResolvedValueOnce({id: 1111})
+        };
+        const data1 = await service.createArea(manager as any);
         const area = new CommentsArea();
         area.isDisplay = true;
-        expect(dependencies["CommentsAreaRepository"].save).toBeCalledWith(area);
+        expect(manager.save).toBeCalledWith(area);
         expect(data1).toEqual(1111);
     });
 

@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CatModule } from '../cat/cat.module';
 import { CommentModule } from '../comment/comment.module';
 import { FeedbackModule } from '../feedback/feedback.module';
+import { LikeModule } from '../like/like.module';
 import { QRCodeModule } from '../qrcode/qrcode.module';
 import { ShopModule } from '../shop/shop.module';
 import { UserModule } from '../user/user.module';
@@ -12,6 +13,7 @@ import { CommentController } from './comment/comment.controller';
 import { CommentsAreaController } from './comments-area/comments-area.controller';
 import { ManageLog } from './entities/manage-log.entity';
 import { FeedbackController } from './feedback/feedback.controller';
+import { LikeableEntityController } from './likeable-entity/likeable-entity.controller';
 import { ManageLogService } from './manage-log/manage-log.service';
 import { ConsumeController } from './qrcode/consume.controller';
 import { ShopOrderController } from './shop-order/shop-order.controller';
@@ -25,7 +27,8 @@ import { UserController } from './user/user.controller';
         UserModule,
         QRCodeModule,
         FeedbackModule,
-        TypeOrmModule.forFeature([ ManageLog ])
+        TypeOrmModule.forFeature([ ManageLog ]),
+        LikeModule
     ],
     providers: [ ManageLogService ],
     controllers: [
@@ -36,7 +39,8 @@ import { UserController } from './user/user.controller';
         ShopOrderController,
         UserController,
         ConsumeController,
-        FeedbackController
+        FeedbackController,
+        LikeableEntityController
     ]
 })
 export class ManageModule {}
