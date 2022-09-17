@@ -7,6 +7,8 @@ import { CatPhoto } from 'src/modules/cat/entities/cat-photo.entity';
 import { UserAchievement } from './user-achievement.entity';
 import { Comment } from 'src/modules/comment/entities/comment.entity';
 import { LikeItem } from 'src/modules/like/entities/like-item.entity';
+import { Feedback } from 'src/modules/feedback/entities/feedback.entity';
+import { Order } from 'src/modules/shop/entities/order.entity';
 
 @Entity()
 export class User {
@@ -71,6 +73,14 @@ export class User {
     /** 发表的评论  */
     @OneToMany(() => Comment, (comment) => comment.user)
     comments: Comment[];
+
+    /** 发表的反馈 */
+    @OneToMany(() => Feedback, (feedback) => feedback.user)
+    feedbacks: Feedback[];
+
+    /** 用户订单 */
+    @OneToMany(() => Order, (order) => order.user)
+    orders: Order[];
 
     /** 上一次登陆时间 */
     @Column()

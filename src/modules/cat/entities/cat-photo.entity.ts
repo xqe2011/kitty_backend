@@ -13,7 +13,7 @@ export class CatPhoto {
     user: User;
 
     /** 对应的猫咪  */
-    @ManyToOne(() => Cat, (cat) => cat.vectors)
+    @ManyToOne(() => Cat, (cat) => cat.photos)
     cat: Cat;
 
     /** 猫咪图片分类 */

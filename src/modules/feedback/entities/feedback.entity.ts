@@ -32,11 +32,11 @@ export class Feedback {
     content: string;
 
     /** 对应的用户  */
-    @ManyToOne(() => User, (user) => user.photos, { nullable: false })
+    @ManyToOne(() => User, (user) => user.feedbacks, { nullable: false })
     user: User;
 
     /** 对应的猫咪  */
-    @ManyToOne(() => Cat, (cat) => cat.vectors)
+    @ManyToOne(() => Cat, (cat) => cat.feedbacks)
     cat: Cat;
 
     /** 对应的照片  */

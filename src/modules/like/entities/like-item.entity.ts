@@ -9,9 +9,7 @@ export class LikeItem {
 
     /** 所属的点赞列表 */
     @Index()
-    @ManyToOne(() => LikeableEntity, (likeableEntity) => likeableEntity.items, {
-        nullable: false,
-    })
+    @ManyToOne(() => LikeableEntity, (likeableEntity) => likeableEntity.items, { nullable: false })
     entity: LikeableEntity;
 
     /** 所属用户  */

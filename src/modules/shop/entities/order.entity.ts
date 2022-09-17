@@ -25,7 +25,7 @@ export class Order {
     totalPrice: number;
 
     /** 对应的用户  */
-    @ManyToOne(() => User, (user) => user.photos, { nullable: false })
+    @ManyToOne(() => User, (user) => user.orders, { nullable: false })
     user: User;
 
     /** 订单状态 */
