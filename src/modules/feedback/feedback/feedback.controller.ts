@@ -28,14 +28,15 @@ export class FeedbackController {
         type: CreateFeedbackResponseDto,
     })
     async uploadPhoto(@Req() request, @Body() body: CreateFeedbackBodyDto) {
-        await this.feedbackService.createFeedback(
-            body.type,
-            body.type == FeedbackType.CAT ? body.catID : undefined,
-            request.user.id,
-            body.content,
-            body.fileTokens
-        );
-        return {};
+        return {
+            feedbackID: await this.feedbackService.createFeedback(
+                body.type,
+                body.type == FeedbackType.CAT ? body.catID : undefined,
+                request.user.id,
+                body.content,
+                body.fileTokens
+            )
+        };
     }
 
     @Get('/')

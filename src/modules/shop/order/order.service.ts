@@ -34,9 +34,10 @@ export class OrderService implements OnApplicationBootstrap{
      * @param userID 用户ID
      * @param itemID 商品ID
      * @param quantity 数量
+     * @return 订单ID
      */
     async createOrder(userID: number, itemID: number, quantity: number) {
-        await this.entityManager.transaction(async manager => {
+        return await this.entityManager.transaction(async manager => {
             const orderRepository = manager.getRepository<Order>(Order);
             const itemRepository = manager.getRepository<ShopItem>(ShopItem);
             const item = await itemRepository.findOne({ id: itemID });
@@ -61,6 +62,7 @@ export class OrderService implements OnApplicationBootstrap{
                 "订单创建-ID" + insertInfo.identifiers[0].id,
                 manager
             );
+            return insertInfo.identifiers[0].id;
         });
     }
 

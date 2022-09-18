@@ -37,14 +37,15 @@ export class CommentController {
         type: CreateCommentResponseDto,
     })
     async createComment(@Req() request, @Body() body: CreateCommentBodyDto) {
-        await this.commentService.createComment(
-            request.user.id,
-            body.areaID,
-            body.parentID,
-            body.conversationID,
-            body.content,
-        );
-        return {};
+        return {
+            commentID: await this.commentService.createComment(
+                request.user.id,
+                body.areaID,
+                body.parentID,
+                body.conversationID,
+                body.content,
+            )
+        };
     }
 
     @Get('comments/by-area/:id')

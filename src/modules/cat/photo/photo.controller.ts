@@ -30,17 +30,18 @@ export class PhotoController {
     })
     @ApiConflictResponse({ description: '该照片已经发布过' })
     async uploadPhoto(@Req() request, @Body() body: UploadPhotoBodyDto) {
-        await this.photoService.createUserPhoto(
-            request.user.id,
-            body.catID,
-            body.fileToken,
-            body.comment,
-            body.compassAngle,
-            body.latitude,
-            body.longitude,
-            body.positionAccuration,
-        );
-        return {};
+        return {
+            photoID: await this.photoService.createUserPhoto(
+                request.user.id,
+                body.catID,
+                body.fileToken,
+                body.comment,
+                body.compassAngle,
+                body.latitude,
+                body.longitude,
+                body.positionAccuration,
+            )
+        };
     }
 
     @Get('/cat/:id/photos/other')

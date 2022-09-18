@@ -100,6 +100,7 @@ export class FeedbackService {
      * @param catID 猫咪ID,可为undefined则不指定猫咪
      * @param userID 用户ID
      * @param content 内容
+     * @return 反馈ID
      */
     async createFeedback(type: FeedbackType, catID: number, userID: number, content: string, tokens: string[]) {
         const feedback = await this.feedbackRepository.insert({
@@ -117,10 +118,11 @@ export class FeedbackService {
         for (const token of tokens) {
             await this.feedbackPhotoRepository.insert({
                 feedback: {
-                    id: feedback.raw.insertId
+                    id: feedback.identifiers[0].id
                 },
                 fileName: this.fileService.getFileNameByToken(token)
             });
         }
+        return feedback.identifiers[0].id;
     }
 }

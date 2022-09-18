@@ -179,7 +179,7 @@ describe('CommentService', () => {
         dependencies["SettingService"].getSetting = jest.fn().mockResolvedValueOnce(true);
         dependencies["CommentRepository"].save = jest.fn().mockResolvedValueOnce({id: 7777});
         dependencies["CommentRepository"].update = jest.fn();
-        await service.createComment(1111, 2222, null, null, '你好');
+        const data = await service.createComment(1111, 2222, null, null, '你好');
         const comment = new Comment();
         comment.area = new CommentsArea();
         comment.area.id = 2222;
@@ -192,13 +192,14 @@ describe('CommentService', () => {
             { id: 7777 },
             { conversationID: 7777 }
         );
+        expect(data).toEqual(7777);
     });
 
     test('createComment() - Without ParentID and ConversationID censor', async () => {
         dependencies["SettingService"].getSetting = jest.fn().mockResolvedValueOnce(false);
         dependencies["CommentRepository"].save = jest.fn().mockResolvedValueOnce({id: 7777});
         dependencies["CommentRepository"].update = jest.fn();
-        await service.createComment(1111, 2222, null, null, '你好');
+        const data = await service.createComment(1111, 2222, null, null, '你好');
         const comment = new Comment();
         comment.area = new CommentsArea();
         comment.area.id = 2222;
@@ -211,13 +212,14 @@ describe('CommentService', () => {
             { id: 7777 },
             { conversationID: 7777 }
         );
+        expect(data).toEqual(7777);
     });
 
     test('createComment() - With ParentID and without ConversationID and with censor', async () => {
         dependencies["SettingService"].getSetting = jest.fn().mockResolvedValueOnce(true);
         dependencies["CommentRepository"].save = jest.fn().mockResolvedValueOnce({id: 7777});
         dependencies["CommentRepository"].update = jest.fn();
-        await service.createComment(1111, 2222, 3333, null, '你好');
+        const data = await service.createComment(1111, 2222, 3333, null, '你好');
         const comment = new Comment();
         comment.parentComment = new Comment();
         comment.parentComment.id = 3333;
@@ -232,13 +234,14 @@ describe('CommentService', () => {
             { id: 7777 },
             { conversationID: 7777 }
         );
+        expect(data).toEqual(7777);
     });
 
     test('createComment() - With ConversationID and without ParentID and with censor', async () => {
         dependencies["SettingService"].getSetting = jest.fn().mockResolvedValueOnce(true);
         dependencies["CommentRepository"].save = jest.fn().mockResolvedValueOnce({id: 7777});
         dependencies["CommentRepository"].update = jest.fn();
-        await service.createComment(1111, 2222, null, 4444, '你好');
+        const data = await service.createComment(1111, 2222, null, 4444, '你好');
         const comment = new Comment();
         comment.area = new CommentsArea();
         comment.area.id = 2222;
@@ -251,6 +254,7 @@ describe('CommentService', () => {
             { id: 7777 },
             { conversationID: 4444 }
         );
+        expect(data).toEqual(7777);
     });
 
     test('deleteComment() - Without Children', async () => {

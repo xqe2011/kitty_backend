@@ -52,8 +52,9 @@ export class OrderController {
         type: ApiExceptionResponseDto
     })
     async createOrder(@Req() request, @Body() body: CreateOrderBodyDto) {
-        await this.orderService.createOrder(request.user.id, body.itemID, body.quantity);
-        return {};
+        return {
+            orderID: await this.orderService.createOrder(request.user.id, body.itemID, body.quantity)
+        };
     }
 
     @Post('/order/:id/cancel')

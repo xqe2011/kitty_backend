@@ -35,10 +35,10 @@ describe('FeedbackService', () => {
     });
 
     test("createFeedback() - CatID is number", async () => {
-        dependencies["FeedbackRepository"].insert = jest.fn().mockResolvedValueOnce({ raw: { insertId: 8123 } });
+        dependencies["FeedbackRepository"].insert = jest.fn().mockResolvedValueOnce({ identifiers: [ {id: 8123} ] });
         dependencies["FeedbackPhotoRepository"].insert = jest.fn();
         dependencies["FileService"].getFileNameByToken = jest.fn().mockReturnValueOnce("heeeello.jpg");
-        await service.createFeedback(FeedbackType.CAT, 888, 999, "abcd", ["token1"]);
+        const data = await service.createFeedback(FeedbackType.CAT, 888, 999, "abcd", ["token1"]);
         expect(dependencies["FeedbackRepository"].insert).toBeCalledWith({
             type: FeedbackType.CAT,
             cat: {
@@ -57,13 +57,14 @@ describe('FeedbackService', () => {
             },
             fileName: "heeeello.jpg"
         });
+        expect(data).toEqual(8123);
     });
 
     test("createFeedback() - CatID is undefined", async () => {
-        dependencies["FeedbackRepository"].insert = jest.fn().mockResolvedValueOnce({ raw: { insertId: 8123 } });
+        dependencies["FeedbackRepository"].insert = jest.fn().mockResolvedValueOnce({ identifiers: [ {id: 8123} ] });
         dependencies["FeedbackPhotoRepository"].insert = jest.fn();
         dependencies["FileService"].getFileNameByToken = jest.fn().mockReturnValueOnce("heeeello.jpg");
-        await service.createFeedback(FeedbackType.CAT, null, 999, "abcd", ["token1"]);
+        const data = await service.createFeedback(FeedbackType.CAT, null, 999, "abcd", ["token1"]);
         expect(dependencies["FeedbackRepository"].insert).toBeCalledWith({
             type: FeedbackType.CAT,
             cat: {
@@ -75,6 +76,7 @@ describe('FeedbackService', () => {
             progress: FeedbackProgress.PENDING,
             content: "abcd"
         });
+        expect(data).toEqual(8123);
         expect(dependencies["FileService"].getFileNameByToken).toBeCalledWith("token1");
         expect(dependencies["FeedbackPhotoRepository"].insert).toBeCalledWith({
             feedback: {

@@ -53,7 +53,8 @@ describe('OrderService', () => {
         };
         dependencies["EntityManager"].transaction = jest.fn().mockImplementation(func => func(manager));
         dependencies["PointsService"].changePoints = jest.fn();
-        await service.createOrder(2222, 1111, 3);
+        const data = await service.createOrder(2222, 1111, 3);
+        expect(data).toEqual(3333);
         expect(dependencies["EntityManager"].transaction).toBeCalledTimes(1);
         expect(orderRepository.insert).toBeCalledWith({
             user: {

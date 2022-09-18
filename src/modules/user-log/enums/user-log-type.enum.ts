@@ -16,4 +16,16 @@ export enum UserLogType {
 
     /** 阅读文章 */
     VIEW_ARTICLE = '5',
+
+    /** 点赞 */
+    LIKE = '6',
+
+    /** 反馈 */
+    FEEDBACK = '7',
+
+    /** 购买商品 */
+    BUY = '8',
+
+    /** 查看商品 */
+    VIEW_SHOP = '9',
 }

@@ -37,6 +37,7 @@ export class PhotoService implements OnApplicationBootstrap{
      * @param latitude 纬度
      * @param longitude 经度
      * @param positionAccuration 位置精度
+     * @return 照片ID
      */
     async createUserPhoto(userID: number, catID: number, fileToken: string, comment: string, compassAngle: number, latitude: number, longitude: number, positionAccuration: number) {
         const rawFileName = typeof fileToken == "string" ? this.fileService.getFileNameByToken(fileToken) : undefined;
@@ -52,10 +53,10 @@ export class PhotoService implements OnApplicationBootstrap{
             throw new ConflictException('File Name exists!');
         }
         const enableCensor = await this.settingService.getSetting("cats.photo.censor");
-        await this.entityManager.transaction(async manager => {
+        return await this.entityManager.transaction(async manager => {
             const commentsAreaID = await this.commentsAreaService.createArea(manager);
             const likeableEntityID = await this.likeableEntityService.createEntity(false, manager);
-            await manager.insert(CatPhoto, {
+            return (await manager.insert(CatPhoto, {
                 type: enableCensor ? CatPhotoType.PEDNING : CatPhotoType.OTHERS,
                 user: {
                     id: userID,
@@ -71,7 +72,7 @@ export class PhotoService implements OnApplicationBootstrap{
                 compassAngle,
                 positionAccuration,
                 position: longitude && latitude ? `POINT(${longitude} ${latitude})` : undefined,
-            });
+            })).identifiers[0].id;
         });
     }
 

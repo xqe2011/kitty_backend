@@ -79,12 +79,13 @@ describe('PhotoService', () => {
         dependencies["CatPhotoRepository"].count = jest.fn().mockResolvedValue(0);
         dependencies["FileService"].getFileNameByToken = jest.fn().mockReturnValue("123.jpg");
         const manager = {
-            insert: jest.fn()
+            insert: jest.fn().mockResolvedValue({ identifiers: [ {id: 3333} ] })
         };
         dependencies["EntityManager"].transaction = jest.fn().mockImplementation(func => func(manager));
         dependencies["CommentsAreaService"].createArea = jest.fn().mockResolvedValueOnce(9999);
         dependencies["LikeableEntityService"].createEntity = jest.fn().mockResolvedValueOnce(888);
-        await service.createUserPhoto(2222, 3333, "file|123.jpg|0|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=", "我是BUG,我现在很慌[狗头]", undefined, undefined, undefined, undefined);
+        const data = await service.createUserPhoto(2222, 3333, "file|123.jpg|0|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=", "我是BUG,我现在很慌[狗头]", undefined, undefined, undefined, undefined);
+        expect(data).toEqual(3333);
         expect(dependencies["EntityManager"].transaction).toBeCalledTimes(1);
         expect(dependencies["CommentsAreaService"].createArea).toBeCalledWith(manager);
         expect(dependencies["LikeableEntityService"].createEntity).toBeCalledWith(false, manager);
@@ -121,12 +122,13 @@ describe('PhotoService', () => {
         dependencies["CatPhotoRepository"].count = jest.fn().mockResolvedValue(0);
         dependencies["FileService"].getFileNameByToken = jest.fn().mockReturnValue("123.jpg");
         const manager = {
-            insert: jest.fn()
+            insert: jest.fn().mockResolvedValue({ identifiers: [ {id: 3333} ] })
         };
         dependencies["EntityManager"].transaction = jest.fn().mockImplementation(func => func(manager));
         dependencies["CommentsAreaService"].createArea = jest.fn().mockResolvedValueOnce(9999);
         dependencies["LikeableEntityService"].createEntity = jest.fn().mockResolvedValueOnce(888);
-        await service.createUserPhoto(2222, 3333, "file|123.jpg|0|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=", "我是BUG,我现在很慌[狗头]", 30.33, 22.902683, 113.87516, 3);
+        const data = await service.createUserPhoto(2222, 3333, "file|123.jpg|0|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=", "我是BUG,我现在很慌[狗头]", 30.33, 22.902683, 113.87516, 3);
+        expect(data).toEqual(3333);
         expect(dependencies["EntityManager"].transaction).toBeCalledTimes(1);
         expect(dependencies["CommentsAreaService"].createArea).toBeCalledWith(manager);
         expect(dependencies["LikeableEntityService"].createEntity).toBeCalledWith(false, manager);
@@ -162,12 +164,13 @@ describe('PhotoService', () => {
         dependencies["CatPhotoRepository"].count = jest.fn().mockResolvedValue(0);
         dependencies["FileService"].getFileNameByToken = jest.fn();
         const manager = {
-            insert: jest.fn()
+            insert: jest.fn().mockResolvedValue({ identifiers: [ {id: 3333} ] })
         };
         dependencies["EntityManager"].transaction = jest.fn().mockImplementation(func => func(manager));
         dependencies["CommentsAreaService"].createArea = jest.fn().mockResolvedValueOnce(9999);
         dependencies["LikeableEntityService"].createEntity = jest.fn().mockResolvedValueOnce(888);
-        await service.createUserPhoto(2222, 3333, null, "我是BUG,我现在很慌[狗头]", 30.33, 22.902683, 113.87516, 3);
+        const data = await service.createUserPhoto(2222, 3333, null, "我是BUG,我现在很慌[狗头]", 30.33, 22.902683, 113.87516, 3);
+        expect(data).toEqual(3333);
         expect(dependencies["EntityManager"].transaction).toBeCalledTimes(1);
         expect(dependencies["CommentsAreaService"].createArea).toBeCalledWith(manager);
         expect(dependencies["LikeableEntityService"].createEntity).toBeCalledWith(false, manager);
@@ -198,12 +201,13 @@ describe('PhotoService', () => {
         dependencies["CatPhotoRepository"].count = jest.fn().mockResolvedValue(0);
         dependencies["FileService"].getFileNameByToken = jest.fn().mockReturnValue("123.jpg");
         const manager = {
-            insert: jest.fn()
+            insert: jest.fn().mockResolvedValue({ identifiers: [ {id: 3333} ] })
         };
         dependencies["EntityManager"].transaction = jest.fn().mockImplementation(func => func(manager));
         dependencies["CommentsAreaService"].createArea = jest.fn().mockResolvedValueOnce(9999);
         dependencies["LikeableEntityService"].createEntity = jest.fn().mockResolvedValueOnce(888);
-        await service.createUserPhoto(2222, 3333, "file|123.jpg|0|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=", "我是BUG,我现在很慌[狗头]", undefined, undefined, undefined, undefined);
+        const data = await service.createUserPhoto(2222, 3333, "file|123.jpg|0|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=", "我是BUG,我现在很慌[狗头]", undefined, undefined, undefined, undefined);
+        expect(data).toEqual(3333);
         expect(dependencies["EntityManager"].transaction).toBeCalledTimes(1);
         expect(dependencies["CommentsAreaService"].createArea).toBeCalledWith(manager);
         expect(dependencies["LikeableEntityService"].createEntity).toBeCalledWith(false, manager);

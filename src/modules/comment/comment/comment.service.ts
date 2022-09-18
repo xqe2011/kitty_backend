@@ -112,6 +112,7 @@ export class CommentService implements OnApplicationBootstrap{
      * @param parentID 父评论ID,可为空,若不为空,则父评论必须没有父评论
      * @param conversationID 对话ID,可为空
      * @param content 评论内容
+     * @return 评论ID
      */
     async createComment(userID: number, areaID: number, parentID: number | null, conversationID: number | null, content: string) {
         let comment = new Comment();
@@ -137,6 +138,7 @@ export class CommentService implements OnApplicationBootstrap{
             { id: comment.id },
             { conversationID: comment.conversationID },
         );
+        return comment.id;
     }
 
     /**
