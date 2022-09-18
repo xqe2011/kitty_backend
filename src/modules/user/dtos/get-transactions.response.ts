@@ -3,7 +3,7 @@ import { PointsTransactionReason } from '../enums/points-transaction-reason.enum
 
 export class GetTransactionResponseDto {
     @ApiProperty({
-        description: '积分变化原因,0表示管理员加减积分,1表示完成成就,2表示使用猫咪雷达功能,3表示随手拍,4表示猫咪状态反馈/BUG反馈,5表示购买商品',
+        description: '积分变化原因,0表示管理员加减积分,1表示完成成就,2表示使用猫咪雷达功能,3表示随手拍,4表示猫咪状态反馈/BUG反馈,5表示购买商品,6表示购买商品退款',
         enum: PointsTransactionReason,
     })
     reason: PointsTransactionReason;

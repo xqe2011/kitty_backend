@@ -2,10 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { createMocker } from 'test/utils/create-mocker.function';
 import { MockedObject } from 'test/utils/mocked-object';
 import { Role } from '../enums/role.enum';
-import { UsersService } from './users.service';
+import { UserService } from './user.service';
 
-describe('UsersService', () => {
-    let service: UsersService;
+describe('UserService', () => {
+    let service: UserService;
     /* 所有依赖返回的值,可以通过这个Mock类方法 */
     let dependencies: { 
         "UserRepository": MockedObject,
@@ -19,12 +19,12 @@ describe('UsersService', () => {
             "UserRepository": {}
         };
         const module: TestingModule = await Test.createTestingModule({
-            providers: [UsersService],
+            providers: [UserService],
         })
         .useMocker(createMocker(dependencies))
         .compile();
 
-        service = module.get<UsersService>(UsersService);
+        service = module.get<UserService>(UserService);
     });
 
     test('should be defined', () => {

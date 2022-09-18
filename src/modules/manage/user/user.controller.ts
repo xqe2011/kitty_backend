@@ -4,7 +4,7 @@ import { Role } from 'src/modules/user/enums/role.enum';
 import { Roles } from 'src/modules/auth/roles/roles.decorator';
 import { RolesGuard } from 'src/modules/auth/roles/roles.guard';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags, } from '@nestjs/swagger';
-import { UsersService } from 'src/modules/user/user/users.service';
+import { UserService } from 'src/modules/user/user/user.service';
 import { GetUserInfoParamDto } from '../dtos/get-user-info.param';
 import { GetUserInfoResponseDto } from '../dtos/get-user-info.response';
 
@@ -15,7 +15,7 @@ import { GetUserInfoResponseDto } from '../dtos/get-user-info.response';
 @ApiTags('管理')
 export class UserController {
     constructor(
-        private usersService: UsersService
+        private userService: UserService
     ) { }
 
     @Get('user/:id')
@@ -28,7 +28,7 @@ export class UserController {
         type: GetUserInfoResponseDto
     })
     async getUserInfo(@Param() param: GetUserInfoParamDto) {
-        return await this.usersService.getUserInfoByID(param.id, true);
+        return await this.userService.getUserInfoByID(param.id, true);
     }
 
 }

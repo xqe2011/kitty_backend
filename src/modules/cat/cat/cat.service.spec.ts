@@ -70,87 +70,55 @@ describe('CatService', () => {
 
     test('getCatsListByIDs() - No specify ids', async () => {
         const createQueryBuilder = {
-            innerJoin: jest.fn(),
-            andWhere: jest.fn(),
             select: jest.fn(),
             orderBy: jest.fn(),
             limit: jest.fn(),
             offset: jest.fn(),
-            getRawMany: jest.fn().mockReturnValue([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg", haunt: "8楼"}])
+            getRawMany: jest.fn().mockReturnValue([{id: 111, name: "你好", description: "desc", coverPhoto: { fileName: "1.jpg" }, haunt: "8楼"}])
         };
+        dependencies["PhotoService"].getPhotosByCatIDAndType = jest.fn().mockResolvedValue([{ fileName: "1.jpg" }]);
         dependencies["CatRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => createQueryBuilder);
         const data1 = await service.getCatsListByIDs(undefined, 33, 44);
         expect(dependencies["CatRepository"].createQueryBuilder).toBeCalledWith('cats');
-        expect(createQueryBuilder.innerJoin).toBeCalledWith('cats.photos', 'photo');
-        expect(createQueryBuilder.andWhere).toBeCalledWith("photo.type = :type", {
-            type: CatPhotoType.COVER,
-        });
-        expect(createQueryBuilder.select).toBeCalledWith([
-            'cats.id as id',
-            'cats.name as name',
-            'cats.description as description',
-            'cats.haunt as haunt',
-            'photo.fileName as coverFileName',
-        ]);
-        expect(createQueryBuilder.orderBy).toBeCalledWith('cats.id');
+        expect(dependencies["PhotoService"].getPhotosByCatIDAndType).toBeCalledWith(111, CatPhotoType.COVER, 1, 0);
+        expect(createQueryBuilder.select).toBeCalledWith(['id', 'name', 'description', 'haunt']);
+        expect(createQueryBuilder.orderBy).toBeCalledWith('id');
         expect(createQueryBuilder.limit).toBeCalledWith(33);
         expect(createQueryBuilder.offset).toBeCalledWith(44);
         expect(createQueryBuilder.getRawMany).toBeCalledWith();
-        expect(data1).toEqual([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg", haunt: "8楼"}]);
+        expect(data1).toEqual([{id: 111, name: "你好", description: "desc", coverPhoto: { fileName: "1.jpg" }, haunt: "8楼"}]);
     });
 
     test('getCatsListByIDs() - Specify ids', async () => {
         const createQueryBuilder = {
-            innerJoin: jest.fn(),
-            andWhere: jest.fn(),
             select: jest.fn(),
             andWhereInIds: jest.fn(),
             orderBy: jest.fn(),
             setParameter: jest.fn(),
-            getRawMany: jest.fn().mockResolvedValueOnce([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg", haunt: "8楼"}])
+            getRawMany: jest.fn().mockResolvedValueOnce([{id: 111, name: "你好", description: "desc", coverPhoto: { fileName: "1.jpg" }, haunt: "8楼"}])
         };
+        dependencies["PhotoService"].getPhotosByCatIDAndType = jest.fn().mockResolvedValue([{ fileName: "1.jpg" }]);
         dependencies["CatRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => createQueryBuilder);
         const data1 = await service.getCatsListByIDs([1, 2, 3, 4, 5, 6, 7, 8, 9], 5, 4);
         const selectIDs = [5, 6, 7, 8, 9];
         expect(dependencies["CatRepository"].createQueryBuilder).toBeCalledWith('cats');
-        expect(createQueryBuilder.innerJoin).toBeCalledWith('cats.photos', 'photo');
-        expect(createQueryBuilder.andWhere).toBeCalledWith("photo.type = :type", {
-            type: CatPhotoType.COVER,
-        });
-        expect(createQueryBuilder.select).toBeCalledWith([
-            'cats.id as id',
-            'cats.name as name',
-            'cats.description as description',
-            'cats.haunt as haunt',
-            'photo.fileName as coverFileName',
-        ]);
+        expect(dependencies["PhotoService"].getPhotosByCatIDAndType).toBeCalledWith(111, CatPhotoType.COVER, 1, 0);
+        expect(createQueryBuilder.select).toBeCalledWith(['id', 'name', 'description', 'haunt']);
         expect(createQueryBuilder.andWhereInIds).toBeCalledWith(selectIDs);
         expect(createQueryBuilder.orderBy).toBeCalledWith('FIELD(cats.id, :ids)');
         expect(createQueryBuilder.setParameter).toBeCalledWith('ids', selectIDs);
         expect(createQueryBuilder.getRawMany).toBeCalledWith();
-        expect(data1).toEqual([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg", haunt: "8楼"}]);
+        expect(data1).toEqual([{id: 111, name: "你好", description: "desc", coverPhoto: { fileName: "1.jpg" }, haunt: "8楼"}]);
     });
 
     test('getCatsListByIDs() - Array but start out of range', async () => {
         const createQueryBuilder = {
-            innerJoin: jest.fn(),
-            andWhere: jest.fn(),
             select: jest.fn(),
         };
         dependencies["CatRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => createQueryBuilder);
         const data1 = await service.getCatsListByIDs([1], 5, 4);
         expect(dependencies["CatRepository"].createQueryBuilder).toBeCalledWith('cats');
-        expect(createQueryBuilder.innerJoin).toBeCalledWith('cats.photos', 'photo');
-        expect(createQueryBuilder.andWhere).toBeCalledWith("photo.type = :type", {
-            type: CatPhotoType.COVER,
-        });
-        expect(createQueryBuilder.select).toBeCalledWith([
-            'cats.id as id',
-            'cats.name as name',
-            'cats.description as description',
-            'cats.haunt as haunt',
-            'photo.fileName as coverFileName',
-        ]);
+        expect(createQueryBuilder.select).toBeCalledWith(['id', 'name', 'description', 'haunt']);
         expect(data1).toEqual([]);
     });
 

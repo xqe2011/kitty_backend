@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class HttpExceptionResponseDto {
+export class UnauthorizedExceptionResponseDto {
     @ApiProperty({ description: 'HTTP状态码' })
     status: number;
 

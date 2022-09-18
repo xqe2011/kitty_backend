@@ -12,14 +12,16 @@ import { UploadPhotoResponseDto } from '../dtos/upload-photo.response';
 import { CatPhotoType } from '../enums/cat-photo-type.enum';
 import { GetOtherPhotosQueryDto } from '../dtos/get-other-photos.query';
 
-@Controller('/cats')
+@Controller('/')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiBearerAuth()
 @ApiTags('猫咪')
 export class PhotoController {
-    constructor(private photoService: PhotoService) {}
+    constructor(
+        private photoService: PhotoService
+    ) {}
 
-    @Post('/photos')
+    @Post('/cats/photos')
     @Roles(Role.Admin, Role.RegisteredUser)
     @ApiOperation({ summary: '发布猫咪随手拍' })
     @ApiOkResponse({
@@ -41,7 +43,7 @@ export class PhotoController {
         return {};
     }
 
-    @Get('/:id/photos/other')
+    @Get('/cat/:id/photos/other')
     @Roles(Role.Admin, Role.RegisteredUser, Role.NormalUser)
     @ApiOperation({
         summary: '获取其他类型的猫咪照片',

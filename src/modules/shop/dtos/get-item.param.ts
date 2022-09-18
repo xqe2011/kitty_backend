@@ -6,9 +6,6 @@ import { IsItemIDValidValidator } from '../validators/is-itemid-valid.validator'
 export class GetItemParamDto {
     @Type(() => Number)
     @Validate(IsItemIDValidValidator)
-    @ApiProperty({
-        description: '商品ID',
-        minimum: 1
-    })
+    @ApiProperty({ description: '商品ID', minimum: 1 })
     id: number;
 }

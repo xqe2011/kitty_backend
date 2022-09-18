@@ -1,13 +1,13 @@
 import { Body, Controller, Get, Param, Put, Req, UseGuards } from '@nestjs/common';
 import { UpdateUserInfoBodyDto } from '../dtos/update-user-info.body';
-import { UsersService } from '../user/users.service';
+import { UserService } from './user.service';
 import { Roles } from 'src/modules/auth/roles/roles.decorator';
 import { Role } from 'src/modules/user/enums/role.enum';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUserInfoParamDto } from '../dtos/get-user-info.param';
+import { GetOtherUserInfoParamDto } from '../dtos/get-other-user-info.param';
 import { RolesGuard } from 'src/modules/auth/roles/roles.guard';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags, } from '@nestjs/swagger';
-import { GetUserInfoResponseDto } from '../dtos/get-user-info.response';
+import { GetOtherUserInfoResponseDto } from '../dtos/get-other-user-info.response';
 import { GetCurrentUserInfoResponseDto } from '../dtos/get-current-user-info.response';
 import { UpdateUserInfoResponseDto } from '../dtos/update-user-info.response';
 
@@ -15,8 +15,10 @@ import { UpdateUserInfoResponseDto } from '../dtos/update-user-info.response';
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiBearerAuth()
 @ApiTags('用户')
-export class UserinfoController {
-    constructor(private usersService: UsersService) {}
+export class UserController {
+    constructor(
+        private userService: UserService
+    ) {}
 
     @Put('/user')
     @Roles(Role.NormalUser, Role.RegisteredUser, Role.Admin)
@@ -26,7 +28,7 @@ export class UserinfoController {
         type: UpdateUserInfoResponseDto,
     })
     async update(@Req() request, @Body() body: UpdateUserInfoBodyDto) {
-        await this.usersService.updateUserinfoAndRole(
+        await this.userService.updateUserinfoAndRole(
             request.user.id,
             body.nickName,
             body.avatarFileToken,
@@ -39,10 +41,10 @@ export class UserinfoController {
     @ApiOperation({ summary: '获取用户信息' })
     @ApiOkResponse({
         description: '获取成功',
-        type: GetUserInfoResponseDto,
+        type: GetOtherUserInfoResponseDto,
     })
-    async getInfo(@Param() param: GetUserInfoParamDto) {
-        return await this.usersService.getUserInfoByID(param.id, false);
+    async getInfo(@Param() param: GetOtherUserInfoParamDto) {
+        return await this.userService.getUserInfoByID(param.id, false);
     }
 
     @Get('/user')
@@ -53,6 +55,6 @@ export class UserinfoController {
         type: GetCurrentUserInfoResponseDto,
     })
     async getCurrentInfo(@Req() request) {
-        return await this.usersService.getUserInfoByID(request.user.id, true);
+        return await this.userService.getUserInfoByID(request.user.id, true);
     }
 }

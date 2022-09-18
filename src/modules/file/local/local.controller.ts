@@ -2,7 +2,7 @@ import { BadRequestException, Body, Controller, Post, UploadedFile, UseIntercept
 import { FileInterceptor } from '@nestjs/platform-express';
 import { LocalService } from './local.service';
 import { UploadLocalBodyDto } from '../dtos/upload-local.body';
-import { ApiConflictResponse, ApiConsumes, ApiCreatedResponse, ApiOperation, ApiTags, getSchemaPath, } from '@nestjs/swagger';
+import { ApiConflictResponse, ApiConsumes, ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UploadLocalResponseDto } from '../dtos/upload-local.response';
 import { HttpExceptionResponseDto } from 'src/docs/dtos/http-exception.response';
 
@@ -24,9 +24,7 @@ export class LocalController {
     @ApiConsumes('multipart/form-data')
     @ApiConflictResponse({
         description: '文件重复上传',
-        schema: {
-            $ref: getSchemaPath(HttpExceptionResponseDto),
-        },
+        type: HttpExceptionResponseDto
     })
     async uploadFile(@UploadedFile() file: Express.Multer.File, @Body() body: UploadLocalBodyDto) {
         if (file === undefined) {

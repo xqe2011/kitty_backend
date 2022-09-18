@@ -265,7 +265,7 @@ describe('PhotoService', () => {
             take: jest.fn(),
             skip: jest.fn(),
             orderBy: jest.fn(),
-            getRawMany: jest.fn().mockReturnValue([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg"}])
+            getRawMany: jest.fn().mockReturnValue([{id: 111, name: "你好", description: "desc", fileName: "1.jpg"}])
         };
         dependencies["CatPhotoRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => createQueryBuilder);
         const data1 = await service.getPhotosByCatIDAndType(2222, CatPhotoType.OTHERS, 100, 0);
@@ -281,7 +281,7 @@ describe('PhotoService', () => {
         expect(createQueryBuilder.take).toBeCalledWith(100);
         expect(createQueryBuilder.skip).toBeCalledWith(0);
         expect(createQueryBuilder.orderBy).toBeCalledWith("createdDate", "DESC");
-        expect(data1).toEqual([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg"}]);
+        expect(data1).toEqual([{id: 111, name: "你好", description: "desc", fileName: "1.jpg"}]);
     });
 
     test('getPhotos()', async () => {
@@ -290,7 +290,7 @@ describe('PhotoService', () => {
             take: jest.fn(),
             skip: jest.fn(),
             orderBy: jest.fn(),
-            getRawMany: jest.fn().mockReturnValue([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg", type: CatPhotoType.PEDNING}])
+            getRawMany: jest.fn().mockReturnValue([{id: 111, name: "你好", description: "desc", fileName: "1.jpg", type: CatPhotoType.PEDNING}])
         };
         dependencies["CatPhotoRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => createQueryBuilder);
         const data1 = await service.getPhotos(10, 0);
@@ -300,7 +300,7 @@ describe('PhotoService', () => {
         expect(createQueryBuilder.take).toBeCalledWith(10);
         expect(createQueryBuilder.skip).toBeCalledWith(0);
         expect(createQueryBuilder.orderBy).toBeCalledWith("createdDate", "DESC");
-        expect(data1).toEqual([{id: 111, name: "你好", description: "desc", coverFileName: "1.jpg", type: CatPhotoType.PEDNING}]);
+        expect(data1).toEqual([{id: 111, name: "你好", description: "desc", fileName: "1.jpg", type: CatPhotoType.PEDNING}]);
     });
 
     test('updatePhotoInfo()', async () => {

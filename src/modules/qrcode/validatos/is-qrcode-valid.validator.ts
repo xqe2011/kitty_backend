@@ -4,8 +4,7 @@ import { QRCodeService } from '../qrcode/qrcode.service';
 
 @ValidatorConstraint({ async: true })
 @Injectable()
-export class IsQRCodeValidValidator implements ValidatorConstraintInterface
-{
+export class IsQRCodeValidValidator implements ValidatorConstraintInterface {
     constructor(private qrcodeService: QRCodeService) {}
 
     async validate(code: any,  args: ValidationArguments) {

@@ -17,7 +17,9 @@ import { SearchCatsResponseDto } from '../dtos/search-cats.response';
 @ApiBearerAuth()
 @ApiTags('猫咪')
 export class CatController {
-    constructor(private catService: CatService) { }
+    constructor(
+        private catService: CatService
+    ) { }
 
     @Get('/cats')
     @Roles(Role.NormalUser, Role.RegisteredUser, Role.Admin)
@@ -31,7 +33,7 @@ export class CatController {
         return await this.catService.getCatsListByIDs(undefined, query.limit, query.start);
     }
 
-    @Get('/cats/:id')
+    @Get('/cat/:id')
     @Roles(Role.NormalUser, Role.RegisteredUser, Role.Admin)
     @ApiOperation({ summary: '获取猫咪详细信息' })
     @ApiOkResponse({
@@ -42,7 +44,7 @@ export class CatController {
         return await this.catService.getCatInfoWithSelectedAndCoverPhotos(param.id);
     }
 
-    @Get('/search/cats')
+    @Get('/cats/search')
     @Roles(Role.NormalUser, Role.RegisteredUser, Role.Admin)
     @ApiOperation({ summary: '搜索猫咪' })
     @ApiOkResponse({

@@ -6,9 +6,6 @@ import { IsOrderIDValidValidator } from '../validators/is-orderid-valid.validato
 export class CancelOrderParamDto {
     @Type(() => Number)
     @Validate(IsOrderIDValidValidator)
-    @ApiProperty({
-        description: '订单ID',
-        minimum: 1
-    })
+    @ApiProperty({ description: '订单ID', minimum: 1 })
     id: number;
 }

@@ -4,9 +4,7 @@ import { LikeableEntityService } from '../likeable-entity/likeable-entity.servic
 
 @ValidatorConstraint({ async: true })
 @Injectable()
-export class IsLikeableEntityIDValidValidator
-    implements ValidatorConstraintInterface
-{
+export class IsLikeableEntityIDValidValidator implements ValidatorConstraintInterface {
     constructor(private likeableEntityService: LikeableEntityService) {}
 
     async validate(entityID: any) {

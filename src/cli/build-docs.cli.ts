@@ -4,7 +4,9 @@ import { AppModule } from '../app.module';
 import { SwaggerModule, DocumentBuilder, OpenAPIObject, getSchemaPath } from '@nestjs/swagger';
 import { mkdir, pathExists, remove, writeFile } from 'fs-extra';
 import { Logger } from '@nestjs/common';
-import { HttpExceptionResponseDto } from 'src/docs/dtos/http-exception.response';
+import { ForbiddenExceptionResponseDto } from 'src/docs/dtos/forbidden-exception.response';
+import { UnauthorizedExceptionResponseDto } from 'src/docs/dtos/unauthorized-exception.response';
+import { BadRequestExceptionResponseDto } from 'src/docs/dtos/bad-request-exception.response';
 
 function addLogo(document: OpenAPIObject) {
     document.info['x-logo'] = {
@@ -21,26 +23,35 @@ function addGlobalExceptions(document: OpenAPIObject) {
     if (document.components['responses'] === undefined) {
         document.components['responses'] = {};
     }
-    const errorAllContent = {
+    document.components.responses['403'] = {
+        description: '无权限',
         content: {
             'application/json': {
                 schema: {
-                    $ref: getSchemaPath(HttpExceptionResponseDto),
+                    $ref: getSchemaPath(ForbiddenExceptionResponseDto),
                 },
             },
         },
     };
-    document.components.responses['403'] = {
-        description: '无权限',
-        ...errorAllContent,
-    };
     document.components.responses['401'] = {
         description: 'Authorization字段无效',
-        ...errorAllContent,
+        content: {
+            'application/json': {
+                schema: {
+                    $ref: getSchemaPath(UnauthorizedExceptionResponseDto),
+                },
+            },
+        },
     };
     document.components.responses['400'] = {
         description: '参数错误',
-        ...errorAllContent,
+        content: {
+            'application/json': {
+                schema: {
+                    $ref: getSchemaPath(BadRequestExceptionResponseDto),
+                },
+            },
+        },
     };
     for (const path in document.paths) {
         for (const method in document.paths[path]) {
@@ -67,6 +78,8 @@ async function bootstrap() {
     let version = process.env["GITHUB_SHA"];
     if (version !== undefined) {
         version = version.slice(0, 7);
+    } else {
+        version = "local";
     }
     const config = new DocumentBuilder()
         .setTitle('Kitty后端APi服务')
@@ -74,7 +87,7 @@ async function bootstrap() {
         .addBearerAuth({ name: '统一认证', type: 'http' })
         .build();
     const document = SwaggerModule.createDocument(app, config, {
-        extraModels: [HttpExceptionResponseDto],
+        extraModels: [BadRequestExceptionResponseDto, ForbiddenExceptionResponseDto, UnauthorizedExceptionResponseDto],
     });
     /** 批量添加全局错误 */
     addGlobalExceptions(document);

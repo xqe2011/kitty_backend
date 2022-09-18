@@ -6,7 +6,9 @@ import { SettingService } from './setting.service';
 @Controller('settings')
 @ApiTags('配置')
 export class SettingController {
-    constructor(private settingService: SettingService) {}
+    constructor(
+        private settingService: SettingService
+    ) {}
 
     @Post('/')
     @ApiOperation({summary: '获取配置' })
@@ -20,6 +22,7 @@ export class SettingController {
             description: '配置键',
             type: 'object',
             additionalProperties: {
+                nullable: true,
                 description: '配置值',
                 type: 'string',
             },

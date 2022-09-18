@@ -19,10 +19,10 @@ export class GetCommentsResponseDto {
     @ApiProperty({ description: '照片发布者ID' })
     userID: number;
 
-    @ApiProperty({ description: '父评论ID' })
+    @ApiProperty({ description: '父评论ID', minimum: 1, nullable: true })
     parentCommentID: number;
 
-    @ApiProperty({ description: '评论区ID' })
+    @ApiProperty({ description: '评论区ID', minimum: 1 })
     areaID: number;
 
     @ApiProperty({ description: '发表时间' })

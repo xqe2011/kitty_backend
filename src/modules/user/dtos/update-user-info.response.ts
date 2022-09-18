@@ -1,1 +1,3 @@
-export class UpdateUserInfoResponseDto {}
+export class UpdateUserInfoResponseDto {
+    
+}

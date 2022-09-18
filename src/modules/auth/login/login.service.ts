@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService } from 'src/modules/user/user/users.service';
+import { UserService } from 'src/modules/user/user/user.service';
 import { MiniprogramService } from 'src/modules/wechat/miniprogram/miniprogram.service';
 import { JwtHelperService } from '../jwt-helper/jwt-helper.service';
 
 @Injectable()
 export class LoginService {
     constructor(
-        private usersService: UsersService,
+        private userService: UserService,
         private jwtHelperService: JwtHelperService,
         private miniprogramService: MiniprogramService,
     ) {}
@@ -18,8 +18,8 @@ export class LoginService {
      */
     async loginByMiniProgramCode(code: string) {
         const info = await this.miniprogramService.getIDsAndSessionKeyByCode(code);
-        const user = await this.usersService.getOrCreateUserByUnionIDOrOpenID(info.unionID, info.openID);
-        await this.usersService.updateLoginDateToNow(user.id);
+        const user = await this.userService.getOrCreateUserByUnionIDOrOpenID(info.unionID, info.openID);
+        await this.userService.updateLoginDateToNow(user.id);
         return {
             role: user.role,
             nickName: user.nickName,

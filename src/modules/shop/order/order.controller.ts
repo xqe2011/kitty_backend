@@ -18,7 +18,9 @@ import { CancelOrderResponseDto } from '../dtos/cancel-order.response';
 @ApiBearerAuth()
 @ApiTags('商店')
 export class OrderController {
-    constructor(private orderService: OrderService) { }
+    constructor(
+        private orderService: OrderService
+    ) { }
 
     @Get('/orders')
     @Roles(Role.RegisteredUser, Role.Admin)
@@ -32,7 +34,7 @@ export class OrderController {
         isArray: true,
     })
     async getOrdersList(@Req() request, @Query() query: GetOrdersQueryDto) {
-        return await this.orderService.getOrdersList(request.user.id, query.limit, query.start);
+        return await this.orderService.searchOrders(undefined, request.user.id, query.limit, query.start);
     }
 
     @Post('/orders')

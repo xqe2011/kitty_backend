@@ -16,7 +16,7 @@ describe('OrderService', () => {
         "EntityManager": MockedObject,
         "PointsService": MockedObject,
         "SettingService": MockedObject,
-        "UsersService": MockedObject
+        "UserService": MockedObject
     };
 
     beforeEach(async () => {
@@ -26,7 +26,7 @@ describe('OrderService', () => {
             "EntityManager": {},
             "PointsService": {},
             "SettingService": {},
-            "UsersService": {}
+            "UserService": {}
         };
         const module: TestingModule = await Test.createTestingModule({
             providers: [OrderService],
@@ -39,33 +39,6 @@ describe('OrderService', () => {
 
     test('should be defined', () => {
         expect(service).toBeDefined();
-    });
-
-    test('getOrdersList()', async () => {
-        const createQueryBuilder = {
-            andWhere: jest.fn(),
-            take: jest.fn(),
-            skip: jest.fn(),
-            select: jest.fn(),
-            getRawMany: jest.fn().mockResolvedValue([{ id: 111 }, { id: 222 }])
-        };
-        dependencies["OrderRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => createQueryBuilder);
-        const data1 = await service.getOrdersList(2222, 10, 0);
-        expect(dependencies["OrderRepository"].createQueryBuilder).toBeCalledWith('order');
-        expect(createQueryBuilder.andWhere).toBeCalledWith({ user: { id: 2222 } });
-        expect(createQueryBuilder.take).toBeCalledWith(10);
-        expect(createQueryBuilder.skip).toBeCalledWith(0);
-        expect(createQueryBuilder.select).toBeCalledWith([
-            'id',
-            'itemId as itemID',
-            'unitPrice',
-            'quantity',
-            'totalPrice',
-            'status',
-            'createdDate'
-        ]);
-        expect(createQueryBuilder.getRawMany).toBeCalledWith();
-        expect(data1).toEqual([{ id: 111 }, { id: 222 }]);
     });
 
     test('createOrder()', async () => {
@@ -289,26 +262,26 @@ describe('OrderService', () => {
     });
 
     test('isOrderBelongToUser() - Exists', async () => {
-        dependencies["UsersService"].isUserExists = jest.fn().mockResolvedValueOnce(true);
+        dependencies["UserService"].isUserExists = jest.fn().mockResolvedValueOnce(true);
         dependencies["OrderRepository"].count = jest.fn().mockResolvedValueOnce(1);
         const data1 = await service.isOrderBelongToUser(1111, 2222);
         expect(dependencies["OrderRepository"].count).toBeCalledWith({
             id: 1111,
             user: { id: 2222 },
         });
-        expect(dependencies["UsersService"].isUserExists).toBeCalledWith(2222);
+        expect(dependencies["UserService"].isUserExists).toBeCalledWith(2222);
         expect(data1).toEqual(true);
     });
 
     test('isOrderBelongToUser() - Not Exists', async () => {
-        dependencies["UsersService"].isUserExists = jest.fn().mockResolvedValueOnce(true);
+        dependencies["UserService"].isUserExists = jest.fn().mockResolvedValueOnce(true);
         dependencies["OrderRepository"].count = jest.fn().mockResolvedValueOnce(0);
         const data1 = await service.isOrderBelongToUser(1111, 2222);
         expect(dependencies["OrderRepository"].count).toBeCalledWith({
             id: 1111,
             user: { id: 2222 },
         });
-        expect(dependencies["UsersService"].isUserExists).toBeCalledWith(2222);
+        expect(dependencies["UserService"].isUserExists).toBeCalledWith(2222);
         expect(data1).toEqual(false);
     });
 

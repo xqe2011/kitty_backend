@@ -10,14 +10,16 @@ import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags, } from '@nestjs/sw
 import { GetArticlesResponseDto } from '../dtos/get-articles.response';
 import { GetArticleResponseDto } from '../dtos/get-article.response';
 
-@Controller('articles')
+@Controller('/')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiBearerAuth()
 @ApiTags('公告和文章')
 export class ArticleController {
-    constructor(private articleService: ArticleService) {}
+    constructor(
+        private articleService: ArticleService
+    ) {}
 
-    @Get('/')
+    @Get('/articles')
     @Roles(Role.NormalUser, Role.RegisteredUser, Role.Admin)
     @ApiOperation({ summary: '获取文章列表' })
     @ApiOkResponse({
@@ -29,7 +31,7 @@ export class ArticleController {
         return this.articleService.getArticlesList(query.limit, query.start);
     }
 
-    @Get('/:id')
+    @Get('/article/:id')
     @Roles(Role.NormalUser, Role.RegisteredUser, Role.Admin)
     @ApiOperation({ summary: '获取文章信息' })
     @ApiOkResponse({

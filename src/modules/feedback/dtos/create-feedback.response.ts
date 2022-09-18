@@ -1,1 +1,3 @@
-export class CreateFeedbackResponseDto {}
+export class CreateFeedbackResponseDto {
+    
+}

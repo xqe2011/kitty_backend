@@ -5,7 +5,7 @@ import { Error } from 'src/exceptions/enums/error.enum';
 import { SettingService } from 'src/modules/setting/setting/setting.service';
 import { PointsTransactionReason } from 'src/modules/user/enums/points-transaction-reason.enum';
 import { PointsService } from 'src/modules/user/points/points.service';
-import { UsersService } from 'src/modules/user/user/users.service';
+import { UserService } from 'src/modules/user/user/user.service';
 import { EntityManager, Repository } from 'typeorm';
 import { Order } from '../entities/order.entity';
 import { ShopItem } from '../entities/shop-item.entity';
@@ -20,45 +20,13 @@ export class OrderService implements OnApplicationBootstrap{
         private entityManager: EntityManager,
         private pointsService: PointsService,
         private settingService: SettingService,
-        private usersService: UsersService
+        private userService: UserService
     ) {}
 
     async onApplicationBootstrap() {
         if (await this.settingService.getSetting("shop.order.cancel_timeout_by_user") === "") {
             await this.settingService.createSetting("shop.order.cancel_timeout_by_user", 0, true);
         }
-    }
-
-    /**
-     * 获取用户订单1列表
-     * @param id 用户ID
-     * @param limit 限制数量
-     * @param start 开始位置
-     * @returns 订单信息
-     */
-    async getOrdersList(userID: number, limit: number, start: number) {
-        const queryBuildinger = this.orderRepository.createQueryBuilder('order');
-        queryBuildinger.andWhere({ user: { id: userID } });
-        queryBuildinger.select([
-            'id',
-            'itemId as itemID',
-            'unitPrice',
-            'quantity',
-            'totalPrice',
-            'status',
-            'createdDate'
-        ]);
-        queryBuildinger.take(limit);
-        queryBuildinger.skip(start);
-        return await queryBuildinger.getRawMany() as {
-            id: number;
-            itemID: number;
-            unitPrice: number;
-            quantity: number;
-            totalPrice: number;
-            status: OrderStatusType;
-            createdDate: string;
-        }[];
     }
 
     /**
@@ -140,7 +108,7 @@ export class OrderService implements OnApplicationBootstrap{
      * @returns 是否属于
      */
      async isOrderBelongToUser(id: number, userID: number) {
-        if (!this.usersService.isUserExists(userID)) return false;
+        if (!this.userService.isUserExists(userID)) return false;
         return (await this.orderRepository.count({
             id: id,
             user: { id: userID },

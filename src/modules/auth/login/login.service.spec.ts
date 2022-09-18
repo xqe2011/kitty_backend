@@ -7,7 +7,7 @@ describe('LoginService', () => {
     let service: LoginService;
     /* 所有依赖返回的值,可以通过这个Mock类方法 */
     let dependencies: { 
-        "UsersService": MockedObject,
+        "UserService": MockedObject,
         "JwtHelperService": MockedObject,
         "MiniprogramService": MockedObject,
     };
@@ -15,7 +15,7 @@ describe('LoginService', () => {
     beforeEach(async () => {
         /* 定义所有依赖,nest的依赖注入类返回实例所以我们直接注入个object,函数则使用jest.fn */
         dependencies = {
-            "UsersService": {},
+            "UserService": {},
             "JwtHelperService": {},
             "MiniprogramService": {}
         };
@@ -45,14 +45,14 @@ describe('LoginService', () => {
             unionID: "yuyu_123",
             sessionKey: "BDU:::"
         };
-        dependencies["UsersService"].updateLoginDateToNow = jest.fn();
-        dependencies["UsersService"].getOrCreateUserByUnionIDOrOpenID = jest.fn().mockReturnValue(user);
+        dependencies["UserService"].updateLoginDateToNow = jest.fn();
+        dependencies["UserService"].getOrCreateUserByUnionIDOrOpenID = jest.fn().mockReturnValue(user);
         dependencies["MiniprogramService"].getIDsAndSessionKeyByCode = jest.fn().mockReturnValue(unionData);
         dependencies["JwtHelperService"].getJWTPayloadForMiniProgram = jest.fn().mockReturnValue("jjjhhhhuuuu");
         const data = await service.loginByMiniProgramCode("abcd");
         expect(dependencies["MiniprogramService"].getIDsAndSessionKeyByCode).toBeCalledWith("abcd");
-        expect(dependencies["UsersService"].getOrCreateUserByUnionIDOrOpenID).toBeCalledWith(unionData.unionID, unionData.openID);
-        expect(dependencies["UsersService"].updateLoginDateToNow).toBeCalledWith(user.id);
+        expect(dependencies["UserService"].getOrCreateUserByUnionIDOrOpenID).toBeCalledWith(unionData.unionID, unionData.openID);
+        expect(dependencies["UserService"].updateLoginDateToNow).toBeCalledWith(user.id);
         expect(dependencies["JwtHelperService"].getJWTPayloadForMiniProgram).toBeCalledWith(user, unionData.sessionKey);
         expect(data).toEqual({
             role: user.role,

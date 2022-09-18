@@ -64,15 +64,7 @@ export class CatService {
         /* 检查ids是否合法 */
         if (ids === null || (typeof(ids) != "object" && typeof(ids) != "undefined") || (typeof(ids) == "object" && ids.length == 0)) return [];
         const queryBuildinger = this.catRepository.createQueryBuilder('cats');
-        queryBuildinger.innerJoin('cats.photos', 'photo');
-        queryBuildinger.andWhere("photo.type = :type", { type: CatPhotoType.COVER });
-        queryBuildinger.select([
-            'cats.id as id',
-            'cats.name as name',
-            'cats.description as description',
-            'cats.haunt as haunt',
-            'photo.fileName as coverFileName',
-        ]);
+        queryBuildinger.select(['id', 'name', 'description', 'haunt']);
         if (ids != undefined) {
             const selectIDs = ids.slice(start, start + limit);
             if (selectIDs.length == 0) return [];
@@ -80,17 +72,20 @@ export class CatService {
             queryBuildinger.orderBy('FIELD(cats.id, :ids)');
             queryBuildinger.setParameter('ids', selectIDs);
         } else {
-            queryBuildinger.orderBy('cats.id');
+            queryBuildinger.orderBy('id');
             queryBuildinger.limit(limit);
             queryBuildinger.offset(start);
         }
         const data = await queryBuildinger.getRawMany();
+        for (const item of data) {
+            item.coverPhoto = (await this.photoService.getPhotosByCatIDAndType(item.id, CatPhotoType.COVER, 1, 0))[0];
+        }
         return data as {
             id: number;
             name: string;
             haunt: string,
             description: string;
-            coverFileName: string;
+            coverPhoto: Awaited<ReturnType<PhotoService["getPhotosByCatIDAndType"]>>;
         }[];
     }
 

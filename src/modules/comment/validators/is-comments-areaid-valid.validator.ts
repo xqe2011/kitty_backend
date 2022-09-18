@@ -4,9 +4,7 @@ import { CommentsAreaService } from '../comments-area/comments-area.service';
 
 @ValidatorConstraint({ async: true })
 @Injectable()
-export class IsCommentsAreaIDValidValidator
-    implements ValidatorConstraintInterface
-{
+export class IsCommentsAreaIDValidValidator implements ValidatorConstraintInterface {
     constructor(private commentsAreaService: CommentsAreaService) {}
 
     async validate(commentsAreaID: any, args: ValidationArguments) {

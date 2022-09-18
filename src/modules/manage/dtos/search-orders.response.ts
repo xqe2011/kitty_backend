@@ -26,7 +26,7 @@ export class SearchOrdersResponseDto {
     })
     status: OrderStatusType;
 
-    @ApiProperty({ description: '订单取消原因' })
+    @ApiProperty({ description: '订单取消原因', nullable: true })
     cancelReason: string;
 
     @ApiProperty({ description: '创建时间' })

@@ -4,9 +4,7 @@ import { PhotoService } from '../photo/photo.service';
 
 @ValidatorConstraint({ async: true })
 @Injectable()
-export class IsPhotoIDValidValidator
-    implements ValidatorConstraintInterface
-{
+export class IsPhotoIDValidValidator implements ValidatorConstraintInterface {
     constructor(private photoService: PhotoService) {}
 
     async validate(photoID: any) {

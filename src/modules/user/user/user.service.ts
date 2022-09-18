@@ -6,7 +6,7 @@ import { User } from '../entities/user.entity';
 import { Role } from '../enums/role.enum';
 
 @Injectable()
-export class UsersService {
+export class UserService {
     constructor(
         @InjectRepository(User)
         private usersRepository: Repository<User>,

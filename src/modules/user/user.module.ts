@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { UserinfoController } from './userinfo/userinfo.controller';
-import { UsersService } from './user/users.service';
+import { UserController } from './user/user.controller';
+import { UserService } from './user/user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { PointsController } from './points/points.controller';
@@ -23,12 +23,12 @@ import { UserAchievement } from './entities/user-achievement.entity';
         FileModule,
     ],
     providers: [
-        UsersService,
+        UserService,
         PointsService,
         IsUserIDValidValidator,
         AchievementService,
     ],
-    exports: [UsersService, PointsService],
-    controllers: [UserinfoController, PointsController, AchievementController],
+    exports: [UserService, PointsService],
+    controllers: [UserController, PointsController, AchievementController],
 })
 export class UserModule {}

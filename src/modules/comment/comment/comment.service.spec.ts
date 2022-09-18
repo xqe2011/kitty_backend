@@ -13,7 +13,7 @@ describe('CommentService', () => {
     /* 所有依赖返回的值,可以通过这个Mock类方法 */
     let dependencies: { 
         "CommentRepository": MockedObject,
-        "UsersService": MockedObject,
+        "UserService": MockedObject,
         "SettingService": MockedObject
     };
 
@@ -21,7 +21,7 @@ describe('CommentService', () => {
         /* 定义所有依赖,nest的依赖注入类返回实例所以我们直接注入个object,函数则使用jest.fn */
         dependencies = {
             "CommentRepository": {},
-            "UsersService": {},
+            "UserService": {},
             "SettingService": {}
         };
         const module: TestingModule = await Test.createTestingModule({
@@ -295,26 +295,26 @@ describe('CommentService', () => {
     });
 
     test('isCommentBelongToUser() - Exists', async () => {
-        dependencies["UsersService"].isUserExists = jest.fn().mockResolvedValueOnce(true);
+        dependencies["UserService"].isUserExists = jest.fn().mockResolvedValueOnce(true);
         dependencies["CommentRepository"].count = jest.fn().mockResolvedValueOnce(1);
         const data1 = await service.isCommentBelongToUser(1111, 2222);
         expect(dependencies["CommentRepository"].count).toBeCalledWith({
             id: 1111,
             user: { id: 2222 },
         });
-        expect(dependencies["UsersService"].isUserExists).toBeCalledWith(2222);
+        expect(dependencies["UserService"].isUserExists).toBeCalledWith(2222);
         expect(data1).toEqual(true);
     });
 
     test('isCommentBelongToUser() - Not Exists', async () => {
-        dependencies["UsersService"].isUserExists = jest.fn().mockResolvedValueOnce(true);
+        dependencies["UserService"].isUserExists = jest.fn().mockResolvedValueOnce(true);
         dependencies["CommentRepository"].count = jest.fn().mockResolvedValueOnce(0);
         const data1 = await service.isCommentBelongToUser(1111, 2222);
         expect(dependencies["CommentRepository"].count).toBeCalledWith({
             id: 1111,
             user: { id: 2222 },
         });
-        expect(dependencies["UsersService"].isUserExists).toBeCalledWith(2222);
+        expect(dependencies["UserService"].isUserExists).toBeCalledWith(2222);
         expect(data1).toEqual(false);
     });
 

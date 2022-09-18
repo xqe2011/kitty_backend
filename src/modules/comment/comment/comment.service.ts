@@ -2,7 +2,7 @@ import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SettingService } from 'src/modules/setting/setting/setting.service';
 import { User } from 'src/modules/user/entities/user.entity';
-import { UsersService } from 'src/modules/user/user/users.service';
+import { UserService } from 'src/modules/user/user/user.service';
 import { IsNull, Repository } from 'typeorm';
 import { Comment } from '../entities/comment.entity';
 import { CommentsArea } from '../entities/comments-area.entity';
@@ -13,7 +13,7 @@ export class CommentService implements OnApplicationBootstrap{
     constructor(
         @InjectRepository(Comment)
         private commentRepository: Repository<Comment>,
-        private usersService: UsersService,
+        private userService: UserService,
         private settingService: SettingService
     ) {}
 
@@ -160,7 +160,7 @@ export class CommentService implements OnApplicationBootstrap{
      * @returns 是否属于
      */
     async isCommentBelongToUser(id: number, userID: number) {
-        if (!this.usersService.isUserExists(userID)) return false;
+        if (!this.userService.isUserExists(userID)) return false;
         return (await this.commentRepository.count({
             id: id,
             user: { id: userID },

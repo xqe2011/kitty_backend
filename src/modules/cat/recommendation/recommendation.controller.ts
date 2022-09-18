@@ -8,7 +8,7 @@ import { ApiBearerAuth, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTag
 import { GetUserRecommendationsResponseDto } from '../dtos/get-user-recommendations.response';
 import { GetUserRecommendationsQueryDto } from '../dtos/get-user-recommendations.query';
 
-@Controller('cats/recommendation')
+@Controller('/cats/recommendation')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
 @ApiBearerAuth()
 @ApiTags('猫咪')

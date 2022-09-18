@@ -1,1 +1,3 @@
-export class UploadPhotoResponseDto {}
+export class UploadPhotoResponseDto {
+    
+}
