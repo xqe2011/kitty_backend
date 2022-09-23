@@ -3,6 +3,7 @@ import { ApiException } from 'src/exceptions/api.exception';
 import { Error } from 'src/exceptions/enums/error.enum';
 import { createMocker } from 'test/utils/create-mocker.function';
 import { MockedObject } from 'test/utils/mocked-object';
+import { LikeItem } from '../entities/like-item.entity';
 import { LikeableEntity } from '../entities/likeable-entity.entity';
 import { LikeableEntityService } from './likeable-entity.service';
 
@@ -11,14 +12,16 @@ describe('LikeableEntityService', () => {
     /* 所有依赖返回的值,可以通过这个Mock类方法 */
     let dependencies: { 
         "LikeableEntityRepository": MockedObject,
-        "LikeItemRepository": MockedObject
+        "LikeItemRepository": MockedObject,
+        "EntityManager": MockedObject
     };
 
     beforeEach(async () => {
         /* 定义所有依赖,nest的依赖注入类返回实例所以我们直接注入个object,函数则使用jest.fn */
         dependencies = {
             "LikeableEntityRepository": {},
-            "LikeItemRepository": {}
+            "LikeItemRepository": {},
+            "EntityManager": {}
         };
         const module: TestingModule = await Test.createTestingModule({
             providers: [LikeableEntityService],
@@ -134,5 +137,26 @@ describe('LikeableEntityService', () => {
         }
         expect(dependencies["LikeableEntityRepository"].findOne).toBeCalledWith({ id: 2222 });
         expect(service.isEntityLiked).toBeCalledWith(1111, 2222);
+    });
+
+    test('deleteEntity() - With Transaction', async () => {
+        const manager = {
+            softDelete: jest.fn()
+        };
+        await service.deleteEntity(3333, manager as any);
+        expect(manager.softDelete.mock.calls).toEqual([
+            [LikeItem, { entity: { id: 3333 } }],
+            [LikeableEntity, 3333],
+        ]);
+    });
+
+
+    test('deleteEntity() - Without Transaction', async () => {
+        dependencies["EntityManager"].softDelete = jest.fn();
+        await service.deleteEntity(3333);
+        expect(dependencies["EntityManager"].softDelete.mock.calls).toEqual([
+            [LikeItem, { entity: { id: 3333 } }],
+            [LikeableEntity, 3333],
+        ]);
     });
 });

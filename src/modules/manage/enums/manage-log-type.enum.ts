@@ -33,5 +33,20 @@ export enum ManageLogType {
     DELETE_CAT = '10',
 
     /* 修改点赞实体状态 */
-    UPDATE_LIKEABLE_ENTITY = '11'
+    UPDATE_LIKEABLE_ENTITY = '11',
+
+    /* 创建商品 */
+    CREATE_SHOP_ITEM = '12',
+
+    /* 修改商品信息 */
+    UPDATE_SHOP_ITEM = '13',
+
+    /* 删除商品 */
+    DELETE_SHOP_ITEM = '14',
+
+    /* 添加照片到商品 */
+    ADD_PHOTO_TO_SHOP_ITEM = '15',
+
+    /* 删除商品照片 */
+    DELETE_SHOP_PHOTO = '16'
 }

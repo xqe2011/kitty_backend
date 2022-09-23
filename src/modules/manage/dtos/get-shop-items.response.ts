@@ -8,7 +8,7 @@ export class PhotoInfoDto {
     fileName: string;
 }
 
-export class GetItemsResponseDto {
+export class GetShopItemsResponseDto {
     @ApiProperty({ description: '商品ID', minimum: 1 })
     id: number;
 
@@ -18,11 +18,11 @@ export class GetItemsResponseDto {
     @ApiProperty({ description: '商品价格' })
     price: number;
 
-    @ApiProperty({ description: '商品是否可见' })
-    visible: boolean;
-
     @ApiProperty({ description: '点赞实体ID' })
     likeableEntityID: number;
+
+    @ApiProperty({ description: '商品是否可见' })
+    visible: boolean;
 
     @ApiProperty({
         description: '商品封面文件名',

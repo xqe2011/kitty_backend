@@ -16,6 +16,7 @@ import { FeedbackController } from './feedback/feedback.controller';
 import { LikeableEntityController } from './likeable-entity/likeable-entity.controller';
 import { ManageLogService } from './manage-log/manage-log.service';
 import { ConsumeController } from './qrcode/consume.controller';
+import { ShopItemController } from './shop-item/shop-item.controller';
 import { ShopOrderController } from './shop-order/shop-order.controller';
 import { UserController } from './user/user.controller';
 
@@ -40,7 +41,8 @@ import { UserController } from './user/user.controller';
         UserController,
         ConsumeController,
         FeedbackController,
-        LikeableEntityController
+        LikeableEntityController,
+        ShopItemController
     ]
 })
 export class ManageModule {}

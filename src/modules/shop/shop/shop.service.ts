@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
+import { FileService } from 'src/modules/file/file/file.service';
+import { LikeableEntityService } from 'src/modules/like/likeable-entity/likeable-entity.service';
+import { Any, EntityManager, Repository } from 'typeorm';
 import { ShopItemPhoto } from '../entities/shop-item-photo.entity';
 import { ShopItem } from '../entities/shop-item.entity';
 
@@ -11,23 +13,108 @@ export class ShopService {
         private itemRepository: Repository<ShopItem>,
         @InjectRepository(ShopItemPhoto)
         private itemPhotoRepository: Repository<ShopItemPhoto>,
+        private fileService: FileService,
+        @InjectEntityManager()
+        private entityManager: EntityManager,
+        private likeableEntityService: LikeableEntityService
     ) {}
 
     /**
+     * 创建商品
+     * @param name 商品名称
+     * @param description 商品描述
+     * @param price 商品价格
+     * @param visible 商品是否可见
+     * @retrun 商品ID
+     */
+    async createItem(name: string, description: string, price: number, visible: boolean) {
+        return await this.entityManager.transaction(async manager => {
+            const item = new ShopItem();
+            item.name = name;
+            item.description = description;
+            item.price = price;
+            item.visible = visible;
+            item.likeableEntityID = await this.likeableEntityService.createEntity(false, manager);
+            const result = await manager.save(item);
+            return result.id;
+        });
+    }
+
+    /**
+     * 更新商品照片信息
+     * @param id 照片ID
+     * @param isCover 照片是否为封面
+     */
+    async updateItemPhoto(id: number, isCover: boolean) {
+        await this.itemPhotoRepository.update({ id }, { isCover });
+    }
+
+    /**
+     * 更新商品信息
+     * @param id 商品ID
+     * @param name 商品名称
+     * @param description 商品描述
+     * @param price 商品价格
+     * @param visible 商品是否可见
+     */
+    async updateItem(id: number, name: string, description: string, price: number, visible: boolean) {
+        await this.itemRepository.update({ id }, { name, description, price, visible });
+    }
+
+    /**
+     * 将照片添加到商品
+     * @param id 商品ID
+     * @param fileToken 照片文件Token
+     */
+    async addPhotoToItem(id: number, fileToken: string) {
+        const photo = new ShopItemPhoto();
+        photo.item = { id } as any;
+        photo.fileName = this.fileService.getFileNameByToken(fileToken);
+        await this.itemPhotoRepository.save(photo);
+    }
+
+    /**
+     * 根据商品ID删除对应的照片集
+     * @param id 照片ID
+     * @param manager 事务,不传入则不使用事务写
+     */
+    async deletePhoto(id: number, manager?: EntityManager) {
+        const entityManager = manager || this.entityManager;
+        await entityManager.softDelete(ShopItemPhoto, { id });
+    }
+
+    /**
+     * 删除商品
+     * @param id 商品ID
+     */
+    async deleteItem(id: number) {
+        await this.entityManager.transaction(async manager => {
+            const item = await manager.findOne(ShopItem, { id });
+            await manager.softDelete(ShopItemPhoto, { item: { id } });
+            await manager.softDelete(ShopItem, { id });
+            await this.likeableEntityService.deleteEntity(item.likeableEntityID, manager);
+        });
+    }
+
+    /**
      * 获取待售商品列表
+     * @param onlyVisible 是否只获取可见商品
      * @param limit 限制数量
      * @param start 开始位置
      * @returns 商品简略信息
      */
-    async getItemsList(limit: number, start: number) {
+    async getItemsList(onlyVisible: boolean, limit: number, start: number) {
         const queryBuildinger = this.itemRepository.createQueryBuilder('item');
-        queryBuildinger.andWhere({ visible: true });
+        if (onlyVisible) {
+            queryBuildinger.andWhere({ visible: true });
+        }
         queryBuildinger.take(limit);
         queryBuildinger.skip(start);
         queryBuildinger.select([
             'item.id',
             'item.name',
             'item.price',
+            'item.visible',
             'item.likeableEntityID'
         ]);
         const itemsWithoutCover = await queryBuildinger.getMany() as any;
@@ -40,6 +127,7 @@ export class ShopService {
             description: string;
             price: number;
             coverPhoto: string;
+            visible: boolean;
             likeableEntityID: number;
             photos: {
                 id: number;

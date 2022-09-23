@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { ApiException } from 'src/exceptions/api.exception';
 import { Error } from 'src/exceptions/enums/error.enum';
 import { EntityManager, Repository } from 'typeorm';
@@ -13,7 +13,20 @@ export class LikeableEntityService {
         private likeableEntityRepository: Repository<LikeableEntity>,
         @InjectRepository(LikeItem)
         private likeItemRepository: Repository<LikeItem>,
+        @InjectEntityManager()
+        private entityManager: EntityManager
     ) {}
+
+    /**
+     * 删除点赞实体
+     * @param id 点赞实体ID
+     * @param manager 事务,不传入则不使用事务写
+     */
+    async deleteEntity(id: number, manager?: EntityManager) {
+        const entityManager = manager === undefined ? this.entityManager : manager;
+        await entityManager.softDelete(LikeItem, { entity: { id: id } });
+        await entityManager.softDelete(LikeableEntity, id);
+    }
 
     /**
      * 点赞

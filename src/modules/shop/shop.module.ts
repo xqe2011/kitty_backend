@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { LikeModule } from '../like/like.module';
 import { SettingModule } from '../setting/setting.module';
 import { UserModule } from '../user/user.module';
 import { Order } from './entities/order.entity';
@@ -16,10 +17,11 @@ import { IsOrderIDValidValidator } from './validators/is-orderid-valid.validator
     imports: [
         TypeOrmModule.forFeature([ShopItem, ShopItemPhoto, Order]),
         UserModule,
-        SettingModule
+        SettingModule,
+        LikeModule
     ],
     providers: [ShopService, OrderService, IsItemIDValidValidator, IsOrderIDValidValidator],
     controllers: [ShopController, OrderController],
-    exports: [OrderService],
+    exports: [OrderService, ShopService],
 })
 export class ShopModule {}

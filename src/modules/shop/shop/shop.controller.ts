@@ -26,7 +26,7 @@ export class ShopController {
         isArray: true,
     })
     async getItemsList(@Query() query: GetItemsQueryDto) {
-        return await this.shopService.getItemsList(query.limit, query.start);
+        return await this.shopService.getItemsList(true, query.limit, query.start);
     }
 
     @Get('/item/:id')
