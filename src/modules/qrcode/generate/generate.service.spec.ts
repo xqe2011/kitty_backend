@@ -31,6 +31,6 @@ describe('GenerateService', () => {
     test('getUserImage()', async () => {
         dependencies["QRCodeService"].generateQRCodeImage = jest.fn().mockResolvedValueOnce("data:image/png");
         dependencies["QRCodeService"].encode = jest.fn().mockResolvedValueOnce("oSKs9edw/YNsfQRQb3qKGGUe");
-        expect(await service.getUserImage(1, 300)).toEqual("data:image/png");
+        expect(await service.getUserImage(1, 300, "#000000", "#ffffff")).toEqual("data:image/png");
     });
 });

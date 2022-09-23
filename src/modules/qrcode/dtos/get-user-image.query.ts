@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { Min, Max, IsNumber } from 'class-validator';
+import { Min, Max, IsNumber, IsHexColor } from 'class-validator';
 
 export class GetUserImageQueryDto {
     @Type(() => Number)
@@ -13,4 +13,12 @@ export class GetUserImageQueryDto {
         maximum: 1000
     })
     size: number;
+
+    @IsHexColor()
+    @ApiProperty({ description: "二维码前景色,HTML的RGB/RGBA格式" })
+    foregroundColor: string;
+
+    @IsHexColor()
+    @ApiProperty({ description: "二维码背景色,HTML的RGB/RGBA格式" })
+    backgroundColor: string;
 }

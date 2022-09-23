@@ -21,10 +21,29 @@ export class QRCodeService {
      * 生成二维码图像
      * @param str 字符串
      * @param size 二维码大小
+     * @param foregroundColor 二维码前景色
+     * @param backgroundColor 二维码背景色
      * @returns 二维码base64字符串
      */
-    async generateQRCodeImage(str: string, size: number) {
-        return await toDataURL([{ data: Buffer.from(str, 'utf8'), mode: 'byte' }], { version: 3, errorCorrectionLevel: 'H', width: size });
+    async generateQRCodeImage(str: string, size: number, foregroundColor: string, backgroundColor: string) {
+        return await toDataURL(
+                [
+                    {
+                        data: Buffer.from(str, 'utf8'),
+                        mode: 'byte'
+                    }
+                ],
+                {
+                    version: 3,
+                    errorCorrectionLevel: 'H',
+                    width: size,
+                    margin: 0,
+                    color: {
+                        light: backgroundColor,
+                        dark: foregroundColor
+                    },
+                }
+            );
     }
 
     /**

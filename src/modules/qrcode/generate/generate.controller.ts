@@ -24,7 +24,7 @@ export class GenerateController {
     })
     async getUserImage(@Req() request, @Query() query: GetUserImageQueryDto) {
         return {
-            image: await this.generateService.getUserImage(request.user.id, query.size)
+            image: await this.generateService.getUserImage(request.user.id, query.size, query.foregroundColor, query.backgroundColor)
         };
     }
 }
