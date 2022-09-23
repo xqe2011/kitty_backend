@@ -15,7 +15,8 @@ describe('PhotoService', () => {
         "SettingService": MockedObject,
         "EntityManager": MockedObject,
         "CommentsAreaService": MockedObject,
-        "LikeableEntityService": MockedObject
+        "LikeableEntityService": MockedObject,
+        "UserService": MockedObject
     };
 
     beforeEach(async () => {
@@ -26,7 +27,8 @@ describe('PhotoService', () => {
             "SettingService": {},
             "EntityManager": {},
             "CommentsAreaService": {},
-            "LikeableEntityService": {}
+            "LikeableEntityService": {},
+            "UserService": {}
         };
         const module: TestingModule = await Test.createTestingModule({
             providers: [PhotoService],
@@ -375,6 +377,30 @@ describe('PhotoService', () => {
             [ 9, manager ],
             [ 11, manager ]
         ]);
+    });
+
+    test('isPhotoBelongToUser() - Exists', async () => {
+        dependencies["UserService"].isUserExists = jest.fn().mockResolvedValueOnce(true);
+        dependencies["CatPhotoRepository"].count = jest.fn().mockResolvedValueOnce(1);
+        const data1 = await service.isPhotoBelongToUser(1111, 2222);
+        expect(dependencies["CatPhotoRepository"].count).toBeCalledWith({
+            id: 1111,
+            user: { id: 2222 },
+        });
+        expect(dependencies["UserService"].isUserExists).toBeCalledWith(2222);
+        expect(data1).toEqual(true);
+    });
+
+    test('isPhotoBelongToUser() - Not Exists', async () => {
+        dependencies["UserService"].isUserExists = jest.fn().mockResolvedValueOnce(true);
+        dependencies["CatPhotoRepository"].count = jest.fn().mockResolvedValueOnce(0);
+        const data1 = await service.isPhotoBelongToUser(1111, 2222);
+        expect(dependencies["CatPhotoRepository"].count).toBeCalledWith({
+            id: 1111,
+            user: { id: 2222 },
+        });
+        expect(dependencies["UserService"].isUserExists).toBeCalledWith(2222);
+        expect(data1).toEqual(false);
     });
 
 });

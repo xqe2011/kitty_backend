@@ -138,10 +138,10 @@ export class OrderService implements OnApplicationBootstrap{
         if (userID !== undefined) queryBuilder.andWhere({ user: { id: userID } });
         queryBuilder.skip(start);
         queryBuilder.take(limit);
-        queryBuilder.select(['id', 'unitPrice', 'quantity', 'totalPrice', 'createdDate', 'userId as userID', 'itemId as itemID', 'status', 'cancelReason']);
+        queryBuilder.select(['id', 'unitPrice', 'quantity', 'totalPrice', 'createdDate', 'userId as userID', 'itemId as itemID', 'status', 'cancelReason', 'updatedDate']);
         queryBuilder.orderBy("createdDate", "DESC");
         const data = await queryBuilder.getRawMany();
-        return data as (Pick<Order, 'id' | 'unitPrice' | 'quantity' | 'totalPrice' | 'createdDate' | 'status' | 'cancelReason'> & { userID: number, itemID: number })[];
+        return data as (Pick<Order, 'id' | 'unitPrice' | 'quantity' | 'totalPrice' | 'createdDate' | 'status' | 'cancelReason' | 'updatedDate'> & { userID: number, itemID: number })[];
     }
 
     /**

@@ -3,6 +3,9 @@ services:
   backend_docs:
     build: ./backend_docs
     restart: always
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     environment: 
       VIRTUAL_HOST: backend.docs.kitty.xqe2011.cn
       LETSENCRYPT_HOST: backend.docs.kitty.xqe2011.cn
@@ -15,6 +18,8 @@ services:
     build: ./mariadb
     restart: always
     volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
       - mariadb-database:/var/lib/mysql
     ports:
       - 33066:3306
@@ -31,6 +36,9 @@ services:
     restart: always
     depends_on: 
       - mariadb
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     environment: 
       VIRTUAL_HOST: api.test.kitty.xqe2011.cn
       LETSENCRYPT_HOST: api.test.kitty.xqe2011.cn

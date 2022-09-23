@@ -73,7 +73,7 @@ export class OrderController {
     })
     async cancelOrder(@Req() request, @Param() param: CancelOrderParamDto) {
         if (!(await this.orderService.isOrderBelongToUser(param.id, request.user.id))) {
-            throw new ForbiddenException('This comment is not belong to you.');
+            throw new ForbiddenException('This order is not belong to you.');
         }
         await this.orderService.cancelOrder(param.id, true);
         return {};

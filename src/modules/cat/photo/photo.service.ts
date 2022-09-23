@@ -4,6 +4,7 @@ import { CommentsAreaService } from 'src/modules/comment/comments-area/comments-
 import { FileService } from 'src/modules/file/file/file.service';
 import { LikeableEntityService } from 'src/modules/like/likeable-entity/likeable-entity.service';
 import { SettingService } from 'src/modules/setting/setting/setting.service';
+import { UserService } from 'src/modules/user/user/user.service';
 import { EntityManager, Repository } from 'typeorm';
 import { CatPhoto } from '../entities/cat-photo.entity';
 import { CatPhotoType } from '../enums/cat-photo-type.enum';
@@ -18,13 +19,28 @@ export class PhotoService implements OnApplicationBootstrap{
         @InjectEntityManager()
         private entityManager: EntityManager,
         private commentsAreaService: CommentsAreaService,
-        private likeableEntityService: LikeableEntityService
+        private likeableEntityService: LikeableEntityService,
+        private userService: UserService
     ) {}
 
     async onApplicationBootstrap() {
         if (await this.settingService.getSetting("cats.photo.censor") === "") {
             await this.settingService.createSetting("cats.photo.censor", true, true);
         }
+    }
+
+    /**
+     * 判断某照片ID是否属于某用户
+     * @param id 照片ID
+     * @param userID 用户ID
+     * @returns 是否属于
+     */
+     async isPhotoBelongToUser(id: number, userID: number) {
+        if (!this.userService.isUserExists(userID)) return false;
+        return (await this.catPhotoRepository.count({
+            id: id,
+            user: { id: userID },
+        })) > 0;
     }
 
     /**

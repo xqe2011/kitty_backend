@@ -1,5 +1,5 @@
 import { User } from 'src/modules/user/entities/user.entity';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, DeleteDateColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, DeleteDateColumn, ManyToOne, UpdateDateColumn } from 'typeorm';
 import { OrderStatusType } from '../enums/order-status-type.enum';
 import { ShopItem } from './shop-item.entity';
 
@@ -40,6 +40,9 @@ export class Order {
     /* 订单取消原因 */
     @Column({ nullable: true })
     cancelReason: string;
+
+    @UpdateDateColumn()
+    updatedDate: Date;
 
     @CreateDateColumn()
     createdDate: Date;

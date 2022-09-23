@@ -1,4 +1,4 @@
-import { Get, Body, Controller, Post, Req, UseGuards, Param, Query } from '@nestjs/common';
+import { Get, Body, Controller, Post, Req, UseGuards, Param, Query, Delete, ForbiddenException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from 'src/modules/auth/roles/roles.decorator';
 import { RolesGuard } from 'src/modules/auth/roles/roles.guard';
@@ -11,6 +11,8 @@ import { GetOtherPhotosParamDto } from '../dtos/get-other-photos.param';
 import { UploadPhotoResponseDto } from '../dtos/upload-photo.response';
 import { CatPhotoType } from '../enums/cat-photo-type.enum';
 import { GetOtherPhotosQueryDto } from '../dtos/get-other-photos.query';
+import { DeleteCatPhotoResponseDto } from '../dtos/delete-cat-photo.response';
+import { DeleteCatPhotoParamDto } from '../dtos/delete-cat-photo.param';
 
 @Controller('/')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -23,7 +25,10 @@ export class PhotoController {
 
     @Post('/cats/photos')
     @Roles(Role.Admin, Role.RegisteredUser)
-    @ApiOperation({ summary: '发布猫咪随手拍' })
+    @ApiOperation({
+        summary: '发布猫咪随手拍',
+        description: '发布猫咪随手拍,需要注册用户权限'
+    })
     @ApiOkResponse({
         description: '发布成功',
         type: UploadPhotoResponseDto,
@@ -57,5 +62,23 @@ export class PhotoController {
     })
     async getOtherPhotos(@Param() param: GetOtherPhotosParamDto, @Query() query: GetOtherPhotosQueryDto) {
         return await this.photoService.getPhotosByCatIDAndType(param.id, CatPhotoType.OTHERS, query.limit, query.start);
+    }
+
+    @Delete('/cats/photo/:id')
+    @Roles(Role.Admin, Role.RegisteredUser)
+    @ApiOperation({
+        summary: '删除猫咪照片',
+        description: '删除猫咪照片,需要注册用户权限'
+    })
+    @ApiOkResponse({
+        description: '删除成功',
+        type: DeleteCatPhotoResponseDto
+    })
+    async deletePhoto(@Req() request, @Param() param: DeleteCatPhotoParamDto) {
+        if (!(await this.photoService.isPhotoBelongToUser(param.id, request.user.id))) {
+            throw new ForbiddenException('This photo is not belong to you.');
+        }
+        await this.photoService.deletePhoto(param.id);
+        return {};
     }
 }

@@ -16,6 +16,7 @@ import { VectorService } from './vector/vector.service';
 import { CatVector } from './entities/cat-vector.entity';
 import { CommentModule } from '../comment/comment.module';
 import { LikeModule } from '../like/like.module';
+import { UserModule } from '../user/user.module';
 
 @Module({
     imports: [
@@ -27,7 +28,8 @@ import { LikeModule } from '../like/like.module';
         ]),
         SettingModule,
         CommentModule,
-        LikeModule
+        LikeModule,
+        UserModule
     ],
     providers: [
         RecommendationService,

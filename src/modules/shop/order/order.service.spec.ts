@@ -375,7 +375,7 @@ describe('OrderService', () => {
         dependencies["OrderRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => createQueryBuilder);
         const data1 = await service.searchOrders(undefined, undefined, 10, 0);
         expect(dependencies["OrderRepository"].createQueryBuilder).toBeCalledWith('order');
-        expect(createQueryBuilder.select).toBeCalledWith(['id', 'unitPrice', 'quantity', 'totalPrice', 'createdDate', 'userId as userID', 'itemId as itemID', 'status', 'cancelReason']);
+        expect(createQueryBuilder.select).toBeCalledWith(['id', 'unitPrice', 'quantity', 'totalPrice', 'createdDate', 'userId as userID', 'itemId as itemID', 'status', 'cancelReason', 'updatedDate']);
         expect(createQueryBuilder.getRawMany).toBeCalledWith();
         expect(createQueryBuilder.take).toBeCalledWith(10);
         expect(createQueryBuilder.skip).toBeCalledWith(0);
@@ -395,7 +395,7 @@ describe('OrderService', () => {
         dependencies["OrderRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => createQueryBuilder);
         const data1 = await service.searchOrders(OrderStatusType.PENDING_RECEIPT, 222, 10, 0);
         expect(dependencies["OrderRepository"].createQueryBuilder).toBeCalledWith('order');
-        expect(createQueryBuilder.select).toBeCalledWith(['id', 'unitPrice', 'quantity', 'totalPrice', 'createdDate', 'userId as userID', 'itemId as itemID', 'status', 'cancelReason']);
+        expect(createQueryBuilder.select).toBeCalledWith(['id', 'unitPrice', 'quantity', 'totalPrice', 'createdDate', 'userId as userID', 'itemId as itemID', 'status', 'cancelReason', 'updatedDate']);
         expect(createQueryBuilder.getRawMany).toBeCalledWith();
         expect(createQueryBuilder.andWhere.mock.calls).toEqual([
             [{status: OrderStatusType.PENDING_RECEIPT }],
