@@ -65,7 +65,7 @@ export class CommentController {
         type: DeleteCommentResponseDto
     })
     async deleteComment(@Req() request, @Param() param: DeleteCommentParamDto) {
-        await this.commentService.deleteComment(param.id);
+        await this.commentService.deleteComments(param.id);
         await this.manageLogService.writeLog(request.user.id, ManageLogType.DELETE_COMMENT, { ...param });
         return {};
     }

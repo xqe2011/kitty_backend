@@ -137,11 +137,36 @@ export class PhotoService implements OnApplicationBootstrap{
     }
 
     /**
-     * 删除照片
+     * 删除照片和对应的评论区
      *
      * @param id 照片ID
      */
     async deletePhoto(id: number) {
+        const info = await this.catPhotoRepository.findOne(id);
         await this.catPhotoRepository.softDelete(id);
+        await this.commentsAreaService.deleteCommentsArea(info.commentsAreaID);
+        await this.likeableEntityService.deleteEntity(info.likeableEntityID);
+    }
+
+    /**
+     * 通过猫咪ID删除照片和对应的评论区
+     *
+     * @param id 猫咪ID
+     * @param manager 事务,不传入则创建事务
+     */
+    async deletePhotosByCatID(id: number, manager?: EntityManager) {
+        const run = async realManager => {
+            const infos = await realManager.find(CatPhoto, { where: { cat: { id } }, select: ['commentsAreaID', 'likeableEntityID'] });
+            for (const info of infos) {
+                await this.likeableEntityService.deleteEntity(info.likeableEntityID, realManager);
+                await this.commentsAreaService.deleteCommentsArea(info.commentsAreaID, realManager);
+            }
+            await realManager.softDelete(CatPhoto, { cat: { id } });
+        };
+        if (manager !== undefined) {
+            await run(manager);
+        } else {
+            await this.entityManager.transaction(run);
+        }
     }
 }

@@ -319,8 +319,62 @@ describe('PhotoService', () => {
     });
 
     test('deletePhoto()', async () => {
+        dependencies["CatPhotoRepository"].findOne = jest.fn().mockResolvedValueOnce({ commentsAreaID: 8, likeableEntityID: 9 });
         dependencies["CatPhotoRepository"].softDelete = jest.fn();
+        dependencies["CommentsAreaService"].deleteCommentsArea = jest.fn();
+        dependencies["LikeableEntityService"].deleteEntity = jest.fn();
         await service.deletePhoto(1);
+        expect(dependencies["CatPhotoRepository"].findOne).toBeCalledWith(1);
         expect(dependencies["CatPhotoRepository"].softDelete).toBeCalledWith(1);
+        expect(dependencies["CommentsAreaService"].deleteCommentsArea).toBeCalledWith(8);
+        expect(dependencies["LikeableEntityService"].deleteEntity).toBeCalledWith(9);
     });
+
+    test('deletePhotosByCatID() - With Transaction', async () => {
+        const manager = {
+            softDelete: jest.fn(),
+            find: jest.fn().mockResolvedValueOnce([
+                { commentsAreaID: 8, likeableEntityID: 9 },
+                { commentsAreaID: 10, likeableEntityID: 11 }
+            ])
+        };
+        dependencies["CommentsAreaService"].deleteCommentsArea = jest.fn();
+        dependencies["LikeableEntityService"].deleteEntity = jest.fn();
+        await service.deletePhotosByCatID(1, manager as any);
+        expect(manager.find).toBeCalledWith(CatPhoto, { where: { cat: { id: 1 } }, select: ['commentsAreaID', 'likeableEntityID'] });
+        expect(manager.softDelete).toBeCalledWith(CatPhoto, { cat: { id: 1 } });
+        expect(dependencies["CommentsAreaService"].deleteCommentsArea.mock.calls).toEqual([
+            [ 8, manager ],
+            [ 10, manager ]
+        ]);
+        expect(dependencies["LikeableEntityService"].deleteEntity.mock.calls).toEqual([
+            [ 9, manager ],
+            [ 11, manager ]
+        ]);
+    });
+
+    test('deletePhotosByCatID() - Without Transaction', async () => {
+        const manager = {
+            softDelete: jest.fn(),
+            find: jest.fn().mockResolvedValueOnce([
+                { commentsAreaID: 8, likeableEntityID: 9 },
+                { commentsAreaID: 10, likeableEntityID: 11 }
+            ])
+        };
+        dependencies["CommentsAreaService"].deleteCommentsArea = jest.fn();
+        dependencies["LikeableEntityService"].deleteEntity = jest.fn();
+        dependencies["EntityManager"].transaction = jest.fn().mockImplementation(func => func(manager));
+        await service.deletePhotosByCatID(1);
+        expect(manager.find).toBeCalledWith(CatPhoto, { where: { cat: { id: 1 } }, select: ['commentsAreaID', 'likeableEntityID'] });
+        expect(manager.softDelete).toBeCalledWith(CatPhoto, { cat: { id: 1 } });
+        expect(dependencies["CommentsAreaService"].deleteCommentsArea.mock.calls).toEqual([
+            [ 8, manager ],
+            [ 10, manager ]
+        ]);
+        expect(dependencies["LikeableEntityService"].deleteEntity.mock.calls).toEqual([
+            [ 9, manager ],
+            [ 11, manager ]
+        ]);
+    });
+
 });

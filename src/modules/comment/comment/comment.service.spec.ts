@@ -14,7 +14,8 @@ describe('CommentService', () => {
     let dependencies: { 
         "CommentRepository": MockedObject,
         "UserService": MockedObject,
-        "SettingService": MockedObject
+        "SettingService": MockedObject,
+        "EntityManager": MockedObject,
     };
 
     beforeEach(async () => {
@@ -22,7 +23,8 @@ describe('CommentService', () => {
         dependencies = {
             "CommentRepository": {},
             "UserService": {},
-            "SettingService": {}
+            "SettingService": {},
+            "EntityManager": {},
         };
         const module: TestingModule = await Test.createTestingModule({
             providers: [CommentService],
@@ -257,44 +259,64 @@ describe('CommentService', () => {
         expect(data).toEqual(7777);
     });
 
-    test('deleteComment() - Without Children', async () => {
-        dependencies["CommentRepository"].findOne = jest.fn().mockResolvedValueOnce({ id: 1111, childrenComments: [] });
-        dependencies["CommentRepository"].softDelete = jest.fn();
-        await service.deleteComment(1111);
-        expect(dependencies["CommentRepository"].findOne.mock.calls).toEqual([
-            [ 1111, { relations: ['childrenComments'] } ],
+    test('deleteComment() - Without Children and with transaction', async () => {
+        const manager = {
+            findOne: jest.fn().mockResolvedValueOnce({ id: 1111, childrenComments: [] }),
+            softDelete: jest.fn()
+        };
+        dependencies["EntityManager"].transaction = jest.fn().mockImplementation(func => func(manager));
+        await service.deleteComments(1111, manager as any);
+        expect(manager.findOne.mock.calls).toEqual([
+            [ Comment, 1111, { relations: ['childrenComments'] } ],
         ]);
-        expect(dependencies["CommentRepository"].softDelete.mock.calls).toEqual([
-            [ 1111 ],
+        expect(manager.softDelete.mock.calls).toEqual([
+            [ Comment, 1111 ],
+        ]);
+    });
+
+    test('deleteComment() - Without Children', async () => {
+        const manager = {
+            findOne: jest.fn().mockResolvedValueOnce({ id: 1111, childrenComments: [] }),
+            softDelete: jest.fn()
+        };
+        await service.deleteComments(1111, manager as any);
+        expect(manager.findOne.mock.calls).toEqual([
+            [ Comment, 1111, { relations: ['childrenComments'] } ],
+        ]);
+        expect(manager.softDelete.mock.calls).toEqual([
+            [ Comment, 1111 ],
         ]);
     });
 
     test('deleteComment() - With Children', async () => {
-        dependencies["CommentRepository"].findOne = jest.fn().mockResolvedValueOnce({
-            id: 1111,
-            childrenComments: [
-                { id: 2222 },
-                { id: 3333 },
-            ]
-        }).mockResolvedValueOnce({
-            id: 2222,
-            childrenComments: [
-                { id: 4444 }
-            ]
-        }).mockResolvedValue({ childrenComments: [] });
-        dependencies["CommentRepository"].softDelete = jest.fn();
-        await service.deleteComment(1111);
-        expect(dependencies["CommentRepository"].findOne.mock.calls).toEqual([
-            [ 1111, { relations: ['childrenComments'] } ],
-            [ 2222, { relations: ['childrenComments'] } ],
-            [ 4444, { relations: ['childrenComments'] } ],
-            [ 3333, { relations: ['childrenComments'] } ],
+        const manager = {
+            findOne: jest.fn().mockResolvedValueOnce({
+                id: 1111,
+                childrenComments: [
+                    { id: 2222 },
+                    { id: 3333 },
+                ]
+            }).mockResolvedValueOnce({
+                id: 2222,
+                childrenComments: [
+                    { id: 4444 }
+                ]
+            }).mockResolvedValue({ childrenComments: [] }),
+            softDelete: jest.fn()
+        };
+        manager.softDelete = jest.fn();
+        await service.deleteComments(1111, manager as any);
+        expect(manager.findOne.mock.calls).toEqual([
+            [ Comment, 1111, { relations: ['childrenComments'] } ],
+            [ Comment, 2222, { relations: ['childrenComments'] } ],
+            [ Comment, 4444, { relations: ['childrenComments'] } ],
+            [ Comment, 3333, { relations: ['childrenComments'] } ],
         ]);
-        expect(dependencies["CommentRepository"].softDelete.mock.calls).toEqual([
-            [ 4444 ],
-            [ 2222 ],
-            [ 3333 ],
-            [ 1111 ]
+        expect(manager.softDelete.mock.calls).toEqual([
+            [ Comment, 4444 ],
+            [ Comment, 2222 ],
+            [ Comment, 3333 ],
+            [ Comment, 1111 ]
         ]);
     });
 
@@ -390,9 +412,17 @@ describe('CommentService', () => {
         );
     });
 
-    test('deletePhoto()', async () => {
-        dependencies["CommentRepository"].softDelete = jest.fn();
-        await service.deletePhoto(1);
-        expect(dependencies["CommentRepository"].softDelete).toBeCalledWith(1);
+    test('deleteCommentsByAreaID() - With Transcation', async () => {
+        const manager = {
+            softDelete: jest.fn()
+        };
+        await service.deleteCommentsByAreaID(1, manager as any);
+        expect(manager.softDelete).toBeCalledWith(Comment, { area: { id: 1 } });
+    });
+
+    test('deleteCommentsByAreaID() - Without Transcation', async () => {
+        dependencies["EntityManager"].softDelete = jest.fn();
+        await service.deleteCommentsByAreaID(1);
+        expect(dependencies["EntityManager"].softDelete).toBeCalledWith(Comment, { area: { id: 1 } });
     });
 });

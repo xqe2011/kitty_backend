@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
+import { EntityManager, Like, Repository } from 'typeorm';
 import { Cat } from '../entities/cat.entity';
 import { CatPhotoType } from '../enums/cat-photo-type.enum';
 import { CatStatusType } from '../enums/cat-status-type.enum';
@@ -13,7 +13,9 @@ export class CatService {
         @InjectRepository(Cat)
         private catRepository: Repository<Cat>,
         private vectorService: VectorService,
-        private photoService: PhotoService
+        private photoService: PhotoService,
+        @InjectEntityManager()
+        private entityManager: EntityManager
     ) {}
 
     /**
@@ -185,6 +187,9 @@ export class CatService {
      * @param id 猫咪ID
      */
     async deleteCat(id: number) {
-        await this.catRepository.softDelete(id);
+        await this.entityManager.transaction(async manager => {
+            await manager.softDelete(Cat, id);
+            await this.photoService.deletePhotosByCatID(id, manager);
+        });
     }
 }

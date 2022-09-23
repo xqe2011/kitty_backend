@@ -100,7 +100,7 @@ export class CommentController {
         if (!(await this.commentService.isCommentBelongToUser(param.id, request.user.id))) {
             throw new ForbiddenException('This comment is not belong to you.');
         }
-        await this.commentService.deleteComment(param.id);
+        await this.commentService.deleteComments(param.id);
         return {};
     }
 }

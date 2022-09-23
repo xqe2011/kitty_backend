@@ -1,9 +1,9 @@
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { SettingService } from 'src/modules/setting/setting/setting.service';
 import { User } from 'src/modules/user/entities/user.entity';
 import { UserService } from 'src/modules/user/user/user.service';
-import { IsNull, Repository } from 'typeorm';
+import { EntityManager, IsNull, Repository } from 'typeorm';
 import { Comment } from '../entities/comment.entity';
 import { CommentsArea } from '../entities/comments-area.entity';
 import { CommentStatus } from '../enums/comment-status.enum';
@@ -14,7 +14,9 @@ export class CommentService implements OnApplicationBootstrap{
         @InjectRepository(Comment)
         private commentRepository: Repository<Comment>,
         private userService: UserService,
-        private settingService: SettingService
+        private settingService: SettingService,
+        @InjectEntityManager()
+        private entityManager: EntityManager
     ) {}
 
     async onApplicationBootstrap() {
@@ -142,17 +144,33 @@ export class CommentService implements OnApplicationBootstrap{
     }
 
     /**
+     * 通过评论区ID删除评论
+     * @param id 评论区ID
+     * @param manager 事务,不传入则不使用事务写
+     */
+    async deleteCommentsByAreaID(id: number, manager?: EntityManager) {
+        const entityManager = manager || this.entityManager;
+        await entityManager.softDelete(Comment, { area: { id } });
+    }
+
+    /**
      * 删除评论
      * @param id 评论ID
+     * @param manager 事务,不传入则创建事务
      */
-    async deleteComment(id: number) {
-        const childrenComments = (
-            await this.commentRepository.findOne(id, { relations: ['childrenComments'] })
-        ).childrenComments;
-        for (const childrenComment of childrenComments) {
-            await this.deleteComment(childrenComment.id);
+    async deleteComments(id: number, manager?: EntityManager) {
+        const run = async realManager => {
+            const childrenComments = (await realManager.findOne(Comment, id, { relations: ['childrenComments'] })).childrenComments;
+            for (const childrenComment of childrenComments) {
+                await this.deleteComments(childrenComment.id, realManager);
+            }
+            await realManager.softDelete(Comment, id);
+        };
+        if (manager !== undefined) {
+            await run(manager);
+        } else {
+            await this.entityManager.transaction(run);
         }
-        await this.commentRepository.softDelete(id);
     }
 
     /**
@@ -214,14 +232,5 @@ export class CommentService implements OnApplicationBootstrap{
      */
     async updateCommentInfo(id: number, status: CommentStatus) {
         await this.commentRepository.update(id, { status });
-    }
-
-    /**
-     * 删除评论
-     *
-     * @param id 评论ID
-     */
-    async deletePhoto(id: number) {
-        await this.commentRepository.softDelete(id);
     }
 }

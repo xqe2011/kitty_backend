@@ -8,13 +8,17 @@ describe('CommentsAreaService', () => {
     let service: CommentsAreaService;
     /* 所有依赖返回的值,可以通过这个Mock类方法 */
     let dependencies: { 
-        "CommentsAreaRepository": MockedObject
+        "CommentsAreaRepository": MockedObject,
+        "EntityManager": MockedObject,
+        "CommentService": MockedObject,
     };
 
     beforeEach(async () => {
         /* 定义所有依赖,nest的依赖注入类返回实例所以我们直接注入个object,函数则使用jest.fn */
         dependencies = {
-            "CommentsAreaRepository": {}
+            "CommentsAreaRepository": {},
+            "EntityManager": {},
+            "CommentService": {},
         };
         const module: TestingModule = await Test.createTestingModule({
             providers: [CommentsAreaService],
@@ -101,5 +105,29 @@ describe('CommentsAreaService', () => {
                 isDisplay: true
             }
         );
+    });
+
+    test('deleteCommentsArea() - With Transaction', async () => {
+        const manager = {
+            softDelete: jest.fn()
+        };
+        dependencies["CommentService"].deleteCommentsByAreaID = jest.fn();
+        await service.deleteCommentsArea(1, manager as any);
+        expect(manager.softDelete).toBeCalledWith(CommentsArea, 1);
+        expect(dependencies["CommentService"].deleteCommentsByAreaID).toBeCalledWith(1, manager);
+    });
+
+    test('deleteCommentsArea() - Without Transaction', async () => {
+        const manager = {
+            softDelete: jest.fn()
+        };
+        dependencies["CommentService"].deleteCommentsByAreaID = jest.fn();
+        await service.deleteCommentsArea(1, manager as any);
+        expect(manager.softDelete).toBeCalledWith(CommentsArea, 1);
+        expect(dependencies["CommentService"].deleteCommentsByAreaID).toBeCalledWith(1, manager);
+        dependencies["EntityManager"].transaction = jest.fn().mockImplementation(func => func(manager));
+        await service.deleteCommentsArea(1);
+        expect(manager.softDelete).toBeCalledWith(CommentsArea, 1);
+        expect(dependencies["CommentService"].deleteCommentsByAreaID).toBeCalledWith(1, manager);
     });
 });

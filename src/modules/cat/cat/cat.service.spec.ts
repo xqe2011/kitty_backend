@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { createMocker } from 'test/utils/create-mocker.function';
 import { MockedObject } from 'test/utils/mocked-object';
 import { Like } from 'typeorm';
+import { Cat } from '../entities/cat.entity';
 import { CatPhotoType } from '../enums/cat-photo-type.enum';
 import { CatStatusType } from '../enums/cat-status-type.enum';
 import { CatService } from './cat.service';
@@ -13,6 +14,7 @@ describe('CatService', () => {
         "PhotoService": MockedObject,
         "CatRepository": MockedObject,
         "VectorService": MockedObject,
+        "EntityManager": MockedObject
     };
 
     beforeEach(async () => {
@@ -21,6 +23,7 @@ describe('CatService', () => {
             "PhotoService": {},
             "CatRepository": {},
             "VectorService": {},
+            "EntityManager": {},
         };
         const module: TestingModule = await Test.createTestingModule({
             providers: [CatService],
@@ -217,8 +220,13 @@ describe('CatService', () => {
     });
 
     test('deleteCat()', async () => {
-        dependencies["CatRepository"].softDelete = jest.fn();
+        const manager = {
+            softDelete: jest.fn()
+        };
+        dependencies["PhotoService"].deletePhotosByCatID = jest.fn();
+        dependencies["EntityManager"].transaction = jest.fn().mockImplementation(func => func(manager));
         await service.deleteCat(1);
-        expect(dependencies["CatRepository"].softDelete).toBeCalledWith(1);
+        expect(manager.softDelete).toBeCalledWith(Cat, 1);
+        expect(dependencies["PhotoService"].deletePhotosByCatID).toBeCalledWith(1, manager);
     });
 });

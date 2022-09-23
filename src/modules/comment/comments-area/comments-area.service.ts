@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
+import { CommentService } from '../comment/comment.service';
 import { CommentsArea } from '../entities/comments-area.entity';
 
 @Injectable()
@@ -8,6 +9,9 @@ export class CommentsAreaService {
     constructor(
         @InjectRepository(CommentsArea)
         private commentsAreaRepository: Repository<CommentsArea>,
+        @InjectEntityManager()
+        private entityManager: EntityManager,
+        private commentService: CommentService
     ) {}
 
     /**
@@ -74,7 +78,24 @@ export class CommentsAreaService {
      * @param id 评论区ID
      * @param isDisplay 是否展示
      */
-     async updateAreaInfo(id: number, isDisplay: boolean) {
+    async updateAreaInfo(id: number, isDisplay: boolean) {
         await this.commentsAreaRepository.update(id, { isDisplay });
+    }
+
+    /**
+     * 删除评论区
+     * @param id 评论区ID
+     * @param manager 事务,不传入则自动创建事务
+     */
+    async deleteCommentsArea(id: number, manager?: EntityManager) {
+        const run = async realManager => {
+            await this.commentService.deleteCommentsByAreaID(id, realManager);
+            await realManager.softDelete(CommentsArea, id);
+        };
+        if (manager !== undefined) {
+            await run(manager);
+        } else {
+            await this.entityManager.transaction(run);
+        }
     }
 }
