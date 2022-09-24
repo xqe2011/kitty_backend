@@ -63,7 +63,7 @@ jobs:
           key: ${{ secrets.SERVER_TENCENT1_KEY }}
           port: ${{ secrets.SERVER_TENCENT1_PORT }}
           script: |
-            [ -f "apps/test-kitty/docker-compose.yml" ] && cd apps/test-kitty && docker-compose down
+            ([ -f "apps/test-kitty/docker-compose.yml" ] && cd apps/test-kitty && docker-compose down) || true
       - name: Upload to server
         uses: appleboy/scp-action@master
         with:
