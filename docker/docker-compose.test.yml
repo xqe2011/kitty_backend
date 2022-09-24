@@ -57,7 +57,7 @@ services:
       files.providers.qiniu.secret_key: ${QINIU_SECRET_KEY}
       wechat.miniprogram.appid: ${WECHAT_APP_ID}
       wechat.miniprogram.appsecret: ${WECHAT_APP_SECRET}
-      wechat.auto_update_token: false
+      wechat.auto_update_token: "false"
       
     networks:
       - default

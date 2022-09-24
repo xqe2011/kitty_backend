@@ -26,6 +26,12 @@ jobs:
           cp -R dist package.json package-lock.json docker/backend/app
           cp -R docs/* docker/backend_docs/dist
           mv docker/docker-compose.test.yml docker/docker-compose.yml
+          mv docker/mariadb/certs.test docker/mariadb/certs
+          rm -rf docker/mariadb/certs.release docker/docker-compose.release.yml
+          sed -i -e 's/${QINIU_ACCESS_KEY}/${{ secrets.QINIU_ACCESS_KEY }}/g' docker/docker-compose.yml
+          sed -i -e 's/${QINIU_SECRET_KEY}/${{ secrets.QINIU_SECRET_KEY }}/g' docker/docker-compose.yml
+          sed -i -e 's/${WECHAT_APP_ID}/${{ secrets.WECHAT_APP_ID }}/g' docker/docker-compose.yml
+          sed -i -e 's/${WECHAT_APP_SECRET}/${{ secrets.WECHAT_APP_SECRET }}/g' docker/docker-compose.yml
       - name: Create Network
         run: docker network create web-gateway_web
       - name: Run container
