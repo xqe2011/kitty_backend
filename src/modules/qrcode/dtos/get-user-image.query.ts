@@ -15,10 +15,10 @@ export class GetUserImageQueryDto {
     size: number;
 
     @IsHexColor()
-    @ApiProperty({ description: "二维码前景色,HTML的RGB/RGBA格式" })
+    @ApiProperty({ description: "二维码前景色,HTML的HEX RGB/RGBA格式,如#000000" })
     foregroundColor: string;
 
     @IsHexColor()
-    @ApiProperty({ description: "二维码背景色,HTML的RGB/RGBA格式" })
+    @ApiProperty({ description: "二维码背景色,HTML的HEX RGB/RGBA格式,如#000000" })
     backgroundColor: string;
 }

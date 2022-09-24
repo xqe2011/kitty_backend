@@ -7,8 +7,8 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     environment: 
-      VIRTUAL_HOST: backend.docs.test.kitty.xqe2011.cn
-      LETSENCRYPT_HOST: backend.docs.test.kitty.xqe2011.cn
+      VIRTUAL_HOST: backend.docs.release.kitty.xqe2011.cn
+      LETSENCRYPT_HOST: backend.docs.release.kitty.xqe2011.cn
 
     networks:
       - default
@@ -22,14 +22,14 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - mariadb-database:/var/lib/mysql
     ports:
-      - 33066:3306
+      - 33077:3306
     environment:
       MARIADB_DATABASE: kitty
       MARIADB_USER: kitty
-      MARIADB_PASSWORD: yeMAoinkpK6kVAKf
-      MARIADB_ROOT_PASSWORD: HgwdJeLiIbAy0VFb
+      MARIADB_PASSWORD: ${MARIADB_KITTY_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
       KITTY_DA_USERNAME: "kitty-da"
-      KITTY_DA_PASSWORD: "q64DV8oj2JImBLuV"
+      KITTY_DA_PASSWORD: ${MARIADB_DA_PASSWORD}
       
   backend:
     build: ./backend
@@ -40,24 +40,23 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     environment: 
-      VIRTUAL_HOST: api.test.kitty.xqe2011.cn
-      LETSENCRYPT_HOST: api.test.kitty.xqe2011.cn
+      VIRTUAL_HOST: api.release.kitty.xqe2011.cn
+      LETSENCRYPT_HOST: api.release.kitty.xqe2011.cn
       database.host: mariadb
       database.username: kitty
-      database.password: yeMAoinkpK6kVAKf
+      database.password: ${MARIADB_KITTY_PASSWORD}
       database.name: kitty
-      secret: SzG0QKRUCna8fahUBoZfG8HqBO94NK9j
-      debug: "true"
-      api.url: https://api.test.kitty.xqe2011.cn
-      files.url: https://cdn.test.kitty.xqe2011.cn
+      secret: ${SECRET}
+      debug: "false"
+      api.url: https://api.release.kitty.xqe2011.cn
+      files.url: https://cdn.release.kitty.xqe2011.cn
       files.upload.provider: qiniu
-      files.providers.qiniu.scope: test-dgut-kitty-static
+      files.providers.qiniu.scope: release-dgut-kitty-static
       files.providers.qiniu.upload.url: https://up-z2.qiniup.com
       files.providers.qiniu.access_key: ${QINIU_ACCESS_KEY}
       files.providers.qiniu.secret_key: ${QINIU_SECRET_KEY}
       wechat.miniprogram.appid: ${WECHAT_APP_ID}
       wechat.miniprogram.appsecret: ${WECHAT_APP_SECRET}
-      wechat.auto_update_token: false
       
     networks:
       - default

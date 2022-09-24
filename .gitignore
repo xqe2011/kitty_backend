@@ -5,6 +5,11 @@
 .env
 /docs/openapi.json
 
+# CA
+/docker/mariadb/certs.release/ca
+/docker/mariadb/certs.release/da-client
+/docker/mariadb/certs.release/root-client
+
 # Logs
 logs
 *.log

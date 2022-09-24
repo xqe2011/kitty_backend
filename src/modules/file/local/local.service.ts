@@ -49,7 +49,7 @@ export class LocalService
             return false;
         }
         if (
-            !this.configService.get<boolean>('debug', false) &&
+            this.configService.get<string>('debug', "false").toLowerCase() !== 'true' &&
             this.toolService.getNowTimestamp() - timestamp > parseInt(this.configService.get<string>('files.providers.local.upload.token_expired_time', '1200'))
         ) {
             return false;

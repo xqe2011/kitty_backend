@@ -98,7 +98,7 @@ export class FileService implements OnApplicationBootstrap {
             return false;
         }
         if (
-            !this.configService.get<boolean>('debug', false) &&
+            this.configService.get<string>('debug', "false").toLowerCase() !== 'true' &&
             this.toolService.getNowTimestamp() - timestamp > parseInt(this.configService.get<string>('files.token_expired_time', '60'))
         ) {
             return false;

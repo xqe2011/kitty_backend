@@ -56,7 +56,7 @@ describe('LocalService', () => {
 
     test('verifyToken() - Valid Token', async () => {
         service.getTokenSign = jest.fn().mockResolvedValueOnce("snl2ury/2jJE3WvaUEEahEqUTQGCG/VthfDU1l3GdrA=");
-        dependencies["ConfigService"].get = jest.fn().mockImplementation(key => key == 'debug' ? false : '60');
+        dependencies["ConfigService"].get = jest.fn().mockImplementation(key => key == 'debug' ? 'false' : '60');
         dependencies["ToolService"].getNowTimestamp = jest.fn().mockReturnValueOnce('1652246404');
         const data1 = await service.verifyToken("upload:123.jpg:0:1652246384:snl2ury/2jJE3WvaUEEahEqUTQGCG/VthfDU1l3GdrA=");
         expect(service.getTokenSign).toBeCalledWith("upload:123.jpg:0:1652246384");
@@ -67,7 +67,7 @@ describe('LocalService', () => {
 
     test('verifyToken() - Invalid Token but not expired', async () => {
         service.getTokenSign = jest.fn().mockResolvedValueOnce("snl2ury/2jJE3WvaUEEahEqUTQGCG/VthfDU1l3GdrA=");
-        dependencies["ConfigService"].get = jest.fn().mockImplementation(key => key == 'debug' ? false : '60');
+        dependencies["ConfigService"].get = jest.fn().mockImplementation(key => key == 'debug' ? 'false' : '60');
         dependencies["ToolService"].getNowTimestamp = jest.fn().mockReturnValueOnce('1652246404');
         const data1 = await service.verifyToken("upload:123.jpg:9:1652246384:snl2ury/2jJE3WvaUEEahEqUTQGCG/VthfDU1l3GdrA=");
         expect(service.getTokenSign).toBeCalledTimes(0);
@@ -78,7 +78,7 @@ describe('LocalService', () => {
 
     test('verifyToken() - Valid Token but expired', async () => {
         service.getTokenSign = jest.fn().mockResolvedValueOnce("snl2ury/2jJE3WvaUEEahEqUTQGCG/VthfDU1l3GdrA=");
-        dependencies["ConfigService"].get = jest.fn().mockImplementation(key => key == 'debug' ? false : '10');
+        dependencies["ConfigService"].get = jest.fn().mockImplementation(key => key == 'debug' ? 'false' : '10');
         dependencies["ToolService"].getNowTimestamp = jest.fn().mockReturnValueOnce('1652246404');
         const data1 = await service.verifyToken("upload:123.jpg:0:1652246384:snl2ury/2jJE3WvaUEEahEqUTQGCG/VthfDU1l3GdrA=");
         expect(service.getTokenSign).toBeCalledTimes(1);

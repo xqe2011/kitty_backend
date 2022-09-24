@@ -58,7 +58,6 @@ export class HttpClientService {
             const tokenData = await this.settingService.getAndLockSetting(key, entityManager);
             const renewIn = parseInt(this.configService.get<string>('wechat.renew_in', '30'));
             const renewTiemoutRandomInt = randomInt(1, 10);
-
             if (
                 typeof tokenData == 'object' &&
                 typeof tokenData.expires_time == 'number' &&
@@ -73,6 +72,14 @@ export class HttpClientService {
                         (tokenData.expires_time - this.toolService.getNowTimestamp() - renewIn + renewTiemoutRandomInt) * 1000,
                     ),
                 );
+                return;
+            }
+            if (this.configService.get<string>('wechat.auto_update_token', 'true').toLowerCase() !== 'true') {
+                setTimeout(
+                    () => this.updateAccessToken(),
+                    parseInt(this.configService.get<string>('wechat.retry_duration', '30')) * 1000,
+                ),
+                this.logger.log('Auto update wechat access token is disabled.');
                 return;
             }
             this.logger.log('Fetch wechat access token...');
@@ -90,10 +97,7 @@ export class HttpClientService {
                     false,
                 );
             } catch (exception) {
-                this.logger.error(
-                    'Cannot fetch access token from wechat server: ' +
-                        exception.message,
-                );
+                this.logger.error('Cannot fetch access token from wechat server: ' + exception.message);
                 this.schedulerRegistry.addTimeout(
                     scheduleKey,
                     setTimeout(

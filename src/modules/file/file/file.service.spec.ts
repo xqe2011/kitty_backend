@@ -118,7 +118,7 @@ describe('FileService', () => {
 
     test('verifyFileToken() - Valid Token', async () => {
         service.getTokenSign = jest.fn().mockResolvedValueOnce("+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=");
-        dependencies["ConfigService"].get = jest.fn().mockImplementation(key => key == 'debug' ? false : '60');
+        dependencies["ConfigService"].get = jest.fn().mockImplementation(key => key == 'debug' ? 'false' : '60');
         dependencies["ToolService"].getNowTimestamp = jest.fn().mockReturnValueOnce('1652246404');
         const data1 = await service.verifyFileToken("file|123.jpg|0|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=");
         expect(service.getTokenSign).toBeCalledWith("file|123.jpg|0|1652246384");
@@ -129,7 +129,7 @@ describe('FileService', () => {
 
     test('verifyFileToken() - Invalid Token but not expired', async () => {
         service.getTokenSign = jest.fn().mockResolvedValueOnce("+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=");
-        dependencies["ConfigService"].get = jest.fn().mockImplementation(key => key == 'debug' ? false : '60');
+        dependencies["ConfigService"].get = jest.fn().mockImplementation(key => key == 'debug' ? 'false' : '60');
         dependencies["ToolService"].getNowTimestamp = jest.fn().mockReturnValueOnce('1652246404');
         const data1 = await service.verifyFileToken("file|123.jpg|9|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=");
         expect(service.getTokenSign).toBeCalledTimes(0);
@@ -140,7 +140,7 @@ describe('FileService', () => {
 
     test('verifyFileToken() - Valid Token but expired', async () => {
         service.getTokenSign = jest.fn().mockResolvedValueOnce("+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=");
-        dependencies["ConfigService"].get = jest.fn().mockImplementation(key => key == 'debug' ? false : '10');
+        dependencies["ConfigService"].get = jest.fn().mockImplementation(key => key == 'debug' ? 'false' : '10');
         dependencies["ToolService"].getNowTimestamp = jest.fn().mockReturnValueOnce('1652246404');
         const data1 = await service.verifyFileToken("file|123.jpg|0|1652246384|+4V93CrK/KenKg5xQYh/FrxoaJ3+tEt48ULPemcFvoA=");
         expect(service.getTokenSign).toBeCalledTimes(1);

@@ -33,7 +33,7 @@ import { LikeModule } from './modules/like/like.module';
                 password: configService.get<string>('database.password'),
                 database: configService.get<string>('database.name'),
                 entities: [__dirname + '/**/*.entity{.ts,.js}'],
-                logging: !!configService.get<boolean>('debug', false),
+                logging: configService.get<string>('debug', "false").toLowerCase() === 'true',
                 synchronize: true,
             }),
             inject: [ConfigService],
