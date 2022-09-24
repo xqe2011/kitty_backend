@@ -28,6 +28,7 @@ jobs:
           mv docker/docker-compose.test.yml docker/docker-compose.yml
           mv docker/mariadb/certs.test docker/mariadb/certs
           rm -rf docker/mariadb/certs.release docker/docker-compose.release.yml
+          sed -i -e 's/\/etc\/timezone\/timezone/\/etc\/timezone/g' docker/docker-compose.yml
           sed -i -e 's/${QINIU_ACCESS_KEY}/${{ secrets.QINIU_ACCESS_KEY }}/g' docker/docker-compose.yml
           sed -i -e 's/${QINIU_SECRET_KEY}/${{ secrets.QINIU_SECRET_KEY }}/g' docker/docker-compose.yml
           sed -i -e 's/${WECHAT_APP_ID}/${{ secrets.WECHAT_APP_ID }}/g' docker/docker-compose.yml

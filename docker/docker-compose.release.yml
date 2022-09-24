@@ -4,7 +4,7 @@ services:
     build: ./backend_docs
     restart: always
     volumes:
-      - /etc/timezone:/etc/timezone:ro
+      - /etc/timezone/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     environment: 
       VIRTUAL_HOST: backend.docs.release.kitty.xqe2011.cn
@@ -18,7 +18,7 @@ services:
     build: ./mariadb
     restart: always
     volumes:
-      - /etc/timezone:/etc/timezone:ro
+      - /etc/timezone/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       - mariadb-database:/var/lib/mysql
     ports:
@@ -37,7 +37,7 @@ services:
     depends_on: 
       - mariadb
     volumes:
-      - /etc/timezone:/etc/timezone:ro
+      - /etc/timezone/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     environment: 
       VIRTUAL_HOST: api.release.kitty.xqe2011.cn

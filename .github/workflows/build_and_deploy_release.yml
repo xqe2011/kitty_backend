@@ -51,6 +51,7 @@ jobs:
           mv docker/docker-compose.release.yml docker/docker-compose.yml
           mv docker/mariadb/certs.release docker/mariadb/certs
           rm -rf docker/mariadb/certs.test docker/docker-compose.test.yml
+          sed -i -e 's/${SECRET}/${{ secrets.RELEASE_SECRET }}/g' docker/docker-compose.yml
           sed -i -e 's/${MARIADB_KITTY_PASSWORD}/${{ secrets.RELEASE_MARIADB_KITTY_PASSWORD }}/g' docker/docker-compose.yml
           sed -i -e 's/${MARIADB_ROOT_PASSWORD}/${{ secrets.RELEASE_MARIADB_ROOT_PASSWORD }}/g' docker/docker-compose.yml
           sed -i -e 's/${MARIADB_DA_PASSWORD}/${{ secrets.RELEASE_MARIADB_DA_PASSWORD }}/g' docker/docker-compose.yml
