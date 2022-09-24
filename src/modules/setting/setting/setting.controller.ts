@@ -23,7 +23,7 @@ export class SettingController {
             type: 'object',
             additionalProperties: {
                 nullable: true,
-                description: '配置值',
+                description: '配置值,任意类型',
                 type: 'string',
             },
         },

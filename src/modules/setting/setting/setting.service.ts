@@ -13,7 +13,7 @@ export class SettingService {
     /**
      * 客户端请求获取配置
      * @param key 键
-     * @param nullable 是否允许不存在返回空指
+     * @param nullable 是否允许不存在返回null
      * @returns 值
      */
     async fetchSettingFromClient(key: string, nullable = false) {
@@ -95,12 +95,7 @@ export class SettingService {
      * @param manager 事务,不传入则不使用事务写
      * @returns 值
      */
-    async createSetting(
-        key: string,
-        value: any,
-        canClientFetch: boolean,
-        manager?: EntityManager,
-    ) {
+    async createSetting(key: string, value: any, canClientFetch: boolean, manager?: EntityManager) {
         let settingRepository: Repository<Setting>;
         if (manager != undefined) {
             settingRepository = manager.getRepository(Setting);
@@ -112,5 +107,27 @@ export class SettingService {
             value: [value],
             canClientFetch: canClientFetch,
         });
+    }
+
+    /**
+     * 获取客户端可以获取的配置列表
+     * @param limit 返回数量
+     * @param start 开始位置
+     * @returns 配置列表
+     */
+    async getSettingsFromClient(limit: number, start: number) {
+        const data: Pick<Setting, 'key' | 'value' | 'updatedDate'>[] = await this.settingRepository.find({
+            where: {
+                canClientFetch: true,
+            },
+            select: ['key', 'value', 'updatedDate'],
+            skip: start,
+            take: limit,
+        });
+        /** 为了能够支持存储stirng,number这种纯类型,我们将原始数据包装一下 */
+        for (const item of data) {
+            item.value = item.value[0];
+        }
+        return data;
     }
 }

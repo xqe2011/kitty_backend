@@ -5,6 +5,8 @@ import { CommentModule } from '../comment/comment.module';
 import { FeedbackModule } from '../feedback/feedback.module';
 import { LikeModule } from '../like/like.module';
 import { QRCodeModule } from '../qrcode/qrcode.module';
+import { SettingModule } from '../setting/setting.module';
+import { SettingController } from './setting/setting.controller';
 import { ShopModule } from '../shop/shop.module';
 import { UserModule } from '../user/user.module';
 import { CatPhotoController } from './cat-photo/cat-photo.controller';
@@ -29,7 +31,8 @@ import { UserController } from './user/user.controller';
         QRCodeModule,
         FeedbackModule,
         TypeOrmModule.forFeature([ ManageLog ]),
-        LikeModule
+        LikeModule,
+        SettingModule
     ],
     providers: [ ManageLogService ],
     controllers: [
@@ -42,7 +45,8 @@ import { UserController } from './user/user.controller';
         ConsumeController,
         FeedbackController,
         LikeableEntityController,
-        ShopItemController
+        ShopItemController,
+        SettingController
     ]
 })
 export class ManageModule {}

@@ -177,4 +177,18 @@ describe('SettingService', () => {
             canClientFetch: false,
         });
     });
+
+    test("getSettingsFromClient()", async () => {
+        dependencies["SettingRepository"].find = jest.fn().mockResolvedValueOnce([{ value: [1] }, { value: [true] }, { value: ["abcde"] }]);
+        const data1 = await service.getSettingsFromClient(10, 0);
+        expect(dependencies["SettingRepository"].find).toBeCalledWith({
+            where: {
+                canClientFetch: true,
+            },
+            select: ['key', 'value', 'updatedDate'],
+            skip: 0,
+            take: 10,
+        });
+        expect(data1).toEqual([{ value: 1 }, { value: true }, { value: "abcde" }]);
+    });
 });

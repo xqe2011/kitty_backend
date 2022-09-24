@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, DeleteDateColumn, Index, } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, DeleteDateColumn, Index, UpdateDateColumn, } from 'typeorm';
 
 @Entity()
 export class Setting {
@@ -20,6 +20,9 @@ export class Setting {
         nullable: false,
     })
     canClientFetch: boolean;
+
+    @UpdateDateColumn()
+    updatedDate: Date;
 
     @CreateDateColumn()
     createdDate: Date;
