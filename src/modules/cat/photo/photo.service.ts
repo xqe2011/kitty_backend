@@ -5,7 +5,7 @@ import { FileService } from 'src/modules/file/file/file.service';
 import { LikeableEntityService } from 'src/modules/like/likeable-entity/likeable-entity.service';
 import { SettingService } from 'src/modules/setting/setting/setting.service';
 import { UserService } from 'src/modules/user/user/user.service';
-import { EntityManager, Repository } from 'typeorm';
+import { EntityManager, Not, Repository } from 'typeorm';
 import { CatPhoto } from '../entities/cat-photo.entity';
 import { CatPhotoType } from '../enums/cat-photo-type.enum';
 
@@ -131,12 +131,18 @@ export class PhotoService implements OnApplicationBootstrap{
 
     /**
      * 获取所有照片,默认按照时间倒序
+     * @param limit 限制数量
+     * @param start 起始位置
+     * @param includePending 是否包含未审核照片
      * @returns 猫咪照片集
      */
-    async getPhotos(limit: number, start: number) {
+    async getPhotos(limit: number, start: number, includePending: boolean) {
         const queryBuilder = this.catPhotoRepository.createQueryBuilder('photo');
         queryBuilder.skip(start);
         queryBuilder.take(limit);
+        if (!includePending) {
+            queryBuilder.where({ type: Not(CatPhotoType.PEDNING) });
+        }
         queryBuilder.select(['id', 'rawFileName', 'fileName', 'comment', 'createdDate', 'userId as userID', 'type', 'commentsAreaID', 'likeableEntityID']);
         queryBuilder.orderBy("createdDate", "DESC");
         const data = await queryBuilder.getRawMany();

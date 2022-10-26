@@ -2,6 +2,7 @@ import { ConflictException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { createMocker } from 'test/utils/create-mocker.function';
 import { MockedObject } from 'test/utils/mocked-object';
+import { Not } from 'typeorm';
 import { CatPhoto } from '../entities/cat-photo.entity';
 import { CatPhotoType } from '../enums/cat-photo-type.enum';
 import { PhotoService } from './photo.service';
@@ -290,7 +291,7 @@ describe('PhotoService', () => {
         expect(data1).toEqual([{id: 111, name: "你好", description: "desc", fileName: "1.jpg"}]);
     });
 
-    test('getPhotos()', async () => {
+    test('getPhotos()- Include Pending', async () => {
         const createQueryBuilder = {
             select: jest.fn(),
             take: jest.fn(),
@@ -299,12 +300,33 @@ describe('PhotoService', () => {
             getRawMany: jest.fn().mockReturnValue([{id: 111, name: "你好", description: "desc", fileName: "1.jpg", type: CatPhotoType.PEDNING}])
         };
         dependencies["CatPhotoRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => createQueryBuilder);
-        const data1 = await service.getPhotos(10, 0);
+        const data1 = await service.getPhotos(10, 0, true);
         expect(dependencies["CatPhotoRepository"].createQueryBuilder).toBeCalledWith('photo');
         expect(createQueryBuilder.select).toBeCalledWith(['id', 'rawFileName', 'fileName', 'comment', 'createdDate', 'userId as userID', 'type', 'commentsAreaID', 'likeableEntityID']);
         expect(createQueryBuilder.getRawMany).toBeCalledWith();
         expect(createQueryBuilder.take).toBeCalledWith(10);
         expect(createQueryBuilder.skip).toBeCalledWith(0);
+        expect(createQueryBuilder.orderBy).toBeCalledWith("createdDate", "DESC");
+        expect(data1).toEqual([{id: 111, name: "你好", description: "desc", fileName: "1.jpg", type: CatPhotoType.PEDNING}]);
+    });
+
+    test('getPhotos()- Not Include Pending', async () => {
+        const createQueryBuilder = {
+            select: jest.fn(),
+            take: jest.fn(),
+            skip: jest.fn(),
+            orderBy: jest.fn(),
+            where: jest.fn(),
+            getRawMany: jest.fn().mockReturnValue([{id: 111, name: "你好", description: "desc", fileName: "1.jpg", type: CatPhotoType.PEDNING}])
+        };
+        dependencies["CatPhotoRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => createQueryBuilder);
+        const data1 = await service.getPhotos(10, 0, false);
+        expect(dependencies["CatPhotoRepository"].createQueryBuilder).toBeCalledWith('photo');
+        expect(createQueryBuilder.select).toBeCalledWith(['id', 'rawFileName', 'fileName', 'comment', 'createdDate', 'userId as userID', 'type', 'commentsAreaID', 'likeableEntityID']);
+        expect(createQueryBuilder.getRawMany).toBeCalledWith();
+        expect(createQueryBuilder.take).toBeCalledWith(10);
+        expect(createQueryBuilder.skip).toBeCalledWith(0);
+        expect(createQueryBuilder.where).toBeCalledWith({ type: Not(CatPhotoType.PEDNING) });
         expect(createQueryBuilder.orderBy).toBeCalledWith("createdDate", "DESC");
         expect(data1).toEqual([{id: 111, name: "你好", description: "desc", fileName: "1.jpg", type: CatPhotoType.PEDNING}]);
     });

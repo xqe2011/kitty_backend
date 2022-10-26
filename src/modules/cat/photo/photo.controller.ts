@@ -13,6 +13,8 @@ import { CatPhotoType } from '../enums/cat-photo-type.enum';
 import { GetOtherPhotosQueryDto } from '../dtos/get-other-photos.query';
 import { DeleteCatPhotoResponseDto } from '../dtos/delete-cat-photo.response';
 import { DeleteCatPhotoParamDto } from '../dtos/delete-cat-photo.param';
+import { GetAllPhotosResponseDto } from '../dtos/get-all-photos.response';
+import { GetAllPhotosQueryDto } from '../dtos/get-all-photos.query';
 
 @Controller('/')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -22,6 +24,21 @@ export class PhotoController {
     constructor(
         private photoService: PhotoService
     ) {}
+
+    @Get('cats/photos')
+    @Roles(Role.Admin, Role.RegisteredUser, Role.NormalUser)
+    @ApiOperation({
+        summary: '获取所有猫咪照片',
+        description: '获取所有猫咪照片'
+    })
+    @ApiOkResponse({
+        description: '获取成功',
+        type: GetAllPhotosResponseDto,
+        isArray: true
+    })
+    async getPhotos(@Query() query: GetAllPhotosQueryDto) {
+        return await this.photoService.getPhotos(query.limit, query.start, false);
+    }
 
     @Post('/cats/photos')
     @Roles(Role.Admin, Role.RegisteredUser)

@@ -37,7 +37,7 @@ export class CatPhotoController {
         isArray: true
     })
     async getPhotos(@Query() query: GetCatsPhotosQueryDto) {
-        return await this.photoService.getPhotos(query.limit, query.start);
+        return await this.photoService.getPhotos(query.limit, query.start, true);
     }
 
     @Put('cats/photo/:id')
