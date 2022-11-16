@@ -126,7 +126,10 @@ export class ShopService {
             name: string;
             description: string;
             price: number;
-            coverPhoto: string;
+            coverPhoto: {
+                id: number;
+                fileName: string;
+            },
             visible: boolean;
             likeableEntityID: number;
             photos: {

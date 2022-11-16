@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, CreateDateColumn, DeleteDateColumn, Column, } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, CreateDateColumn, DeleteDateColumn, Column, OneToMany, } from 'typeorm';
+import { ArticlePhoto } from './article-photo.entity';
 
 @Entity()
 export class Article {
@@ -9,10 +10,6 @@ export class Article {
     @Column({ nullable: false, default: true })
     canBeListed: boolean;
 
-    /** 文章封面文件名  */
-    @Column({ default: 0 })
-    coverFileName: string;
-
     /** 文章概述  */
     @Column({ default: '' })
     summary: string;
@@ -21,9 +18,13 @@ export class Article {
     @Column({ nullable: false })
     title: string;
 
-    /** 文章内容  */
-    @Column({ nullable: false, type: "text" })
-    content: string;
+    /** 文章URL  */
+    @Column({ nullable: false })
+    url: string;
+
+    /** 商品对应的照片 */
+    @OneToMany(() => ArticlePhoto, (articlePhoto) => articlePhoto.article)
+    photos: ArticlePhoto[];
 
     @CreateDateColumn()
     createdDate: Date;

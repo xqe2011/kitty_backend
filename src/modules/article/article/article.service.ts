@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FileService } from 'src/modules/file/file/file.service';
 import { Repository } from 'typeorm';
+import { ArticlePhoto } from '../entities/article-photo.entity';
 import { Article } from '../entities/article.entity';
 
 @Injectable()
@@ -9,26 +9,26 @@ export class ArticleService {
     constructor(
         @InjectRepository(Article)
         private articleRepository: Repository<Article>,
-        private fileService: FileService,
+        @InjectRepository(ArticlePhoto)
+        private articlePhotoRepository: Repository<ArticlePhoto>,
     ) {}
 
     /**
-     * 通过文章ID获取信息
+     * 根据文章ID获取图片集合
      * @param id 文章ID
-     * @returns 文章信息
+     * @param isCover 是否为封面图
+     * @returns 图片集合
      */
-    async getArticle(id: number) {
-        const queryBuildinger = this.articleRepository.createQueryBuilder();
-        queryBuildinger.andWhere('id = :id', { id: id });
-        queryBuildinger.select([
-            'content',
-            'id',
-            'title',
-            'coverFileName',
-            'createdDate',
-            'summary'
-        ]);
-        return (await queryBuildinger.getRawOne()) as Pick<Article, 'content' | 'id' | 'title' | 'createdDate' | 'summary' | 'coverFileName'>;
+     async getPhotosByArticleID(id: number, isCover: boolean) {
+        return await this.articlePhotoRepository.find({
+            where: {
+                article: {
+                    id
+                },
+                isCover: isCover,
+            },
+            select: ['id', 'fileName']
+        });
     }
 
     /**
@@ -37,15 +37,29 @@ export class ArticleService {
      * @param start 开始位置
      * @returns 文章列表
      */
-    async getArticlesList(limit: number, start: number) {
-        return await this.articleRepository.find({
+    async getArticlesList(limit: number, start: number) { 
+        const articlesWithoutCover = await this.articleRepository.find({
             where: {
                 canBeListed: true,
             },
             take: limit,
             skip: start,
-            select: ['id', 'coverFileName', 'title', 'summary'],
-        });
+            select: ['id', 'title', 'summary', 'url', 'createdDate'],
+        }) as any;
+        for (const item of articlesWithoutCover) {
+            item.coverPhoto = (await this.getPhotosByArticleID(item.id, true))[0];
+        }
+        return articlesWithoutCover as {
+            id: number;
+            title: string;
+            summary: string;
+            url: string;
+            createdDate: Date;
+            coverPhoto: {
+                id: number;
+                fileName: string;
+            }
+        };
     }
 
     /**
