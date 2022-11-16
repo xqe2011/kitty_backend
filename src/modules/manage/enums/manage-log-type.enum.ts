@@ -48,5 +48,14 @@ export enum ManageLogType {
     ADD_PHOTO_TO_SHOP_ITEM = '15',
 
     /* 删除商品照片 */
-    DELETE_SHOP_PHOTO = '16'
+    DELETE_SHOP_PHOTO = '16',
+
+    /* 修改用户积分 */
+    CHANGE_USER_POINTS = '17',
+
+    /* 修改用户信息 */
+    UPDATE_USER = '18',
+
+    /* 重置用户昵称和头像 */
+    RESET_USER = '19',
 }

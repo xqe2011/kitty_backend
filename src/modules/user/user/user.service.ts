@@ -1,17 +1,30 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FileService } from 'src/modules/file/file/file.service';
+import { SettingService } from 'src/modules/setting/setting/setting.service';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { Role } from '../enums/role.enum';
 
 @Injectable()
-export class UserService {
+export class UserService implements OnApplicationBootstrap {
     constructor(
         @InjectRepository(User)
         private usersRepository: Repository<User>,
         private fileService: FileService,
+        private settingService: SettingService,
     ) {}
+
+    async onApplicationBootstrap() {
+        if ((await this.settingService.getSetting('user.default_nickname')) == '') {
+            await this.settingService.createSetting('user.default_nickname', '', true);
+        }
+        if ((await this.settingService.getSetting('user.default_avatar')) == '') {
+            await this.settingService.createSetting('user.default_avatar', '', true);
+        }
+        await this.settingService.updateSetting('user.default_nickname', "爱猫人士_uid");
+        await this.settingService.updateSetting('user.default_avatar', "default.png");
+    }
 
     /**
      * 用户是否存在
@@ -108,17 +121,51 @@ export class UserService {
     /**
      * 更新用户信息,如果是普通用户则升级为已注册用户
      * @param id 用户ID
-     * @param nickName 昵称
-     * @param avatarFileToken 头像文件Token
+     * @param nickName 昵称,若为undefined则不更新昵称
+     * @param avatarFileToken 头像文件Token,若为undefined则不更新头像
      * @returns 是否成功
      */
-    async updateUserinfoAndRole(id: number, nickName: string, avatarFileToken: string) {
+    async updateUserinfoAndRole(id: number, nickName?: string, avatarFileToken?: string) {
         const user = await this.getUserByID(id);
         if (user === undefined) return false;
-        user.nickName = nickName;
-        user.avatarFileName = this.fileService.getFileNameByToken(avatarFileToken);
-        if (user.role === Role.NormalUser) user.role = Role.RegisteredUser;
+        if (nickName !== undefined) {
+            user.nickName = nickName;
+        }
+        if (avatarFileToken !== undefined) {
+            user.avatarFileName = this.fileService.getFileNameByToken(avatarFileToken);
+        }
+        if (user.role === Role.NormalUser &&
+            user.nickName !== null &&
+            user.avatarFileName !== null) {
+            user.role = Role.RegisteredUser;
+        }
         await this.usersRepository.save(user);
         return true;
+    }
+
+    /**
+     * 重置用户昵称和头像未默认值
+     * @param id 用户ID
+     */
+    async resetNickNameAndAvatar(id: number) {
+        const user = await this.getUserByID(id);
+        user.nickName = await this.settingService.getSetting('user.default_nickname') + user.id;
+        user.avatarFileName = await this.settingService.getSetting('user.default_avatar');
+        await this.usersRepository.save(user);
+    }
+
+    /**
+     * 更新用户信息
+     * @parma id 用户ID
+     * @param role 角色
+     */
+    async updateUser(id: number, role: Role) {
+        const user = await this.getUserByID(id);
+        if ((user.avatarFileName === null || user.nickName === null) &&
+            (role !== Role.NormalUser && role !== Role.Disabled)) {
+            throw new ForbiddenException("This user doesn't have a nickname or avatar");
+        }
+        user.role = role;
+        await this.usersRepository.save(user);
     }
 }

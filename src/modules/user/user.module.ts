@@ -12,6 +12,7 @@ import { AchievementService } from './achievement/achievement.service';
 import { AchievementController } from './achievement/achievement.controller';
 import { Achievement } from './entities/achievement.entity';
 import { UserAchievement } from './entities/user-achievement.entity';
+import { SettingModule } from '../setting/setting.module';
 @Module({
     imports: [
         TypeOrmModule.forFeature([
@@ -21,6 +22,7 @@ import { UserAchievement } from './entities/user-achievement.entity';
             UserAchievement,
         ]),
         FileModule,
+        SettingModule
     ],
     providers: [
         UserService,

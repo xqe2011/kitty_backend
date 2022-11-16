@@ -3,8 +3,7 @@ import { Role } from 'src/modules/user/enums/role.enum';
 
 export class LoginByMiniProgramCodeResponseDto {
     @ApiProperty({
-        description:
-            '用户角色,0表示禁用账户,1表示未注册用户,2表示已注册用户,3表示管理员',
+        description: '用户角色,0表示禁用账户,1表示未注册用户,2表示已注册用户,3表示管理员',
         enum: Role,
     })
     role: Role;
