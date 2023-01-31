@@ -19,7 +19,7 @@ import { ManageLogType } from '../enums/manage-log-type.enum';
 
 @Controller('/manage')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
-@Roles(Role.Admin, Role.RegisteredUser)
+@Roles(Role.Admin)
 @ApiBearerAuth()
 @ApiTags('管理')
 export class ShopOrderController {

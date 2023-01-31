@@ -13,7 +13,7 @@ describe('CatService', () => {
     let dependencies: { 
         "PhotoService": MockedObject,
         "CatRepository": MockedObject,
-        "VectorService": MockedObject,
+        "TagService": MockedObject,
         "EntityManager": MockedObject
     };
 
@@ -22,7 +22,7 @@ describe('CatService', () => {
         dependencies = {
             "PhotoService": {},
             "CatRepository": {},
-            "VectorService": {},
+            "TagService": {},
             "EntityManager": {},
         };
         const module: TestingModule = await Test.createTestingModule({
@@ -126,16 +126,16 @@ describe('CatService', () => {
     });
 
     test('getCatInfoWithSelectedAndCoverPhotos()', async () => {
-        dependencies["VectorService"].getVetors = jest.fn().mockResolvedValueOnce({"a": 20, "b": 40});
+        dependencies["TagService"].getTagsByCatID = jest.fn().mockResolvedValueOnce([{ "id": 1 }]);
         dependencies["PhotoService"].getPhotosByCatIDAndType = jest.fn().mockResolvedValue([{"vb": "fd"}, {"vb": "fd2"}]);
         (service as any).getCatInfoByID = jest.fn().mockResolvedValueOnce({"aaa": "bbb"});
         const data1 = await service.getCatInfoWithSelectedAndCoverPhotos(2222);
-        expect(dependencies["VectorService"].getVetors).toBeCalledWith(2222);
+        expect(dependencies["TagService"].getTagsByCatID).toBeCalledWith(2222);
         expect((service as any).getCatInfoByID).toBeCalledWith(2222);
         expect(dependencies["PhotoService"].getPhotosByCatIDAndType).toBeCalledTimes(2);
         expect(data1).toEqual({
             info: {"aaa": "bbb"},
-            vectors: {"a": 20, "b": 40},
+            tags: [{ "id": 1 }],
             selectedPhotos: [{"vb": "fd"}, {"vb": "fd2"}],
             coverPhoto: {"vb": "fd"}
         });

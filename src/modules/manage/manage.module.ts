@@ -21,6 +21,7 @@ import { ConsumeController } from './qrcode/consume.controller';
 import { ShopItemController } from './shop-item/shop-item.controller';
 import { ShopOrderController } from './shop-order/shop-order.controller';
 import { UserController } from './user/user.controller';
+import { CatTagController } from './cat-tag/cat-tag.controller';
 
 @Module({
     imports: [
@@ -46,7 +47,8 @@ import { UserController } from './user/user.controller';
         FeedbackController,
         LikeableEntityController,
         ShopItemController,
-        SettingController
+        SettingController,
+        CatTagController
     ]
 })
 export class ManageModule {}

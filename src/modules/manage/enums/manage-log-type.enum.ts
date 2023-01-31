@@ -58,4 +58,10 @@ export enum ManageLogType {
 
     /* 重置用户昵称和头像 */
     RESET_USER = '19',
+
+    /* 删除猫咪标签 */
+    DELETE_CAT_TAG = '20',
+
+    /* 添加猫咪标签 */
+    ADD_TAG_TO_CAT = '21',
 }

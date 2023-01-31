@@ -5,14 +5,14 @@ import { Cat } from '../entities/cat.entity';
 import { CatPhotoType } from '../enums/cat-photo-type.enum';
 import { CatStatusType } from '../enums/cat-status-type.enum';
 import { PhotoService } from '../photo/photo.service';
-import { VectorService } from '../vector/vector.service';
+import { TagService } from '../tag/tag/tag.service';
 
 @Injectable()
 export class CatService {
     constructor(
         @InjectRepository(Cat)
         private catRepository: Repository<Cat>,
-        private vectorService: VectorService,
+        private tagService: TagService,
         private photoService: PhotoService,
         @InjectEntityManager()
         private entityManager: EntityManager
@@ -99,7 +99,7 @@ export class CatService {
     async getCatInfoWithSelectedAndCoverPhotos(id: number) {
         return {
             info: await this.getCatInfoByID(id),
-            vectors: await this.vectorService.getVetors(id),
+            tags: await this.tagService.getTagsByCatID(id),
             selectedPhotos: await this.photoService.getPhotosByCatIDAndType(id, CatPhotoType.SELECTED, 30, 0),
             coverPhoto: (await this.photoService.getPhotosByCatIDAndType(id, CatPhotoType.COVER, 1, 0))[0],
         };

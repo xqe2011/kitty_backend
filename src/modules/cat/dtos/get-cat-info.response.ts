@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CatStatusType } from '../enums/cat-status-type.enum';
-import { CatVectorType } from '../enums/cat-vector-type.enum';
 
 class CatInfoDto {
     @ApiProperty({
@@ -51,6 +50,17 @@ class PhotoDto {
     commentsAreaID: number;
 }
 
+class TagDto {
+    @ApiProperty({ description: '标签ID', minimum: 1 })
+    id: number;
+
+    @ApiProperty({ description: '标签名称' })
+    name: string;
+
+    @ApiProperty({ description: '标签发布时间' })
+    createdDate: Date;
+}
+
 export class GetCatInfoResponseDto {
     @ApiProperty({ description: '猫咪信息' })
     info: CatInfoDto;
@@ -63,14 +73,11 @@ export class GetCatInfoResponseDto {
     selectedPhotos: PhotoDto[];
 
     @ApiProperty({
-        type: 'object',
-        description: '向量类型,0是温顺,1是胆小,2是活泼,3是暴躁,4是粘人,5是独立',
-        additionalProperties: {
-            type: 'number',
-            description: '向量百分比',
-        },
+        description: '猫咪标签',
+        type: TagDto,
+        isArray: true
     })
-    vectors: Record<CatVectorType, number>;
+    tags: TagDto[];
 
     @ApiProperty({ description: '封面图片' })
     coverPhoto: PhotoDto;

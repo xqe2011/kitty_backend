@@ -122,9 +122,6 @@ describe('CommentsAreaService', () => {
             softDelete: jest.fn()
         };
         dependencies["CommentService"].deleteCommentsByAreaID = jest.fn();
-        await service.deleteCommentsArea(1, manager as any);
-        expect(manager.softDelete).toBeCalledWith(CommentsArea, 1);
-        expect(dependencies["CommentService"].deleteCommentsByAreaID).toBeCalledWith(1, manager);
         dependencies["EntityManager"].transaction = jest.fn().mockImplementation(func => func(manager));
         await service.deleteCommentsArea(1);
         expect(manager.softDelete).toBeCalledWith(CommentsArea, 1);

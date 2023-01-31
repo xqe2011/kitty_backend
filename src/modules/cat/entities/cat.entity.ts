@@ -2,7 +2,7 @@ import { Feedback } from 'src/modules/feedback/entities/feedback.entity';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, DeleteDateColumn, } from 'typeorm';
 import { CatStatusType } from '../enums/cat-status-type.enum';
 import { CatPhoto } from './cat-photo.entity';
-import { CatVector } from './cat-vector.entity';
+import { CatTag } from './cat-tag.entity';
 
 @Entity()
 export class Cat {
@@ -56,9 +56,9 @@ export class Cat {
     @OneToMany(() => CatPhoto, (catPhoto) => catPhoto.cat)
     photos: CatPhoto[];
 
-    /** 猫咪对应的向量 */
-    @OneToMany(() => CatVector, (catVector) => catVector.cat)
-    vectors: CatVector[];
+    /** 猫咪对应的TAG */
+    @OneToMany(() => CatTag, (catTag) => catTag.cat)
+    tags: CatTag[];
 
     /** 猫咪对应的反馈 */
     @OneToMany(() => Feedback, (feedback) => feedback.cat)

@@ -12,11 +12,12 @@ import { PhotoController } from './photo/photo.controller';
 import { PhotoService } from './photo/photo.service';
 import { IsCatIDValidValidator } from './validators/is-catid-valid.validator';
 import { IsPhotoIDValidValidator } from './validators/is-photoid-valid.validator';
-import { VectorService } from './vector/vector.service';
-import { CatVector } from './entities/cat-vector.entity';
 import { CommentModule } from '../comment/comment.module';
 import { LikeModule } from '../like/like.module';
 import { UserModule } from '../user/user.module';
+import { TagService } from './tag/tag/tag.service';
+import { CatTag } from './entities/cat-tag.entity';
+import { IsTagIDValidValidator } from './validators/is-tagid-valid.validator';
 
 @Module({
     imports: [
@@ -24,7 +25,7 @@ import { UserModule } from '../user/user.module';
             Cat,
             CatPhoto,
             CatRecommendation,
-            CatVector,
+            CatTag
         ]),
         SettingModule,
         CommentModule,
@@ -37,9 +38,10 @@ import { UserModule } from '../user/user.module';
         PhotoService,
         IsCatIDValidValidator,
         IsPhotoIDValidValidator,
-        VectorService,
+        TagService,
+        IsTagIDValidValidator
     ],
     controllers: [CatController, RecommendationController, PhotoController],
-    exports: [ CatService, PhotoService ]
+    exports: [ CatService, PhotoService, TagService ]
 })
 export class CatModule {}

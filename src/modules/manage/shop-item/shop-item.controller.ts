@@ -7,9 +7,6 @@ import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags, } from '@nestjs/sw
 import { ManageLogService } from '../manage-log/manage-log.service';
 import { ManageLogType } from '../enums/manage-log-type.enum';
 import { ShopService } from 'src/modules/shop/shop/shop.service';
-import { UpdateItemResponseDto } from '../dtos/update-item.response';
-import { UpdateItemParamDto } from '../dtos/update-item.param';
-import { UpdateItemBodyDto } from '../dtos/update-item.body';
 import { CreateItemBodyDto } from '../dtos/create-item.body';
 import { CreateItemResponseDto } from '../dtos/create-item.response';
 import { DeleteItemResponseDto } from '../dtos/delete-item.response';
@@ -24,7 +21,7 @@ import { DeletePhotoResponseDto } from '../dtos/delete-photo.response';
 
 @Controller('/manage')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
-@Roles(Role.Admin, Role.RegisteredUser)
+@Roles(Role.Admin)
 @ApiBearerAuth()
 @ApiTags('管理')
 export class ShopItemController {

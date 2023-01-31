@@ -22,7 +22,7 @@ import { ResetUserParamDto } from '../dtos/reset-user.param';
 
 @Controller('/manage')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
-@Roles(Role.Admin, Role.RegisteredUser)
+@Roles(Role.Admin)
 @ApiBearerAuth()
 @ApiTags('管理')
 export class UserController {
