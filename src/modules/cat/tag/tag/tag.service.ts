@@ -48,6 +48,19 @@ export class TagService {
     }
 
     /**
+     * 根据标签名称搜索猫咪
+     *
+     * @param name 标签名称
+     * @returns 搜索结果,猫咪ID数组
+     */
+    async searchCatsByTagName(name: string) {
+        const queryBuildinger = this.catTagRepository.createQueryBuilder('catTag');
+        queryBuildinger.select(['catId']);
+        queryBuildinger.where('name = :name', { name: name });
+        return (await queryBuildinger.getRawMany()).map(tag => tag.catId);
+    }
+
+    /**
      * 添加标签
      * 
      * @param catID 猫咪ID

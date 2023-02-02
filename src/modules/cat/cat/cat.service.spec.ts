@@ -38,11 +38,12 @@ describe('CatService', () => {
         expect(service).toBeDefined();
     });
 
-    test('searchCatByKeyword()', async () => {
+    test('searchCatByKeyword() - Not Tag Name', async () => {
         dependencies["CatRepository"].find = jest.fn().mockResolvedValue([
             {id: 5824},
             {id: 5825},
         ]);
+        dependencies["TagService"].searchCatsByTagName = jest.fn().mockResolvedValue([]);
         const data1 = await service.searchCatByKeyword("你好");
         expect(dependencies["CatRepository"].find).toBeCalledWith({
             where: [
@@ -54,6 +55,49 @@ describe('CatService', () => {
             ],
             select: ['id'],
         });
+        expect(dependencies["TagService"].searchCatsByTagName).toBeCalledWith("你好");
+        expect(data1).toEqual([5824, 5825]);
+    });
+
+    test('searchCatByKeyword() - Tag Name and Not duplicate', async () => {
+        dependencies["CatRepository"].find = jest.fn().mockResolvedValue([
+            {id: 5824},
+            {id: 5825},
+        ]);
+        dependencies["TagService"].searchCatsByTagName = jest.fn().mockResolvedValue([ 23 ]);
+        const data1 = await service.searchCatByKeyword("你好");
+        expect(dependencies["CatRepository"].find).toBeCalledWith({
+            where: [
+                { name: Like('%你好%') },
+                { species: Like('%你好%') },
+                { description: Like('%你好%') },
+                { haunt: Like('%你好%') },
+                { isNeuter: undefined },
+            ],
+            select: ['id'],
+        });
+        expect(dependencies["TagService"].searchCatsByTagName).toBeCalledWith("你好");
+        expect(data1).toEqual([5824, 5825, 23]);
+    });
+
+    test('searchCatByKeyword() - Tag Name and Duplicate', async () => {
+        dependencies["CatRepository"].find = jest.fn().mockResolvedValue([
+            {id: 5824},
+            {id: 5825},
+        ]);
+        dependencies["TagService"].searchCatsByTagName = jest.fn().mockResolvedValue([ 5825 ]);
+        const data1 = await service.searchCatByKeyword("你好");
+        expect(dependencies["CatRepository"].find).toBeCalledWith({
+            where: [
+                { name: Like('%你好%') },
+                { species: Like('%你好%') },
+                { description: Like('%你好%') },
+                { haunt: Like('%你好%') },
+                { isNeuter: undefined },
+            ],
+            select: ['id'],
+        });
+        expect(dependencies["TagService"].searchCatsByTagName).toBeCalledWith("你好");
         expect(data1).toEqual([5824, 5825]);
     });
 

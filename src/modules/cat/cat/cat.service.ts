@@ -15,7 +15,7 @@ export class CatService {
         private tagService: TagService,
         private photoService: PhotoService,
         @InjectEntityManager()
-        private entityManager: EntityManager
+        private entityManager: EntityManager,
     ) {}
 
     /**
@@ -31,6 +31,7 @@ export class CatService {
 
     /**
      * 通过关键词搜索猫咪
+     *
      * @param keyword 关键字
      * @returns 搜索结果,猫咪ID数组
      */
@@ -52,7 +53,11 @@ export class CatService {
             ],
             select: ['id'],
         });
-        return cats.map((val) => val.id);
+        const ids = cats.map((val) => val.id);
+        /* 搜索标签 */
+        ids.push(...await this.tagService.searchCatsByTagName(keyword));
+        /* 去重 */
+        return [...new Set(ids)];
     }
 
     /**

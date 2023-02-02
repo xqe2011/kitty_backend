@@ -113,4 +113,19 @@ describe('TagService', () => {
         await service.deleteTagsByCatID(1);
         expect(manager.softDelete).toBeCalledWith(CatTag, { cat: { id: 1 } });
     });
+
+    test('searchCatsByTagName()', async () => {
+        const createQueryBuilder = {
+            select: jest.fn(),
+            where: jest.fn(),
+            getRawMany: jest.fn().mockReturnValue([{ catId: 111 }])
+        };
+        dependencies["CatTagRepository"].createQueryBuilder = jest.fn().mockImplementationOnce(() => createQueryBuilder);
+        const data = await service.searchCatsByTagName("测试");
+        expect(dependencies["CatTagRepository"].createQueryBuilder).toBeCalledWith('catTag');
+        expect(createQueryBuilder.select).toBeCalledWith(['catId']);
+        expect(createQueryBuilder.where).toBeCalledWith('name = :name', { name: "测试" });
+        expect(createQueryBuilder.getRawMany).toBeCalledWith();
+        expect(data).toEqual([ 111 ]);
+    });
 });
