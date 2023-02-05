@@ -56,7 +56,7 @@ export class TagService {
     async searchCatsByTagName(name: string) {
         const queryBuildinger = this.catTagRepository.createQueryBuilder('catTag');
         queryBuildinger.select(['catId']);
-        queryBuildinger.where('name = :name', { name: name });
+        queryBuildinger.andWhere({ name });
         return (await queryBuildinger.getRawMany()).map(tag => tag.catId);
     }
 
