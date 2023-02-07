@@ -21,7 +21,10 @@ export class ReportController {
 
     @Post('/')
     @Roles(Role.Admin, Role.RegisteredUser)
-    @ApiOperation({ summary: '发布举报,需要注册用户权限' })
+    @ApiOperation({
+        summary: '发布举报',
+        description: '发布举报,需要注册用户权限',
+    })
     @ApiOkResponse({
         description: '发布成功',
         type: CreateReportResponseDto,
@@ -41,13 +44,14 @@ export class ReportController {
     @Get('/')
     @ApiOperation({
         summary: '获取举报列表',
-        description: '获取用户提交的举报列表'
+        description: '获取用户提交的举报列表,需要注册用户权限'
     })
     @ApiOkResponse({
         description: '获取成功',
         type: GetReportsResponseDto,
         isArray: true
     })
+    @Roles(Role.Admin, Role.RegisteredUser)
     async getReports(@Req() request, @Query() query: GetReportsQueryDto) {
         return await this.reportService.getReportsByUserID(request.user.id, query.limit, query.start);
     }
