@@ -22,12 +22,12 @@ export class FeedbackController {
 
     @Post('/')
     @Roles(Role.Admin, Role.RegisteredUser)
-    @ApiOperation({ summary: '发布反馈' })
+    @ApiOperation({ summary: '发布反馈,需要注册用户权限' })
     @ApiOkResponse({
         description: '发布成功',
         type: CreateFeedbackResponseDto,
     })
-    async uploadPhoto(@Req() request, @Body() body: CreateFeedbackBodyDto) {
+    async createFeedback(@Req() request, @Body() body: CreateFeedbackBodyDto) {
         return {
             feedbackID: await this.feedbackService.createFeedback(
                 body.type,
@@ -42,14 +42,14 @@ export class FeedbackController {
     @Get('/')
     @ApiOperation({
         summary: '获取反馈',
-        description: '获取用户提交的反馈,需要管理员权限'
+        description: '获取用户提交的反馈'
     })
     @ApiOkResponse({
         description: '获取成功',
         type: GetFeedbacksResponseDto,
         isArray: true
     })
-    async searchFeedbacks(@Req() request, @Query() query: GetFeedbacksQueryDto) {
+    async getFeedbacks(@Req() request, @Query() query: GetFeedbacksQueryDto) {
         return await this.feedbackService.searchFeedbacks(request.user.id, undefined, undefined, query.limit, query.start, query.photoLimit);
     }
 }

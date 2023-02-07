@@ -18,6 +18,7 @@ import { CommentModule } from './modules/comment/comment.module';
 import { ManageModule } from './modules/manage/manage.module';
 import { QRCodeModule } from './modules/qrcode/qrcode.module';
 import { LikeModule } from './modules/like/like.module';
+import { ReportModule } from './modules/report/report.module';
 
 @Global()
 @Module({
@@ -51,7 +52,8 @@ import { LikeModule } from './modules/like/like.module';
         CommentModule,
         ManageModule,
         QRCodeModule,
-        LikeModule
+        LikeModule,
+        ReportModule
     ],
     controllers: [],
     providers: [

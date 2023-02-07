@@ -42,6 +42,6 @@ import { IsTagIDValidValidator } from './validators/is-tagid-valid.validator';
         IsTagIDValidValidator
     ],
     controllers: [CatController, RecommendationController, PhotoController],
-    exports: [ CatService, PhotoService, TagService ]
+    exports: [ CatService, PhotoService, TagService, IsPhotoIDValidValidator ]
 })
 export class CatModule {}

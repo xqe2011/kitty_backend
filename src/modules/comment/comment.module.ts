@@ -20,6 +20,6 @@ import { SettingModule } from '../setting/setting.module';
         IsCommentIDValidValidator,
         IsCommentsAreaIDValidValidator,
     ],
-    exports: [ CommentService, CommentsAreaService ]
+    exports: [ CommentService, CommentsAreaService, IsCommentIDValidValidator ]
 })
 export class CommentModule {}

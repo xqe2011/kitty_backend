@@ -9,6 +9,7 @@ import { Comment } from 'src/modules/comment/entities/comment.entity';
 import { LikeItem } from 'src/modules/like/entities/like-item.entity';
 import { Feedback } from 'src/modules/feedback/entities/feedback.entity';
 import { Order } from 'src/modules/shop/entities/order.entity';
+import { Report } from 'src/modules/report/entities/report.entity';
 
 @Entity()
 export class User {
@@ -77,6 +78,10 @@ export class User {
     /** 发表的反馈 */
     @OneToMany(() => Feedback, (feedback) => feedback.user)
     feedbacks: Feedback[];
+
+    /** 发表的举报 */
+    @OneToMany(() => Report, (report) => report.user)
+    reports: Feedback[];
 
     /** 用户订单 */
     @OneToMany(() => Order, (order) => order.user)
