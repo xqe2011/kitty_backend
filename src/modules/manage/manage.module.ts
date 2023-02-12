@@ -22,6 +22,8 @@ import { ShopItemController } from './shop-item/shop-item.controller';
 import { ShopOrderController } from './shop-order/shop-order.controller';
 import { UserController } from './user/user.controller';
 import { CatTagController } from './cat-tag/cat-tag.controller';
+import { ReportController } from './report/report.controller';
+import { ReportModule } from '../report/report.module';
 
 @Module({
     imports: [
@@ -33,7 +35,8 @@ import { CatTagController } from './cat-tag/cat-tag.controller';
         FeedbackModule,
         TypeOrmModule.forFeature([ ManageLog ]),
         LikeModule,
-        SettingModule
+        SettingModule,
+        ReportModule
     ],
     providers: [ ManageLogService ],
     controllers: [
@@ -48,7 +51,8 @@ import { CatTagController } from './cat-tag/cat-tag.controller';
         LikeableEntityController,
         ShopItemController,
         SettingController,
-        CatTagController
+        CatTagController,
+        ReportController
     ]
 })
 export class ManageModule {}
