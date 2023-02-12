@@ -9,6 +9,18 @@ on:
 jobs:
   dockerfile_test:
     runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+          image: mariadb:latest
+          env:
+            MARIADB_DATABASE: kitty
+            MARIADB_USER: kitty
+            MARIADB_PASSWORD: 123456
+            MARIADB_ROOT_PASSWORD: 123456
+          ports:
+            - 3306
+          options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
     
     steps:
       - uses: actions/checkout@v3
@@ -19,11 +31,23 @@ jobs:
         run: npm install --save
       - name: Install global dependencies
         run: npm i -g @nestjs/cli
+      - name: Wait mariadb to start
+        run: |
+          while ! mysqladmin ping -h"127.0.0.1" -P"${{ job.services.mariadb.ports[3306] }}" --silent; do
+            sleep 1
+          done
+      - name: Generate .env
+        run: |
+          mv default.env .env
+          sed -i -e 's/; database.port=3306/database.port=${{ job.services.mariadb.ports[3306] }}/g' .env
+      - name: Build documentation
+        run: npm run build:docs
       - name: Build package
         run: rm -rf build && nest build
       - name: Build docker image
         run: |
           cp -R dist package.json package-lock.json docker/backend/app
+          cp docs/openapi.json docker/backend/app/dist
           cp -R docs/* docker/backend_docs/dist
           mv docker/docker-compose.test.yml docker/docker-compose.yml
           mv docker/mariadb/certs.test docker/mariadb/certs

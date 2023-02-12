@@ -47,6 +47,7 @@ jobs:
       - name: Build docker image
         run: |
           cp -R dist package.json package-lock.json docker/backend/app
+          cp docs/openapi.json docker/backend/app/dist
           cp -R docs/* docker/backend_docs/dist
           mv docker/docker-compose.release.yml docker/docker-compose.yml
           mv docker/mariadb/certs.release docker/mariadb/certs
