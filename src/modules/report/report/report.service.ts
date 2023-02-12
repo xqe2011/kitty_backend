@@ -98,8 +98,12 @@ export class ReportService implements OnApplicationBootstrap{
         });
         queryBuilder.select(['entityType', 'entityID', 'COUNT(entityID) as reportCount']);
         queryBuilder.groupBy('entityID');
-        queryBuilder.having('COUNT(entityID) > :threshold', { threshold: await this.settingService.getSetting("report.threshold") });
-        queryBuilder.orderBy("COUNT(entityID)", "DESC");
-        return (await queryBuilder.getRawMany()) as (Pick<Report, 'entityType' | 'entityID'> & { reportCount: number })[];
+        queryBuilder.having('reportCount > :threshold', { threshold: await this.settingService.getSetting("report.threshold") });
+        queryBuilder.orderBy("reportCount", "DESC");
+        return (await queryBuilder.getRawMany()).map(val => {return {
+            entityType: val.entityType,
+            entityID: val.entityID,
+            reportCount: parseInt(val.reportCount)
+        }}) as (Pick<Report, 'entityType' | 'entityID'> & { reportCount: number })[];
     }
 }

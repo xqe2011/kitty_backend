@@ -23,7 +23,7 @@ export class ReportController {
     @Get('reports')
     @ApiOperation({
         summary: '获取举报列表',
-        description: '获取指定实体的反馈列表,需要管理员权限'
+        description: '获取指定实体的举报列表,需要管理员权限'
     })
     @ApiOkResponse({
         description: '获取成功',
