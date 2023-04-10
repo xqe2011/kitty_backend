@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
+import { Subject } from 'rxjs';
 import { EntityManager, Like, Repository } from 'typeorm';
 import { Cat } from '../entities/cat.entity';
 import { CatPhotoType } from '../enums/cat-photo-type.enum';
@@ -9,6 +10,8 @@ import { TagService } from '../tag/tag/tag.service';
 
 @Injectable()
 export class CatService {
+    private catsInfoUpdatedSubject = new Subject<void>();
+    
     constructor(
         @InjectRepository(Cat)
         private catRepository: Repository<Cat>,
@@ -151,7 +154,7 @@ export class CatService {
      * @return 猫咪ID
      */
     async createCat(name: string, species: string, isNeuter: boolean, description: string, haunt: string, status: CatStatusType) {
-        return (await this.catRepository.insert({
+        const id = (await this.catRepository.insert({
             name,
             species,
             isNeuter,
@@ -159,6 +162,9 @@ export class CatService {
             haunt,
             status
         })).identifiers[0].id;
+        /* 猫咪信息更新事件 */
+        await this.catsInfoUpdatedSubject.next();
+        return id;
     }
 
     /**
@@ -196,5 +202,16 @@ export class CatService {
             await manager.softDelete(Cat, id);
             await this.photoService.deletePhotosByCatID(id, manager);
         });
+        /* 猫咪信息更新事件 */
+        await this.catsInfoUpdatedSubject.next();
+    }
+
+    /**
+     * 订阅猫咪信息更新事件
+     * 
+     * @returns 猫咪信息更新事件
+     */
+    subscibreCatsInfoUpdatedEvent() {
+        return this.catsInfoUpdatedSubject.asObservable();
     }
 }

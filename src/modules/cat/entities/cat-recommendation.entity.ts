@@ -1,5 +1,6 @@
 import { User } from 'src/modules/user/entities/user.entity';
-import { Entity, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, DeleteDateColumn, Column, } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne } from 'typeorm';
+import { Cat } from './cat.entity';
 
 @Entity()
 export class CatRecommendation {
@@ -11,14 +12,9 @@ export class CatRecommendation {
     user: User;
 
     /** 对应的猫咪  */
-    @Column({
-        type: 'json',
-    })
-    cats: number[];
+    @ManyToOne(() => Cat, (cat) => cat.recommendations)
+    cat: Cat;
 
     @CreateDateColumn()
     createdDate: Date;
-
-    @DeleteDateColumn()
-    deleteDate: Date;
 }

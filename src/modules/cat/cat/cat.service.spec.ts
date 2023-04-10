@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Observable } from 'rxjs';
 import { createMocker } from 'test/utils/create-mocker.function';
 import { MockedObject } from 'test/utils/mocked-object';
 import { Like } from 'typeorm';
@@ -231,10 +232,15 @@ describe('CatService', () => {
     });
 
     test('createCat()', async () => {
+        const subject = {
+            next: jest.fn()
+        };
+        (service as any).catsInfoUpdatedSubject = subject;
         dependencies["CatRepository"].insert = jest.fn().mockResolvedValueOnce({
             identifiers: [ {id: 1} ]
         });
         const data1 = await service.createCat('狸','花', false, '猫', '活动地点', CatStatusType.NORMAL);
+        expect(subject.next).toBeCalledWith();
         expect(dependencies["CatRepository"].insert).toBeCalledWith({
             name: '狸',
             species: '花',
@@ -267,10 +273,23 @@ describe('CatService', () => {
         const manager = {
             softDelete: jest.fn()
         };
+        const subject = {
+            next: jest.fn()
+        };
+        (service as any).catsInfoUpdatedSubject = subject;
         dependencies["PhotoService"].deletePhotosByCatID = jest.fn();
         dependencies["EntityManager"].transaction = jest.fn().mockImplementation(func => func(manager));
         await service.deleteCat(1);
+        expect(subject.next).toBeCalledWith();
         expect(manager.softDelete).toBeCalledWith(Cat, 1);
         expect(dependencies["PhotoService"].deletePhotosByCatID).toBeCalledWith(1, manager);
+    });
+
+    test('subscibreCatsInfoUpdatedEvent()', async () => {
+        const subject = {
+            asObservable: jest.fn().mockResolvedValue(new Observable())
+        };
+        (service as any).catsInfoUpdatedSubject = subject;
+        expect(await service.subscibreCatsInfoUpdatedEvent()).toEqual(new Observable());
     });
 });

@@ -1,5 +1,6 @@
 import { Body, Controller, ParseArrayPipe, Post } from '@nestjs/common';
 import { ApiBody, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags, } from '@nestjs/swagger';
+import { HttpExceptionResponseDto } from 'src/docs/dtos/http-exception.response';
 import { FetchSettingBodyDto } from '../dtos/fetch-setting.body';
 import { SettingService } from './setting.service';
 
@@ -28,7 +29,10 @@ export class SettingController {
             },
         },
     })
-    @ApiNotFoundResponse({ description: '有配置项不存在' })
+    @ApiNotFoundResponse({
+        description: '有配置项不存在',
+        type: HttpExceptionResponseDto
+    })
     async fetchSetting(@Body(new ParseArrayPipe({ items: FetchSettingBodyDto })) body: FetchSettingBodyDto[]) {
         const output = {};
         for (const item of body) {

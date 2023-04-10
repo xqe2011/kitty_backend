@@ -2,6 +2,7 @@ import { Feedback } from 'src/modules/feedback/entities/feedback.entity';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany, DeleteDateColumn, } from 'typeorm';
 import { CatStatusType } from '../enums/cat-status-type.enum';
 import { CatPhoto } from './cat-photo.entity';
+import { CatRecommendation } from './cat-recommendation.entity';
 import { CatTag } from './cat-tag.entity';
 
 @Entity()
@@ -63,6 +64,10 @@ export class Cat {
     /** 猫咪对应的反馈 */
     @OneToMany(() => Feedback, (feedback) => feedback.cat)
     feedbacks: Feedback[];
+
+    /** 猫咪对应的推荐 */
+    @OneToMany(() => CatRecommendation, (catRecommendation) => catRecommendation.cat)
+    recommendations: CatRecommendation[];
 
     @CreateDateColumn()
     createdDate: Date;
