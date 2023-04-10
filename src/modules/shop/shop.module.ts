@@ -10,6 +10,7 @@ import { OrderController } from './order/order.controller';
 import { OrderService } from './order/order.service';
 import { ShopController } from './shop/shop.controller';
 import { ShopService } from './shop/shop.service';
+import { IsItemPhotoIDValidValidator } from './validators/is-item-photoid-valid.validator';
 import { IsItemIDValidValidator } from './validators/is-itemid-valid.validator';
 import { IsOrderIDValidValidator } from './validators/is-orderid-valid.validator';
 
@@ -20,7 +21,7 @@ import { IsOrderIDValidValidator } from './validators/is-orderid-valid.validator
         SettingModule,
         LikeModule
     ],
-    providers: [ShopService, OrderService, IsItemIDValidValidator, IsOrderIDValidValidator],
+    providers: [ShopService, OrderService, IsItemIDValidValidator, IsOrderIDValidValidator, IsItemPhotoIDValidValidator],
     controllers: [ShopController, OrderController],
     exports: [OrderService, ShopService],
 })

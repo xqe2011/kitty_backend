@@ -64,4 +64,7 @@ export enum ManageLogType {
 
     /* 添加猫咪标签 */
     ADD_TAG_TO_CAT = '21',
+
+    /* 更新商品照片信息 */
+    UPDATE_SHOP_PHOTO = '22',
 }

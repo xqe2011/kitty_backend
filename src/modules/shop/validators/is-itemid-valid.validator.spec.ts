@@ -3,7 +3,7 @@ import { createMocker } from 'test/utils/create-mocker.function';
 import { MockedObject } from 'test/utils/mocked-object';
 import { IsItemIDValidValidator } from './is-itemid-valid.validator';
 
-describe('IsUserIDValidValidator', () => {
+describe('IsItemIDValidValidator', () => {
     let validator: IsItemIDValidValidator;
     /* 所有依赖返回的值,可以通过这个Mock类方法 */
     let dependencies: { 

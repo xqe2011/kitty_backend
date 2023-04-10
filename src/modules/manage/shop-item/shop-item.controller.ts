@@ -18,6 +18,12 @@ import { DeletePhotoParamDto } from '../dtos/delete-photo.param';
 import { GetShopItemsQueryDto } from '../dtos/get-shop-items.query';
 import { GetShopItemsResponseDto } from '../dtos/get-shop-items.response';
 import { DeletePhotoResponseDto } from '../dtos/delete-photo.response';
+import { UpdateItemPhotoResponseDto } from '../dtos/update-item-photo.response';
+import { UpdateItemPhotoParamDto } from '../dtos/update-item-photo.param';
+import { UpdateItemPhotoBodyDto } from '../dtos/update-item-photo.body';
+import { UpdateItemResponseDto } from '../dtos/update-item.response';
+import { UpdateItemParamDto } from '../dtos/update-item.param';
+import { UpdateItemBodyDto } from '../dtos/update-item.body';
 
 @Controller('/manage')
 @UseGuards(AuthGuard('jwt'), RolesGuard)
@@ -89,6 +95,21 @@ export class ShopItemController {
         return data;
     }
 
+    @Put('shop/item/:id')
+    @ApiOperation({
+        summary: '修改商品信息',
+        description: '修改商品信息,需要管理员权限'
+    })
+    @ApiOkResponse({
+        description: '修改成功',
+        type: UpdateItemResponseDto
+    })
+    async updateItem(@Req() request, @Param() param: UpdateItemParamDto, @Body() body: UpdateItemBodyDto) {
+        await this.shopService.updateItem(param.id, body.name, body.description, body.price, body.visible);
+        await this.manageLogService.writeLog(request.user.id, ManageLogType.UPDATE_SHOP_ITEM, { ...param, ...body });
+        return {};
+    }
+
     @Put('shop/photo/:id')
     @ApiOperation({
         summary: '修改商品照片信息',
@@ -96,11 +117,11 @@ export class ShopItemController {
     })
     @ApiOkResponse({
         description: '修改成功',
-        type: DeletePhotoResponseDto
+        type: UpdateItemPhotoResponseDto
     })
-    async updatePhoto(@Req() request, @Param() param: DeletePhotoParamDto) {
-        await this.shopService.deletePhoto(param.id);
-        await this.manageLogService.writeLog(request.user.id, ManageLogType.DELETE_SHOP_PHOTO, { ...param });
+    async updatePhoto(@Req() request, @Param() param: UpdateItemPhotoParamDto, @Body() body: UpdateItemPhotoBodyDto) {
+        await this.shopService.updateItemPhoto(param.id, body.isCover);
+        await this.manageLogService.writeLog(request.user.id, ManageLogType.UPDATE_SHOP_PHOTO, { ...param, ...body });
         return {};
     }
 

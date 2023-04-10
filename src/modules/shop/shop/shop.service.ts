@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { FileService } from 'src/modules/file/file/file.service';
 import { LikeableEntityService } from 'src/modules/like/likeable-entity/likeable-entity.service';
-import { Any, EntityManager, Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { ShopItemPhoto } from '../entities/shop-item-photo.entity';
 import { ShopItem } from '../entities/shop-item.entity';
 
@@ -190,5 +190,14 @@ export class ShopService {
      */
     async isItemExists(id: number) {
         return (await this.itemRepository.count({ id: id })) > 0;
+    }
+
+    /**
+     * 商品照片是否存在
+     * @param id 照片ID
+     * @returns 是否存在
+     */
+    async isItemPhotoExists(id: number) {
+        return (await this.itemPhotoRepository.count({ id: id })) > 0;
     }
 }
