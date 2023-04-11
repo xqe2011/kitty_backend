@@ -24,6 +24,8 @@ import { UserController } from './user/user.controller';
 import { CatTagController } from './cat-tag/cat-tag.controller';
 import { ReportController } from './report/report.controller';
 import { ReportModule } from '../report/report.module';
+import { ArticleController } from './article/article.controller';
+import { ArticleModule } from '../article/article.module';
 
 @Module({
     imports: [
@@ -36,7 +38,8 @@ import { ReportModule } from '../report/report.module';
         TypeOrmModule.forFeature([ ManageLog ]),
         LikeModule,
         SettingModule,
-        ReportModule
+        ReportModule,
+        ArticleModule
     ],
     providers: [ ManageLogService ],
     controllers: [
@@ -52,7 +55,8 @@ import { ReportModule } from '../report/report.module';
         ShopItemController,
         SettingController,
         CatTagController,
-        ReportController
+        ReportController,
+        ArticleController
     ]
 })
 export class ManageModule {}

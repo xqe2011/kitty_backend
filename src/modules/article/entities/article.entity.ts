@@ -5,11 +5,7 @@ import { ArticlePhoto } from './article-photo.entity';
 export class Article {
     @PrimaryGeneratedColumn()
     id: number;
-
-    /** 是否可以为列表接口列出  */
-    @Column({ nullable: false, default: true })
-    canBeListed: boolean;
-
+    
     /** 文章概述  */
     @Column({ default: '' })
     summary: string;

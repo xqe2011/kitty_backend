@@ -65,12 +65,14 @@ export class ShopService {
      * 将照片添加到商品
      * @param id 商品ID
      * @param fileToken 照片文件Token
+     * @returns 照片ID
      */
     async addPhotoToItem(id: number, fileToken: string) {
         const photo = new ShopItemPhoto();
         photo.item = { id } as any;
         photo.fileName = this.fileService.getFileNameByToken(fileToken);
         await this.itemPhotoRepository.save(photo);
+        return photo.id;
     }
 
     /**

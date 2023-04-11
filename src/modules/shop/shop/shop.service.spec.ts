@@ -177,6 +177,22 @@ describe('ShopService', () => {
         expect(data1).toBe(false);
     });
 
+    test('isItemPhotoExists() - Exist', async () => {
+        dependencies["ShopItemPhotoRepository"].count = jest.fn();
+        dependencies["ShopItemPhotoRepository"].count.mockResolvedValueOnce(1);
+        const data1 = await service.isItemPhotoExists(2222);
+        expect(dependencies["ShopItemPhotoRepository"].count).toBeCalledWith({ id: 2222 });
+        expect(data1).toBe(true);
+    });
+
+    test('isItemPhotoExists() - Not Exist', async () => {
+        dependencies["ShopItemPhotoRepository"].count = jest.fn();
+        dependencies["ShopItemPhotoRepository"].count.mockResolvedValueOnce(0);
+        const data1 = await service.isItemPhotoExists(3333);
+        expect(dependencies["ShopItemPhotoRepository"].count).toBeCalledWith({ id: 3333 });
+        expect(data1).toBe(false);
+    });
+
     test('updateItemPhoto()', async () => {
         dependencies["ShopItemPhotoRepository"].update = jest.fn();
         await service.updateItemPhoto(3333, true);
