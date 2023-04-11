@@ -125,9 +125,6 @@ export class ArticleService {
      */
     async getArticlesList(limit: number, start: number) { 
         const articlesWithoutCover = await this.articleRepository.find({
-            where: {
-                canBeListed: true,
-            },
             take: limit,
             skip: start,
             select: ['id', 'title', 'summary', 'url', 'createdDate'],

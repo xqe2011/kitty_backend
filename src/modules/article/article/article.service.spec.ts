@@ -46,9 +46,6 @@ describe('ArticleService', () => {
         }]);
         const data = await service.getArticlesList(50, 100);
         expect(dependencies["ArticleRepository"].find).toBeCalledWith({
-            where: {
-                canBeListed: true,
-            },
             take: 50,
             skip: 100,
             select: ['id', 'title', 'summary', 'url', 'createdDate'],
